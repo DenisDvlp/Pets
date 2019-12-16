@@ -15,7 +15,7 @@ Solution has three projects:
 
 ### Solution Design
 
-Client communicates with server using NamedPipe API. Server has a loop which supports processing only one client at a time. Server always listen for client actions. Server stores data sent from a client in its local storage. Server constructs a custom class instance after a request from the client. Client can receive objects after a corresponding request has been sent to a server. Client prints received data constructed by server. If client closes server will stays wait for another client.
+Client communicates with a server using NamedPipe API. Server has a loop which supports processing only one client at a time. Server always listen for client actions. Server stores data sent from a client in its local storage. Server constructs a custom class instance after a request from the client. Client can receive objects after a corresponding request has been sent to a server. Client prints received data constructed by server. If client closes server stays wait for another client.
 
 ### Common
 
@@ -23,10 +23,10 @@ NamedPipe API is wrapped in a class **Pipe**. Structure **Packet** is presented 
 
 ### Client
 
-Client connects to a server using **Pipe** class. Client demonstrates a transfer of trivial and custom types to a server in _sync_ and _async_ ways. Client is able send a request to server for creating a custom class instance and send it back ot the client. Connection looses and application finishes if any error has occured.
+Client connects to a server using a class **Pipe**. Client demonstrates a transfer of trivial and custom types to a server in _sync_ and _async_ ways. Client is able send a request to server for creating a custom class instance and send it back ot the client. Connection looses and application finishes if any error has occured.
 
 ### Server
 
-Server uses **Pipe** class to create a base for future connection. Server starts a loop for catching packets from a client. Server starts waiting for another client if the current client has been disconnected. If any other error occures server stops and closes. Server has a **Storage** for all known kind of data. **Storage** can construct and store non-trivial object on demand.
+Server uses class **Pipe** to create a base for future connection. Server starts a loop for catching packets from a client. Server starts waiting for another client if the current client has been disconnected. If any other error occures server stops and closes. Server has a class **Storage** for keeping all known kinds of data. **Storage** can construct and store non-trivial object on demand.
 
 
