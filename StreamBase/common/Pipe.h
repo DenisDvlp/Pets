@@ -30,11 +30,6 @@ private:
 		Connected,
 		Disconnected,
 	};
-	enum class Entity : char
-	{
-		Server,
-		Client,
-	};
 private:
 	Pipe(HANDLE, std::wstring, bool, OVERLAPPED, ConnectionStatus);
 	bool resetOverlapped();
@@ -45,6 +40,5 @@ private:
 	bool m_ok = false;
 	OVERLAPPED m_overlapped{};
 	ConnectionStatus m_connectionStatus = ConnectionStatus::Disconnected;
-	const Entity m_entity = Entity::Server;
 };
 
