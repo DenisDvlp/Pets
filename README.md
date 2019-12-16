@@ -19,7 +19,7 @@ Client communicates with server using NamedPipe API. Server has a loop which sup
 
 ### Common
 
-NamedPipe API is wrapped in a class **Pipe**. Structure **Packet** is presented as a transfer unit. It consists of _action_ and _data_ fields. The Common also contains functions of a general handling of this classes. In case when a trivial data tranfers **Packet** contains 'Data' action in the first field and _raw bytes of data_ in the second field. In case when a non-trivial data tranfers **Packet** contains 'Data' action in the first field and _size for the next transfer unit_ in the second field. Second transfer unit is not a **Packet**. It is a raw data of non-trivial object of size brought previously in **Packet**. In case when a client sends request to create a custom object **Packet** contains 'Request' action in the first field and _type of object_ in the second field. Non-trivial objects are serializable.
+NamedPipe API is wrapped in a class **Pipe**. Structure **Packet** is presented as a transfer unit. It consists of _action_ and _data_ fields. The Common also contains functions of a general handling of this classes. In case when a trivial data tranfers **Packet** contains `Data` action in the first field and _raw bytes of data_ in the second field. In case when a non-trivial data tranfers **Packet** contains `Data` action in the first field and _size for the next transfer unit_ in the second field. Second transfer unit is not a **Packet**. It is a raw data of non-trivial object of size brought previously in **Packet**. In case when a client sends request to create a custom object **Packet** contains `Request` action in the first field and _type of object_ in the second field. Non-trivial objects are serializable.
 
 ### Client
 
