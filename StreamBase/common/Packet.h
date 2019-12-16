@@ -22,13 +22,6 @@ enum class DataType : unsigned int
 	Request,
 };
 
-enum class RequestSubject : unsigned int
-{
-	CreateObject_1,
-	CreateObject_2,
-	CreateObject_3,
-};
-
 struct Packet
 {
 	DataType type;
