@@ -1,0 +1,556 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Sources">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Sources\3rd party libs">
+      <UniqueIdentifier>{13ff1632-e1cc-4143-8aae-f819dcab481d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Sources\D">
+      <UniqueIdentifier>{b9a7e2e0-7065-4809-ac61-52faffceaf22}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Sources\D\Containers">
+      <UniqueIdentifier>{c093d12f-c535-45b8-948d-26438e352dec}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Sources\D\Patterns">
+      <UniqueIdentifier>{6d0d3d27-22d2-4600-b12e-4b509f5bbdf2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Sources\Interfaces">
+      <UniqueIdentifier>{60f1d6e0-baf3-4a34-a1bc-9885a8faab41}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Sources\Native">
+      <UniqueIdentifier>{00c176b5-fa31-4125-a741-7b1b3127c622}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Sources\Native\ConsolePlatform">
+      <UniqueIdentifier>{2b3dcd62-0a93-4cb2-9e89-cb644f82ff21}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Sources\Stuff">
+      <UniqueIdentifier>{4c6f9e59-d23c-4104-9f6e-7c7eda6418d7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Sources\System">
+      <UniqueIdentifier>{5293dafe-b4e6-455d-a8bf-53f250c3b7d2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Sources\3rd party libs\png">
+      <UniqueIdentifier>{56dc77fb-9fe0-45b4-ad86-b1ae44258904}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Sources\3rd party libs\zlib">
+      <UniqueIdentifier>{9de9383c-0000-4b38-b272-710b15bc1eb9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Sources\Entry Point">
+      <UniqueIdentifier>{c7c49281-80ac-4bcf-a14c-bb259e393e2d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Sources\Basic Types">
+      <UniqueIdentifier>{4c414cfe-03e3-4587-ad60-c19acd4cb5db}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Sources\Basic Types\Templates">
+      <UniqueIdentifier>{768a28e0-da27-4e9b-8998-b0c13922b9be}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Sources\D\Structures">
+      <UniqueIdentifier>{2de5d687-f959-46cb-8ec1-b215f50b7fdf}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Sources\D\Interfaces">
+      <UniqueIdentifier>{eb16cc08-84d8-4e26-9808-9f105617b3d1}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="BasicTypes.h">
+      <Filter>Sources\Basic Types</Filter>
+    </ClInclude>
+    <ClInclude Include="Container.h">
+      <Filter>Sources\Basic Types\Templates</Filter>
+    </ClInclude>
+    <ClInclude Include="sfinae.h">
+      <Filter>Sources\Basic Types\Templates</Filter>
+    </ClInclude>
+    <ClInclude Include="Utils.h">
+      <Filter>Sources\Stuff</Filter>
+    </ClInclude>
+    <ClInclude Include="zlib\crc32.h">
+      <Filter>Sources\3rd party libs\zlib</Filter>
+    </ClInclude>
+    <ClInclude Include="zlib\deflate.h">
+      <Filter>Sources\3rd party libs\zlib</Filter>
+    </ClInclude>
+    <ClInclude Include="zlib\gzguts.h">
+      <Filter>Sources\3rd party libs\zlib</Filter>
+    </ClInclude>
+    <ClInclude Include="zlib\inffast.h">
+      <Filter>Sources\3rd party libs\zlib</Filter>
+    </ClInclude>
+    <ClInclude Include="zlib\inffixed.h">
+      <Filter>Sources\3rd party libs\zlib</Filter>
+    </ClInclude>
+    <ClInclude Include="zlib\inflate.h">
+      <Filter>Sources\3rd party libs\zlib</Filter>
+    </ClInclude>
+    <ClInclude Include="zlib\inftrees.h">
+      <Filter>Sources\3rd party libs\zlib</Filter>
+    </ClInclude>
+    <ClInclude Include="zlib\trees.h">
+      <Filter>Sources\3rd party libs\zlib</Filter>
+    </ClInclude>
+    <ClInclude Include="zlib\zconf.h">
+      <Filter>Sources\3rd party libs\zlib</Filter>
+    </ClInclude>
+    <ClInclude Include="zlib\zlib.h">
+      <Filter>Sources\3rd party libs\zlib</Filter>
+    </ClInclude>
+    <ClInclude Include="zlib\zutil.h">
+      <Filter>Sources\3rd party libs\zlib</Filter>
+    </ClInclude>
+    <ClInclude Include="libpng\png.h">
+      <Filter>Sources\3rd party libs\png</Filter>
+    </ClInclude>
+    <ClInclude Include="libpng\pngconf.h">
+      <Filter>Sources\3rd party libs\png</Filter>
+    </ClInclude>
+    <ClInclude Include="libpng\pngdebug.h">
+      <Filter>Sources\3rd party libs\png</Filter>
+    </ClInclude>
+    <ClInclude Include="libpng\pnginfo.h">
+      <Filter>Sources\3rd party libs\png</Filter>
+    </ClInclude>
+    <ClInclude Include="libpng\pnglibconf.h">
+      <Filter>Sources\3rd party libs\png</Filter>
+    </ClInclude>
+    <ClInclude Include="libpng\pngpriv.h">
+      <Filter>Sources\3rd party libs\png</Filter>
+    </ClInclude>
+    <ClInclude Include="libpng\pngstruct.h">
+      <Filter>Sources\3rd party libs\png</Filter>
+    </ClInclude>
+    <ClInclude Include="BiArray.h">
+      <Filter>Sources\Interfaces</Filter>
+    </ClInclude>
+    <ClInclude Include="DrawBuffer.h">
+      <Filter>Sources\Interfaces</Filter>
+    </ClInclude>
+    <ClInclude Include="IDisplay.h">
+      <Filter>Sources\Interfaces</Filter>
+    </ClInclude>
+    <ClInclude Include="IDraw.h">
+      <Filter>Sources\Interfaces</Filter>
+    </ClInclude>
+    <ClInclude Include="IDrawBuffer.h">
+      <Filter>Sources\Interfaces</Filter>
+    </ClInclude>
+    <ClInclude Include="IDrawBufferNative.h">
+      <Filter>Sources\Interfaces</Filter>
+    </ClInclude>
+    <ClInclude Include="IMessageLoop.h">
+      <Filter>Sources\Interfaces</Filter>
+    </ClInclude>
+    <ClInclude Include="IMessageReadable.h">
+      <Filter>Sources\Interfaces</Filter>
+    </ClInclude>
+    <ClInclude Include="ISizable.h">
+      <Filter>Sources\Interfaces</Filter>
+    </ClInclude>
+    <ClInclude Include="Sizable.h">
+      <Filter>Sources\Interfaces</Filter>
+    </ClInclude>
+    <ClInclude Include="Console.h">
+      <Filter>Sources\Native\ConsolePlatform</Filter>
+    </ClInclude>
+    <ClInclude Include="ConsoleLoop.h">
+      <Filter>Sources\Native\ConsolePlatform</Filter>
+    </ClInclude>
+    <ClInclude Include="Draw.h">
+      <Filter>Sources\Native\ConsolePlatform</Filter>
+    </ClInclude>
+    <ClInclude Include="Align.h">
+      <Filter>Sources\System</Filter>
+    </ClInclude>
+    <ClInclude Include="Application.h">
+      <Filter>Sources\System</Filter>
+    </ClInclude>
+    <ClInclude Include="DrawLoop.h">
+      <Filter>Sources\System</Filter>
+    </ClInclude>
+    <ClInclude Include="Image.h">
+      <Filter>Sources\System</Filter>
+    </ClInclude>
+    <ClInclude Include="MessageBuffer.h">
+      <Filter>Sources\System</Filter>
+    </ClInclude>
+    <ClInclude Include="SystemLoop.h">
+      <Filter>Sources\System</Filter>
+    </ClInclude>
+    <ClInclude Include="Color.h">
+      <Filter>Sources\Basic Types</Filter>
+    </ClInclude>
+    <ClInclude Include="Deque.h">
+      <Filter>Sources\Basic Types</Filter>
+    </ClInclude>
+    <ClInclude Include="Key.h">
+      <Filter>Sources\Basic Types</Filter>
+    </ClInclude>
+    <ClInclude Include="KeyState.h">
+      <Filter>Sources\Basic Types</Filter>
+    </ClInclude>
+    <ClInclude Include="List.h">
+      <Filter>Sources\Basic Types</Filter>
+    </ClInclude>
+    <ClInclude Include="Message.h">
+      <Filter>Sources\Basic Types</Filter>
+    </ClInclude>
+    <ClInclude Include="MessageType.h">
+      <Filter>Sources\Basic Types</Filter>
+    </ClInclude>
+    <ClInclude Include="MouseState.h">
+      <Filter>Sources\Basic Types</Filter>
+    </ClInclude>
+    <ClInclude Include="Point.h">
+      <Filter>Sources\Basic Types</Filter>
+    </ClInclude>
+    <ClInclude Include="Rect.h">
+      <Filter>Sources\Basic Types</Filter>
+    </ClInclude>
+    <ClInclude Include="Size.h">
+      <Filter>Sources\Basic Types</Filter>
+    </ClInclude>
+    <ClInclude Include="String.h">
+      <Filter>Sources\Basic Types</Filter>
+    </ClInclude>
+    <ClInclude Include="Vector.h">
+      <Filter>Sources\Basic Types</Filter>
+    </ClInclude>
+    <ClInclude Include="SystemEvents.h">
+      <Filter>Sources\System</Filter>
+    </ClInclude>
+    <ClInclude Include="Linkable.h">
+      <Filter>Sources\System</Filter>
+    </ClInclude>
+    <ClInclude Include="Signal.h">
+      <Filter>Sources\System</Filter>
+    </ClInclude>
+    <ClInclude Include="Drawable.h">
+      <Filter>Sources\System</Filter>
+    </ClInclude>
+    <ClInclude Include="Root.h">
+      <Filter>Sources\System</Filter>
+    </ClInclude>
+    <ClInclude Include="Figure.h">
+      <Filter>Sources\System</Filter>
+    </ClInclude>
+    <ClInclude Include="Clickable.h">
+      <Filter>Sources\System</Filter>
+    </ClInclude>
+    <ClInclude Include="IPositionable.h">
+      <Filter>Sources\Interfaces</Filter>
+    </ClInclude>
+    <ClInclude Include="Positionable.h">
+      <Filter>Sources\Interfaces</Filter>
+    </ClInclude>
+    <ClInclude Include="Function.h">
+      <Filter>Sources\Basic Types\Templates</Filter>
+    </ClInclude>
+    <ClInclude Include="ILoop.h">
+      <Filter>Sources\Interfaces</Filter>
+    </ClInclude>
+    <ClInclude Include="SizableT.h">
+      <Filter>Sources\Interfaces</Filter>
+    </ClInclude>
+    <ClInclude Include="SizeT.h">
+      <Filter>Sources\Basic Types\Templates</Filter>
+    </ClInclude>
+    <ClInclude Include="RectT.h">
+      <Filter>Sources\Basic Types\Templates</Filter>
+    </ClInclude>
+    <ClInclude Include="PositionableT.h">
+      <Filter>Sources\Interfaces</Filter>
+    </ClInclude>
+    <ClInclude Include="PointT.h">
+      <Filter>Sources\Basic Types\Templates</Filter>
+    </ClInclude>
+    <ClInclude Include="DVector.h">
+      <Filter>Sources\D\Containers</Filter>
+    </ClInclude>
+    <ClInclude Include="DContainerT.h">
+      <Filter>Sources\D\Containers</Filter>
+    </ClInclude>
+    <ClInclude Include="DDeque.h">
+      <Filter>Sources\D\Containers</Filter>
+    </ClInclude>
+    <ClInclude Include="DList.h">
+      <Filter>Sources\D\Containers</Filter>
+    </ClInclude>
+    <ClInclude Include="DString.h">
+      <Filter>Sources\D\Containers</Filter>
+    </ClInclude>
+    <ClInclude Include="DStringList.h">
+      <Filter>Sources\D\Containers</Filter>
+    </ClInclude>
+    <ClInclude Include="DComposable.h">
+      <Filter>Sources\D\Patterns</Filter>
+    </ClInclude>
+    <ClInclude Include="DView.h">
+      <Filter>Sources\D\Patterns</Filter>
+    </ClInclude>
+    <ClInclude Include="Primitive.h">
+      <Filter>Sources\System</Filter>
+    </ClInclude>
+    <ClInclude Include="MouseInteractable.h">
+      <Filter>Sources\System</Filter>
+    </ClInclude>
+    <ClInclude Include="DSizeT.h">
+      <Filter>Sources\D\Structures</Filter>
+    </ClInclude>
+    <ClInclude Include="DPointT.h">
+      <Filter>Sources\D\Structures</Filter>
+    </ClInclude>
+    <ClInclude Include="DRectT.h">
+      <Filter>Sources\D\Structures</Filter>
+    </ClInclude>
+    <ClInclude Include="DTypes.h">
+      <Filter>Sources\D</Filter>
+    </ClInclude>
+    <ClInclude Include="DSizableT.h">
+      <Filter>Sources\D\Interfaces</Filter>
+    </ClInclude>
+    <ClInclude Include="DSfinae.h">
+      <Filter>Sources\D</Filter>
+    </ClInclude>
+    <ClInclude Include="IDSizable.h">
+      <Filter>Sources\D\Interfaces</Filter>
+    </ClInclude>
+    <ClInclude Include="DPoint.h">
+      <Filter>Sources\D\Structures</Filter>
+    </ClInclude>
+    <ClInclude Include="DRect.h">
+      <Filter>Sources\D\Structures</Filter>
+    </ClInclude>
+    <ClInclude Include="DSize.h">
+      <Filter>Sources\D\Structures</Filter>
+    </ClInclude>
+    <ClInclude Include="DSizable.h">
+      <Filter>Sources\D\Interfaces</Filter>
+    </ClInclude>
+    <ClInclude Include="DPositionable.h">
+      <Filter>Sources\D\Interfaces</Filter>
+    </ClInclude>
+    <ClInclude Include="DPositionableT.h">
+      <Filter>Sources\D\Interfaces</Filter>
+    </ClInclude>
+    <ClInclude Include="IDPositionable.h">
+      <Filter>Sources\D\Interfaces</Filter>
+    </ClInclude>
+    <ClInclude Include="DShapeableT.h">
+      <Filter>Sources\D\Interfaces</Filter>
+    </ClInclude>
+    <ClInclude Include="IDShapeable.h">
+      <Filter>Sources\D\Interfaces</Filter>
+    </ClInclude>
+    <ClInclude Include="DShapeable.h">
+      <Filter>Sources\D\Interfaces</Filter>
+    </ClInclude>
+    <ClInclude Include="IDDrawable.h">
+      <Filter>Sources\D\Interfaces</Filter>
+    </ClInclude>
+    <ClInclude Include="DDrawable.h">
+      <Filter>Sources\D\Interfaces</Filter>
+    </ClInclude>
+    <ClInclude Include="IDDraw.h">
+      <Filter>Sources\D\Interfaces</Filter>
+    </ClInclude>
+    <ClInclude Include="DColor.h">
+      <Filter>Sources\D\Structures</Filter>
+    </ClInclude>
+    <ClInclude Include="DAlign.h">
+      <Filter>Sources\D\Structures</Filter>
+    </ClInclude>
+    <ClInclude Include="DDrawT.h">
+      <Filter>Sources\D</Filter>
+    </ClInclude>
+    <ClInclude Include="DDrawWin.h">
+      <Filter>Sources\D</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="Utils.cpp">
+      <Filter>Sources\Stuff</Filter>
+    </ClCompile>
+    <ClCompile Include="zlib\adler32.c">
+      <Filter>Sources\3rd party libs\zlib</Filter>
+    </ClCompile>
+    <ClCompile Include="zlib\compress.c">
+      <Filter>Sources\3rd party libs\zlib</Filter>
+    </ClCompile>
+    <ClCompile Include="zlib\crc32.c">
+      <Filter>Sources\3rd party libs\zlib</Filter>
+    </ClCompile>
+    <ClCompile Include="zlib\deflate.c">
+      <Filter>Sources\3rd party libs\zlib</Filter>
+    </ClCompile>
+    <ClCompile Include="zlib\gzclose.c">
+      <Filter>Sources\3rd party libs\zlib</Filter>
+    </ClCompile>
+    <ClCompile Include="zlib\gzlib.c">
+      <Filter>Sources\3rd party libs\zlib</Filter>
+    </ClCompile>
+    <ClCompile Include="zlib\gzread.c">
+      <Filter>Sources\3rd party libs\zlib</Filter>
+    </ClCompile>
+    <ClCompile Include="zlib\gzwrite.c">
+      <Filter>Sources\3rd party libs\zlib</Filter>
+    </ClCompile>
+    <ClCompile Include="zlib\infback.c">
+      <Filter>Sources\3rd party libs\zlib</Filter>
+    </ClCompile>
+    <ClCompile Include="zlib\inffast.c">
+      <Filter>Sources\3rd party libs\zlib</Filter>
+    </ClCompile>
+    <ClCompile Include="zlib\inflate.c">
+      <Filter>Sources\3rd party libs\zlib</Filter>
+    </ClCompile>
+    <ClCompile Include="zlib\inftrees.c">
+      <Filter>Sources\3rd party libs\zlib</Filter>
+    </ClCompile>
+    <ClCompile Include="zlib\trees.c">
+      <Filter>Sources\3rd party libs\zlib</Filter>
+    </ClCompile>
+    <ClCompile Include="zlib\uncompr.c">
+      <Filter>Sources\3rd party libs\zlib</Filter>
+    </ClCompile>
+    <ClCompile Include="zlib\zutil.c">
+      <Filter>Sources\3rd party libs\zlib</Filter>
+    </ClCompile>
+    <ClCompile Include="libpng\example.c">
+      <Filter>Sources\3rd party libs\png</Filter>
+    </ClCompile>
+    <ClCompile Include="libpng\png.c">
+      <Filter>Sources\3rd party libs\png</Filter>
+    </ClCompile>
+    <ClCompile Include="libpng\pngerror.c">
+      <Filter>Sources\3rd party libs\png</Filter>
+    </ClCompile>
+    <ClCompile Include="libpng\pngget.c">
+      <Filter>Sources\3rd party libs\png</Filter>
+    </ClCompile>
+    <ClCompile Include="libpng\pngmem.c">
+      <Filter>Sources\3rd party libs\png</Filter>
+    </ClCompile>
+    <ClCompile Include="libpng\pngpread.c">
+      <Filter>Sources\3rd party libs\png</Filter>
+    </ClCompile>
+    <ClCompile Include="libpng\pngread.c">
+      <Filter>Sources\3rd party libs\png</Filter>
+    </ClCompile>
+    <ClCompile Include="libpng\pngrio.c">
+      <Filter>Sources\3rd party libs\png</Filter>
+    </ClCompile>
+    <ClCompile Include="libpng\pngrtran.c">
+      <Filter>Sources\3rd party libs\png</Filter>
+    </ClCompile>
+    <ClCompile Include="libpng\pngrutil.c">
+      <Filter>Sources\3rd party libs\png</Filter>
+    </ClCompile>
+    <ClCompile Include="libpng\pngset.c">
+      <Filter>Sources\3rd party libs\png</Filter>
+    </ClCompile>
+    <ClCompile Include="libpng\pngtrans.c">
+      <Filter>Sources\3rd party libs\png</Filter>
+    </ClCompile>
+    <ClCompile Include="libpng\pngwio.c">
+      <Filter>Sources\3rd party libs\png</Filter>
+    </ClCompile>
+    <ClCompile Include="libpng\pngwrite.c">
+      <Filter>Sources\3rd party libs\png</Filter>
+    </ClCompile>
+    <ClCompile Include="libpng\pngwtran.c">
+      <Filter>Sources\3rd party libs\png</Filter>
+    </ClCompile>
+    <ClCompile Include="libpng\pngwutil.c">
+      <Filter>Sources\3rd party libs\png</Filter>
+    </ClCompile>
+    <ClCompile Include="IMessageLoop.cpp">
+      <Filter>Sources\Interfaces</Filter>
+    </ClCompile>
+    <ClCompile Include="Console.cpp">
+      <Filter>Sources\Native\ConsolePlatform</Filter>
+    </ClCompile>
+    <ClCompile Include="ConsoleLoop.cpp">
+      <Filter>Sources\Native\ConsolePlatform</Filter>
+    </ClCompile>
+    <ClCompile Include="Draw.cpp">
+      <Filter>Sources\Native\ConsolePlatform</Filter>
+    </ClCompile>
+    <ClCompile Include="Application.cpp">
+      <Filter>Sources\System</Filter>
+    </ClCompile>
+    <ClCompile Include="Image.cpp">
+      <Filter>Sources\System</Filter>
+    </ClCompile>
+    <ClCompile Include="MessageBuffer.cpp">
+      <Filter>Sources\System</Filter>
+    </ClCompile>
+    <ClCompile Include="SystemLoop.cpp">
+      <Filter>Sources\System</Filter>
+    </ClCompile>
+    <ClCompile Include="MessageType.cpp">
+      <Filter>Sources\Basic Types</Filter>
+    </ClCompile>
+    <ClCompile Include="Color.cpp">
+      <Filter>Sources\Basic Types</Filter>
+    </ClCompile>
+    <ClCompile Include="Key.cpp">
+      <Filter>Sources\Basic Types</Filter>
+    </ClCompile>
+    <ClCompile Include="KeyState.cpp">
+      <Filter>Sources\Basic Types</Filter>
+    </ClCompile>
+    <ClCompile Include="Message.cpp">
+      <Filter>Sources\Basic Types</Filter>
+    </ClCompile>
+    <ClCompile Include="MouseState.cpp">
+      <Filter>Sources\Basic Types</Filter>
+    </ClCompile>
+    <ClCompile Include="SystemEvents.cpp">
+      <Filter>Sources\System</Filter>
+    </ClCompile>
+    <ClCompile Include="Linkable.cpp">
+      <Filter>Sources\System</Filter>
+    </ClCompile>
+    <ClCompile Include="Drawable.cpp">
+      <Filter>Sources\System</Filter>
+    </ClCompile>
+    <ClCompile Include="Root.cpp">
+      <Filter>Sources\System</Filter>
+    </ClCompile>
+    <ClCompile Include="Figure.cpp">
+      <Filter>Sources\System</Filter>
+    </ClCompile>
+    <ClCompile Include="ILoop.cpp">
+      <Filter>Sources\Interfaces</Filter>
+    </ClCompile>
+    <ClCompile Include="DComposable.cpp">
+      <Filter>Sources\D\Patterns</Filter>
+    </ClCompile>
+    <ClCompile Include="DView.cpp">
+      <Filter>Sources\D\Patterns</Filter>
+    </ClCompile>
+    <ClCompile Include="Primitive.cpp">
+      <Filter>Sources\System</Filter>
+    </ClCompile>
+    <ClCompile Include="MouseInteractable.cpp">
+      <Filter>Sources\System</Filter>
+    </ClCompile>
+    <ClCompile Include="Clickable.cpp">
+      <Filter>Sources\System</Filter>
+    </ClCompile>
+    <ClCompile Include="Main.cpp">
+      <Filter>Sources\Entry Point</Filter>
+    </ClCompile>
+    <ClCompile Include="DDrawable.cpp">
+      <Filter>Sources\D\Interfaces</Filter>
+    </ClCompile>
+    <ClCompile Include="DColor.cpp">
+      <Filter>Sources\D\Structures</Filter>
+    </ClCompile>
+    <ClCompile Include="DDrawWin.cpp">
+      <Filter>Sources\D</Filter>
+    </ClCompile>
+  </ItemGroup>
+</Project>
