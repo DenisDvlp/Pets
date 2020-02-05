@@ -23,5 +23,6 @@ public:
   bool isAltPressed();
 private:
   friend class SystemLoop;
+  friend class DApplication;
   byte m_keyStates;
 };

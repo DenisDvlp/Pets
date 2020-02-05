@@ -35,7 +35,7 @@ inline T DSizableT<T>::height() const
 template<typename T>
 void DSizableT<T>::width(const T width)
 {
-    SizeT<T> size(width, m_size.height());
+    DSizeT<T> size(width, m_size.height());
     resize(size);
     m_size = size;
 }
@@ -43,7 +43,7 @@ void DSizableT<T>::width(const T width)
 template<typename T>
 void DSizableT<T>::height(const T height)
 {
-    SizeT<T> size(m_size.width(), height);
+    DSizeT<T> size(m_size.width(), height);
     resize(size);
     m_size = size;
 }
@@ -51,7 +51,7 @@ void DSizableT<T>::height(const T height)
 template<typename T>
 void DSizableT<T>::size(const T width, const T height)
 {
-    SizeT<T> size(width, height);
+    DSizeT<T> size(width, height);
     resize(size);
     m_size = size;
 }
@@ -59,7 +59,7 @@ void DSizableT<T>::size(const T width, const T height)
 template<typename T>
 void DSizableT<T>::size(const DSizeT<T>& size)
 {
-    SizeT<T> s = size;
+    DSizeT<T> s = size;
     resize(s);
     m_size = s;
 }

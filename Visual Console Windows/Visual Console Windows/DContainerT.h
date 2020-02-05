@@ -15,13 +15,13 @@ class DContainerT
 {
 private:
 
-    static_assert(!is_const<BaseContainer>, "BaseContainer should not be constant");
-    static_assert(!is_ref<BaseContainer>, "BaseContainer should not be a reference");
-    static_assert(!is_ptr<BaseContainer>, "BaseContainer should not be a pointer");
-    static_assert(is_container<pure<BaseContainer>>, "BaseContainer should be a container");
-    static_assert(has_allocator_type<pure<BaseContainer>>, "BaseContainer should be dynamic");
-    static_assert(!has_key_type<pure<BaseContainer>>, "BaseContainer should be sequential");
-    static_assert(is_iterator_bidirectional<pure<BaseContainer>>, "BaseContainer should be at least bidirectional");
+    static_assert(!is_const<BaseContainer>, "BaseContainer shall not be constant");
+    static_assert(!is_ref<BaseContainer>, "BaseContainer shall not be a reference");
+    static_assert(!is_ptr<BaseContainer>, "BaseContainer shall not be a pointer");
+    static_assert(is_container<pure<BaseContainer>>, "BaseContainer shall be a container");
+    static_assert(has_allocator_type<pure<BaseContainer>>, "BaseContainer shall be dynamic");
+    static_assert(!has_key_type<pure<BaseContainer>>, "BaseContainer shall be sequential");
+    static_assert(is_iterator_bidirectional<pure<BaseContainer>>, "BaseContainer shall be at least bidirectional");
 
 public:
     using DContainerT_tag = void;
@@ -112,6 +112,9 @@ public:
     const_reference first() const;
     reference last();
     const_reference last() const;
+
+    pointer data();
+    const_pointer data() const;
 
     //size
 
@@ -451,6 +454,32 @@ template<typename BaseContainer>
 inline auto DContainerT<BaseContainer>::last() const -> const_reference
 {
     return m_items.back();
+}
+
+template<typename BaseContainer>
+inline auto DContainerT<BaseContainer>::data() -> pointer
+{
+    if constexpr(has_method_data<BaseContainer>)
+    {
+        m_items.data();
+    }
+    else
+    {
+        return nullptr;
+    }
+}
+
+template<typename BaseContainer>
+inline auto DContainerT<BaseContainer>::data() const -> const_pointer
+{
+    if constexpr(has_method_data<BaseContainer>)
+    {
+        m_items.data();
+    }
+    else
+    {
+        return nullptr;
+    }
 }
 
 //SIZE

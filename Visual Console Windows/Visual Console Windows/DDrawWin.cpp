@@ -26,24 +26,30 @@ void DDrawWin::fill(const DColor color)
 {
     auto square = size().square();
     auto raw = m_biArray.raw();
+    const CHAR_INFO pixel = { ' ', convertToConsoleColor(color) << 4 };
     for(decltype(square) i = 0; i < square; ++i)
     {
-        raw[i].Char.AsciiChar = ' ';
-        raw[i].Attributes = convertToConsoleColor(color) << 4;
+        raw[i] = pixel;
     }
 }
 
 void DDrawWin::drawRect(const DRect& rect, const DColor color)
 {
     auto intersection = rect & DRect(0, 0, width(), height());
+    const CHAR_INFO pixel = { ' ', convertToConsoleColor(color) << 4 };
     intersection.forEach([this, color] (auto i, auto j)
         {
-            m_biArray[i][j].Char.AsciiChar = ' ';
-            m_biArray[i][j].Attributes = convertToConsoleColor(color) << 4;
+            m_biArray[i][j] = pixel;
         });
 }
 
 #define HAS_FLAG(IN, FLAG) ((static_cast<uint8>(IN) & static_cast<uint8>(FLAG)) == static_cast<uint8>(FLAG))
+
+void DDrawWin::drawText(const DRect& rect, const DString& text, const DColor color, const DAlign align)
+{
+    drawText(rect, DStringList(text), color, align);
+}
+
 
 void DDrawWin::drawText(const DRect& rect, const DStringList& text, const DColor color, const DAlign align)
 {
@@ -51,51 +57,40 @@ void DDrawWin::drawText(const DRect& rect, const DStringList& text, const DColor
     dint textSize = textRect.width();
     textRect.position(rect.position());
 
-    if(HAS_FLAG(align, DAlign::LEFT))
-    {
-        textRect.x(rect.x());
+    auto x = rect.x();
+    auto y = rect.y();
 
-        if(HAS_FLAG(align, DAlign::RIGHT))
-        {
-            textRect.right(rect.right());
-        }
+    if(HAS_FLAG(align, DAlign::CENTER_H))
+    {
+        x = rect.center().x() - textRect.width() / 2;
     }
     else if(HAS_FLAG(align, DAlign::RIGHT))
     {
-        textRect.x(rect.right() - textRect.width());
-    }
-    else
-    {
-        textRect.x(rect.center().x() - textRect.width() / 2);
+        x = rect.right() - textRect.width();
     }
 
-    if(HAS_FLAG(align, DAlign::TOP))
+    if(HAS_FLAG(align, DAlign::CENTER_V))
     {
-        textRect.y(rect.y());
-
-        if(HAS_FLAG(align, DAlign::BOTTOM))
-        {
-            textRect.bottom(rect.bottom());
-        }
+        y = rect.center().y() - textRect.height() / 2;
     }
     else if(HAS_FLAG(align, DAlign::BOTTOM))
     {
-        textRect.y(rect.bottom() - textRect.height());
+        y = rect.bottom() - textRect.height();
     }
-    else
-    {
-        textRect.y(rect.center().y() - textRect.height() / 2);
-    }
+
+    textRect.x(x);
+    textRect.y(y);
 
     auto intersection = rect & textRect & DRect(0, 0, width(), height());
 
-    int x = std::max<dint>(0, intersection.x() - textRect.x());
-    int y = std::max<dint>(0, intersection.y() - textRect.y());
+    x = std::max<dint>(0, intersection.x() - textRect.x());
+    y = std::max<dint>(0, intersection.y() - textRect.y());
 
-    intersection.forEach([this, color, &text, &x, &y] (auto i, auto j)
+    const auto consoleTextColor = convertToConsoleColor(color);
+    intersection.forEach([this, consoleTextColor, &text, &x, &y] (auto i, auto j)
         {
-            m_biArray[i][j].Char.AsciiChar = text[y][x++];
-            m_biArray[i][j].Attributes = m_biArray[i][j].Attributes | convertToConsoleColor(color);
+            m_biArray[i][j].Char.AsciiChar = text[y++][x++];
+            m_biArray[i][j].Attributes |= consoleTextColor;
         });
 }
 

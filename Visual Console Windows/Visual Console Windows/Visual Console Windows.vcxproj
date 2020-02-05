@@ -139,12 +139,15 @@
     <ClInclude Include="BasicTypes.h" />
     <ClInclude Include="Clickable.h" />
     <ClInclude Include="DAlign.h" />
+    <ClInclude Include="DApplication.h" />
     <ClInclude Include="DColor.h" />
     <ClInclude Include="DContainerT.h" />
     <ClInclude Include="DDeque.h" />
     <ClInclude Include="DDrawT.h" />
     <ClInclude Include="DDrawable.h" />
     <ClInclude Include="DList.h" />
+    <ClInclude Include="DLoop.h" />
+    <ClInclude Include="DMessage.h" />
     <ClInclude Include="DPoint.h" />
     <ClInclude Include="DPointT.h" />
     <ClInclude Include="DPositionable.h" />
@@ -160,6 +163,7 @@
     <ClInclude Include="DDrawWin.h" />
     <ClInclude Include="DRect.h" />
     <ClInclude Include="DRectT.h" />
+    <ClInclude Include="DSafeObject.h" />
     <ClInclude Include="DSfinae.h" />
     <ClInclude Include="DShapeable.h" />
     <ClInclude Include="DShapeableT.h" />
@@ -244,9 +248,11 @@
     <ClCompile Include="Clickable.cpp" />
     <ClCompile Include="Color.cpp" />
     <ClCompile Include="Console.cpp" />
+    <ClCompile Include="DApplication.cpp" />
     <ClCompile Include="DColor.cpp" />
     <ClCompile Include="DDrawWin.cpp" />
     <ClCompile Include="DDrawable.cpp" />
+    <ClCompile Include="DLoop.cpp" />
     <ClCompile Include="Draw.cpp" />
     <ClCompile Include="Drawable.cpp" />
     <ClCompile Include="DComposable.cpp" />

@@ -53,6 +53,12 @@
     <Filter Include="Sources\D\Interfaces">
       <UniqueIdentifier>{eb16cc08-84d8-4e26-9808-9f105617b3d1}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Sources\D\System">
+      <UniqueIdentifier>{21712d7b-465a-4aba-b135-04e39ea2f3d1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Sources\D\Misc">
+      <UniqueIdentifier>{b0bf85c3-86b2-4d2c-a530-c31d1e7917c1}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="BasicTypes.h">
@@ -304,14 +310,8 @@
     <ClInclude Include="DRectT.h">
       <Filter>Sources\D\Structures</Filter>
     </ClInclude>
-    <ClInclude Include="DTypes.h">
-      <Filter>Sources\D</Filter>
-    </ClInclude>
     <ClInclude Include="DSizableT.h">
       <Filter>Sources\D\Interfaces</Filter>
-    </ClInclude>
-    <ClInclude Include="DSfinae.h">
-      <Filter>Sources\D</Filter>
     </ClInclude>
     <ClInclude Include="IDSizable.h">
       <Filter>Sources\D\Interfaces</Filter>
@@ -361,11 +361,29 @@
     <ClInclude Include="DAlign.h">
       <Filter>Sources\D\Structures</Filter>
     </ClInclude>
-    <ClInclude Include="DDrawT.h">
-      <Filter>Sources\D</Filter>
+    <ClInclude Include="DSafeObject.h">
+      <Filter>Sources\D\Structures</Filter>
+    </ClInclude>
+    <ClInclude Include="DApplication.h">
+      <Filter>Sources\D\System</Filter>
+    </ClInclude>
+    <ClInclude Include="DLoop.h">
+      <Filter>Sources\D\Structures</Filter>
     </ClInclude>
     <ClInclude Include="DDrawWin.h">
-      <Filter>Sources\D</Filter>
+      <Filter>Sources\D\System</Filter>
+    </ClInclude>
+    <ClInclude Include="DTypes.h">
+      <Filter>Sources\D\Misc</Filter>
+    </ClInclude>
+    <ClInclude Include="DSfinae.h">
+      <Filter>Sources\D\Misc</Filter>
+    </ClInclude>
+    <ClInclude Include="DDrawT.h">
+      <Filter>Sources\D\Structures</Filter>
+    </ClInclude>
+    <ClInclude Include="DMessage.h">
+      <Filter>Sources\D\Structures</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -549,8 +567,14 @@
     <ClCompile Include="DColor.cpp">
       <Filter>Sources\D\Structures</Filter>
     </ClCompile>
+    <ClCompile Include="DApplication.cpp">
+      <Filter>Sources\D\System</Filter>
+    </ClCompile>
+    <ClCompile Include="DLoop.cpp">
+      <Filter>Sources\D\Structures</Filter>
+    </ClCompile>
     <ClCompile Include="DDrawWin.cpp">
-      <Filter>Sources\D</Filter>
+      <Filter>Sources\D\System</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

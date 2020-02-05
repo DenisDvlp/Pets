@@ -1,6 +1,7 @@
 //BiArray.h
 #pragma once
 #include "DSizable.h"
+#include "DVector.h"
 #include <vector>
 
 template<typename T>
@@ -14,14 +15,14 @@ public:
     const T* const* grid() const;
     T* const operator[](int);
 private:
-    void resize(Size&) override;
+    void resize(DSize&) override;
 protected:
-    std::vector<T>  m_raw;
-    std::vector<T*> m_grid;
+    DVector<T>  m_raw;
+    DVector<T*> m_grid;
 };
 
 template<typename T>
-void BiArray<T>::resize(Size& newSize)
+void BiArray<T>::resize(DSize& newSize)
 {
     if(size() != newSize)
     {

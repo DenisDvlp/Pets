@@ -82,7 +82,7 @@ DColor::DColor(byte alpha, byte red, byte green, byte blue)
     )
 {}
 
-inline void DColor::set(uint color)
+inline void DColor::set(uint32 color)
 {
     m_color = color;
 }

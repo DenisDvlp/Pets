@@ -1,8 +1,9 @@
 //MessageType.h
 #pragma once
+#include "DTypes.h"
 #include <xstring>
 
-enum class MessageType : unsigned char
+enum class MessageType : byte
 {
     NONE = 0,
 

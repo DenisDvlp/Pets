@@ -2,7 +2,7 @@
 #pragma once
 #include "IDrawBufferNative.h"
 #include "Sizable.h"
-#include "Draw.h"
+#include "DDrawT.h"
 #include <mutex>
 
 template<typename T>
@@ -22,7 +22,7 @@ private:
     bool m_isFirst = true;
     bool m_isFrameReady = false;
     std::mutex m_mutex;
-    Draw<T> m_draw[NUMBER_OF_DRAWS];
+    DDrawT<T, dint, dint> m_draw[NUMBER_OF_DRAWS];
 };
 
 template<typename T>

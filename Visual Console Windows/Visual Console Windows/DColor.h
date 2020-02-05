@@ -3,6 +3,10 @@
 #include "DTypes.h"
 #include "DString.h"
 
+#ifdef TRANSPARENT
+#undef TRANSPARENT
+#endif
+
 enum class DColors : uint32
 {
     TRANSPARENT = 0x00'00'00'00,
