@@ -1,8 +1,9 @@
 //DApplication.cpp
 #include "DApplication.h"
+#include "KeyState.h"
+#include "MouseState.h"
+#include "Utils.h"
 #include <Windows.h>
-
-SystemEvents DApplication::events = SystemEvents();
 
 DApplication::DApplication()
     : m_console()
@@ -12,9 +13,11 @@ DApplication::DApplication()
     , m_systemLoop()
     , m_drawLoop()
 {
-    m_console.setSize(80, 40);
-    m_console.setFontSize(14);
-    m_console.setTitle("Visual Console Windows");
+    m_console.size(80, 40);
+    m_console.fontSize(14);
+    m_console.title("Visual Console Windows");
+
+    m_drawBuffer->size(80, 40);
 }
 
 void DApplication::run()
@@ -44,11 +47,12 @@ void DApplication::exit()
 
 void DApplication::consoleLoop()
 {
-    auto localCopyMessages = m_console.readMessages();
+    auto messages = m_console.recentMessages();
 
-    for(auto msg : localCopyMessages)
+    DMessage message;
+
+    for(auto msg : messages)
     {
-        DMessage message;
         message.type = msg.type;
         switch(msg.type)
         {
@@ -130,61 +134,67 @@ void DApplication::consoleLoop()
 
 void DApplication::systemLoop()
 {
-    auto localCopyMessages = std::move(*m_systemMessages);
+    DVector<DMessage> messages;
 
-    for(auto message : localCopyMessages)
     {
-        events.m_keyStates = message.keyStates;
-        switch(message.type)
+        auto locked_messages = m_systemMessages.getLocked();
+        messages = std::move(*locked_messages);
+    }
+
+    for(auto msg : messages)
+    {
+        switch(msg.type)
         {
         case MessageType::KEY_UP:
         {
-            events.onKeyUp(message.data.key);
             break;
         }
         case MessageType::KEY_DOWN:
         {
-            events.onKeyDown(message.data.key);
             break;
         }
         case MessageType::MOUSE_UP:
         {
-            m_root.mouseUp(message.data.key);
-            events.onMouseUp(message.data.key);
             break;
         }
         case MessageType::MOUSE_DOWN:
         {
-            m_root.mouseDown(message.data.key);
-            events.onMouseDown(message.data.key);
             break;
         }
         case MessageType::MOUSE_MOVE:
         {
-            m_root.mouseMove(message.data.position);
-            events.onMouseMove(message.data.position);
             break;
         }
         case MessageType::MOUSE_DOUBLE_CLICK:
         {
-            m_root.mouseDown(message.data.key);
-            events.onMouseDown(message.data.key);
-            events.onMouseDoubleClick(message.data.key);
             break;
         }
         case MessageType::DISPLAY_RESIZE:
         {
-            events.onDisplayResize(message.data.size);
             break;
         }
         }
+    }
 
-        auto draw = m_drawBuffer->beginDraw();
-        m_root.draw(draw);
-        m_drawBuffer->endDraw();
+    if(!messages.empty())
+    {
+        auto draw = m_drawBuffer->beginWrite();
+        if(draw)
+        {
+            draw->fill(DColors::GREEN);
+            m_drawBuffer->endWrite(draw);
+        }
     }
 }
 
 void DApplication::drawLoop()
 {
+    const auto* draw = m_drawBuffer->beginRead();
+    if(draw)
+    {
+        m_console.show(draw->raw());
+        m_drawBuffer->endRead(draw);
+    }
+
+    utils::sleep(1);
 }

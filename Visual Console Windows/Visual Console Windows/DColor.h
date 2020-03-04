@@ -1,7 +1,6 @@
 //Color.h
 #pragma once
 #include "DTypes.h"
-#include "DString.h"
 
 #ifdef TRANSPARENT
 #undef TRANSPARENT

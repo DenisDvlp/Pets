@@ -1,6 +1,5 @@
 //Image.h
 #pragma once
-#include "BiArray.h"
 #include "Color.h"
 #include "Size.h"
 #include <string>

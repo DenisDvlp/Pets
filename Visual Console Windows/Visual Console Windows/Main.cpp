@@ -1,8 +1,8 @@
 //Main.cpp
-#include "Application.h"
+#include "DApplication.h"
 
 int main()
 {
-    Application app;
+    DApplication app;
     app.run();
 }

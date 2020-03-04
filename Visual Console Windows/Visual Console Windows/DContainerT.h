@@ -461,7 +461,7 @@ inline auto DContainerT<BaseContainer>::data() -> pointer
 {
     if constexpr(has_method_data<BaseContainer>)
     {
-        m_items.data();
+        return m_items.data();
     }
     else
     {
@@ -474,7 +474,7 @@ inline auto DContainerT<BaseContainer>::data() const -> const_pointer
 {
     if constexpr(has_method_data<BaseContainer>)
     {
-        m_items.data();
+        return m_items.data();
     }
     else
     {

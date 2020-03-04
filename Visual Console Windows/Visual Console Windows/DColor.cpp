@@ -140,22 +140,22 @@ inline uint32 DColor::value() const
     return m_color;
 }
 
-inline byte DColor::alpha() const
+byte DColor::alpha() const
 {
     return Alpha(m_color);
 }
 
-inline byte DColor::red() const
+byte DColor::red() const
 {
     return Red(m_color);
 }
 
-inline byte DColor::green() const
+byte DColor::green() const
 {
     return Green(m_color);
 }
 
-inline byte DColor::blue() const
+byte DColor::blue() const
 {
     return Blue(m_color);
 }

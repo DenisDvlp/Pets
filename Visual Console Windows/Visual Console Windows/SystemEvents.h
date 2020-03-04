@@ -1,20 +1,20 @@
 // SystemEvents.h
 #pragma once
 #include "Signal.h"
-#include "BasicTypes.h"
-#include "IDraw.h"
+#include "DPoint.h"
+#include "DSize.h"
+#include "Key.h"
 
 class SystemEvents
 {
 public:
   Signal<Key> onMouseUp;
   Signal<Key> onMouseDown;
-  Signal<Point16> onMouseMove;
+  Signal<DPoint> onMouseMove;
   Signal<Key> onMouseDoubleClick;
   Signal<Key> onKeyUp;
   Signal<Key> onKeyDown;
-  Signal<Size16> onDisplayResize;
-  Signal<IDraw*> onDraw;
+  Signal<DSize> onDisplayResize;
   bool isCapsLockActive();
   bool isNumLockActive();
   bool isScrollLockActive();

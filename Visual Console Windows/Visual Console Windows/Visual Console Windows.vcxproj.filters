@@ -17,15 +17,6 @@
     <Filter Include="Sources\D\Patterns">
       <UniqueIdentifier>{6d0d3d27-22d2-4600-b12e-4b509f5bbdf2}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Sources\Interfaces">
-      <UniqueIdentifier>{60f1d6e0-baf3-4a34-a1bc-9885a8faab41}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Sources\Native">
-      <UniqueIdentifier>{00c176b5-fa31-4125-a741-7b1b3127c622}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Sources\Native\ConsolePlatform">
-      <UniqueIdentifier>{2b3dcd62-0a93-4cb2-9e89-cb644f82ff21}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Sources\Stuff">
       <UniqueIdentifier>{4c6f9e59-d23c-4104-9f6e-7c7eda6418d7}</UniqueIdentifier>
     </Filter>
@@ -127,63 +118,6 @@
     <ClInclude Include="libpng\pngstruct.h">
       <Filter>Sources\3rd party libs\png</Filter>
     </ClInclude>
-    <ClInclude Include="BiArray.h">
-      <Filter>Sources\Interfaces</Filter>
-    </ClInclude>
-    <ClInclude Include="DrawBuffer.h">
-      <Filter>Sources\Interfaces</Filter>
-    </ClInclude>
-    <ClInclude Include="IDisplay.h">
-      <Filter>Sources\Interfaces</Filter>
-    </ClInclude>
-    <ClInclude Include="IDraw.h">
-      <Filter>Sources\Interfaces</Filter>
-    </ClInclude>
-    <ClInclude Include="IDrawBuffer.h">
-      <Filter>Sources\Interfaces</Filter>
-    </ClInclude>
-    <ClInclude Include="IDrawBufferNative.h">
-      <Filter>Sources\Interfaces</Filter>
-    </ClInclude>
-    <ClInclude Include="IMessageLoop.h">
-      <Filter>Sources\Interfaces</Filter>
-    </ClInclude>
-    <ClInclude Include="IMessageReadable.h">
-      <Filter>Sources\Interfaces</Filter>
-    </ClInclude>
-    <ClInclude Include="ISizable.h">
-      <Filter>Sources\Interfaces</Filter>
-    </ClInclude>
-    <ClInclude Include="Sizable.h">
-      <Filter>Sources\Interfaces</Filter>
-    </ClInclude>
-    <ClInclude Include="Console.h">
-      <Filter>Sources\Native\ConsolePlatform</Filter>
-    </ClInclude>
-    <ClInclude Include="ConsoleLoop.h">
-      <Filter>Sources\Native\ConsolePlatform</Filter>
-    </ClInclude>
-    <ClInclude Include="Draw.h">
-      <Filter>Sources\Native\ConsolePlatform</Filter>
-    </ClInclude>
-    <ClInclude Include="Align.h">
-      <Filter>Sources\System</Filter>
-    </ClInclude>
-    <ClInclude Include="Application.h">
-      <Filter>Sources\System</Filter>
-    </ClInclude>
-    <ClInclude Include="DrawLoop.h">
-      <Filter>Sources\System</Filter>
-    </ClInclude>
-    <ClInclude Include="Image.h">
-      <Filter>Sources\System</Filter>
-    </ClInclude>
-    <ClInclude Include="MessageBuffer.h">
-      <Filter>Sources\System</Filter>
-    </ClInclude>
-    <ClInclude Include="SystemLoop.h">
-      <Filter>Sources\System</Filter>
-    </ClInclude>
     <ClInclude Include="Color.h">
       <Filter>Sources\Basic Types</Filter>
     </ClInclude>
@@ -226,47 +160,11 @@
     <ClInclude Include="SystemEvents.h">
       <Filter>Sources\System</Filter>
     </ClInclude>
-    <ClInclude Include="Linkable.h">
-      <Filter>Sources\System</Filter>
-    </ClInclude>
-    <ClInclude Include="Signal.h">
-      <Filter>Sources\System</Filter>
-    </ClInclude>
-    <ClInclude Include="Drawable.h">
-      <Filter>Sources\System</Filter>
-    </ClInclude>
-    <ClInclude Include="Root.h">
-      <Filter>Sources\System</Filter>
-    </ClInclude>
-    <ClInclude Include="Figure.h">
-      <Filter>Sources\System</Filter>
-    </ClInclude>
-    <ClInclude Include="Clickable.h">
-      <Filter>Sources\System</Filter>
-    </ClInclude>
-    <ClInclude Include="IPositionable.h">
-      <Filter>Sources\Interfaces</Filter>
-    </ClInclude>
-    <ClInclude Include="Positionable.h">
-      <Filter>Sources\Interfaces</Filter>
-    </ClInclude>
-    <ClInclude Include="Function.h">
-      <Filter>Sources\Basic Types\Templates</Filter>
-    </ClInclude>
-    <ClInclude Include="ILoop.h">
-      <Filter>Sources\Interfaces</Filter>
-    </ClInclude>
-    <ClInclude Include="SizableT.h">
-      <Filter>Sources\Interfaces</Filter>
-    </ClInclude>
     <ClInclude Include="SizeT.h">
       <Filter>Sources\Basic Types\Templates</Filter>
     </ClInclude>
     <ClInclude Include="RectT.h">
       <Filter>Sources\Basic Types\Templates</Filter>
-    </ClInclude>
-    <ClInclude Include="PositionableT.h">
-      <Filter>Sources\Interfaces</Filter>
     </ClInclude>
     <ClInclude Include="PointT.h">
       <Filter>Sources\Basic Types\Templates</Filter>
@@ -294,12 +192,6 @@
     </ClInclude>
     <ClInclude Include="DView.h">
       <Filter>Sources\D\Patterns</Filter>
-    </ClInclude>
-    <ClInclude Include="Primitive.h">
-      <Filter>Sources\System</Filter>
-    </ClInclude>
-    <ClInclude Include="MouseInteractable.h">
-      <Filter>Sources\System</Filter>
     </ClInclude>
     <ClInclude Include="DSizeT.h">
       <Filter>Sources\D\Structures</Filter>
@@ -352,9 +244,6 @@
     <ClInclude Include="DDrawable.h">
       <Filter>Sources\D\Interfaces</Filter>
     </ClInclude>
-    <ClInclude Include="IDDraw.h">
-      <Filter>Sources\D\Interfaces</Filter>
-    </ClInclude>
     <ClInclude Include="DColor.h">
       <Filter>Sources\D\Structures</Filter>
     </ClInclude>
@@ -370,19 +259,49 @@
     <ClInclude Include="DLoop.h">
       <Filter>Sources\D\Structures</Filter>
     </ClInclude>
-    <ClInclude Include="DDrawWin.h">
-      <Filter>Sources\D\System</Filter>
-    </ClInclude>
     <ClInclude Include="DTypes.h">
       <Filter>Sources\D\Misc</Filter>
     </ClInclude>
     <ClInclude Include="DSfinae.h">
       <Filter>Sources\D\Misc</Filter>
     </ClInclude>
-    <ClInclude Include="DDrawT.h">
+    <ClInclude Include="DMessage.h">
       <Filter>Sources\D\Structures</Filter>
     </ClInclude>
-    <ClInclude Include="DMessage.h">
+    <ClInclude Include="DConsole.h">
+      <Filter>Sources\D\System</Filter>
+    </ClInclude>
+    <ClInclude Include="DMultiBufferT.h">
+      <Filter>Sources\D\Structures</Filter>
+    </ClInclude>
+    <ClInclude Include="DBiArray.h">
+      <Filter>Sources\D\Structures</Filter>
+    </ClInclude>
+    <ClInclude Include="DBuffer.h">
+      <Filter>Sources\D\Structures</Filter>
+    </ClInclude>
+    <ClInclude Include="IDDrawT.h">
+      <Filter>Sources\D\Interfaces</Filter>
+    </ClInclude>
+    <ClInclude Include="IDDraw.h">
+      <Filter>Sources\D\Interfaces</Filter>
+    </ClInclude>
+    <ClInclude Include="DDrawT.h">
+      <Filter>Sources\D\Interfaces</Filter>
+    </ClInclude>
+    <ClInclude Include="DDrawBuffer.h">
+      <Filter>Sources\D\Structures</Filter>
+    </ClInclude>
+    <ClInclude Include="DDraw.h">
+      <Filter>Sources\D\Interfaces</Filter>
+    </ClInclude>
+    <ClInclude Include="Linkable.h">
+      <Filter>Sources\D\Structures</Filter>
+    </ClInclude>
+    <ClInclude Include="Signal.h">
+      <Filter>Sources\D\Structures</Filter>
+    </ClInclude>
+    <ClInclude Include="Function.h">
       <Filter>Sources\D\Structures</Filter>
     </ClInclude>
   </ItemGroup>
@@ -483,30 +402,6 @@
     <ClCompile Include="libpng\pngwutil.c">
       <Filter>Sources\3rd party libs\png</Filter>
     </ClCompile>
-    <ClCompile Include="IMessageLoop.cpp">
-      <Filter>Sources\Interfaces</Filter>
-    </ClCompile>
-    <ClCompile Include="Console.cpp">
-      <Filter>Sources\Native\ConsolePlatform</Filter>
-    </ClCompile>
-    <ClCompile Include="ConsoleLoop.cpp">
-      <Filter>Sources\Native\ConsolePlatform</Filter>
-    </ClCompile>
-    <ClCompile Include="Draw.cpp">
-      <Filter>Sources\Native\ConsolePlatform</Filter>
-    </ClCompile>
-    <ClCompile Include="Application.cpp">
-      <Filter>Sources\System</Filter>
-    </ClCompile>
-    <ClCompile Include="Image.cpp">
-      <Filter>Sources\System</Filter>
-    </ClCompile>
-    <ClCompile Include="MessageBuffer.cpp">
-      <Filter>Sources\System</Filter>
-    </ClCompile>
-    <ClCompile Include="SystemLoop.cpp">
-      <Filter>Sources\System</Filter>
-    </ClCompile>
     <ClCompile Include="MessageType.cpp">
       <Filter>Sources\Basic Types</Filter>
     </ClCompile>
@@ -528,35 +423,11 @@
     <ClCompile Include="SystemEvents.cpp">
       <Filter>Sources\System</Filter>
     </ClCompile>
-    <ClCompile Include="Linkable.cpp">
-      <Filter>Sources\System</Filter>
-    </ClCompile>
-    <ClCompile Include="Drawable.cpp">
-      <Filter>Sources\System</Filter>
-    </ClCompile>
-    <ClCompile Include="Root.cpp">
-      <Filter>Sources\System</Filter>
-    </ClCompile>
-    <ClCompile Include="Figure.cpp">
-      <Filter>Sources\System</Filter>
-    </ClCompile>
-    <ClCompile Include="ILoop.cpp">
-      <Filter>Sources\Interfaces</Filter>
-    </ClCompile>
     <ClCompile Include="DComposable.cpp">
       <Filter>Sources\D\Patterns</Filter>
     </ClCompile>
     <ClCompile Include="DView.cpp">
       <Filter>Sources\D\Patterns</Filter>
-    </ClCompile>
-    <ClCompile Include="Primitive.cpp">
-      <Filter>Sources\System</Filter>
-    </ClCompile>
-    <ClCompile Include="MouseInteractable.cpp">
-      <Filter>Sources\System</Filter>
-    </ClCompile>
-    <ClCompile Include="Clickable.cpp">
-      <Filter>Sources\System</Filter>
     </ClCompile>
     <ClCompile Include="Main.cpp">
       <Filter>Sources\Entry Point</Filter>
@@ -573,8 +444,17 @@
     <ClCompile Include="DLoop.cpp">
       <Filter>Sources\D\Structures</Filter>
     </ClCompile>
-    <ClCompile Include="DDrawWin.cpp">
+    <ClCompile Include="DConsole.cpp">
       <Filter>Sources\D\System</Filter>
+    </ClCompile>
+    <ClCompile Include="DDrawWin.cpp">
+      <Filter>Sources\D\Interfaces</Filter>
+    </ClCompile>
+    <ClCompile Include="Linkable.cpp">
+      <Filter>Sources\D\Structures</Filter>
+    </ClCompile>
+    <ClCompile Include="DSafeObject.cpp">
+      <Filter>Sources</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

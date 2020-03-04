@@ -1,6 +1,6 @@
 //DApplication.h
 #pragma once
-#include "Console.h"
+#include "DConsole.h"
 #include "DLoop.h"
 #include "DSafeObject.h"
 #include "DVector.h"
@@ -8,7 +8,7 @@
 #include "DSize.h"
 #include "DPoint.h"
 #include "SystemEvents.h"
-#include "Root.h"
+#include "DDrawBuffer.h"
 
 class DApplication
 {
@@ -17,14 +17,12 @@ public:
     DApplication();
     void run();
     void exit();
-public:
-    static SystemEvents events;
 private:
     void consoleLoop();
     void systemLoop();
     void drawLoop();
 private:
-    Console m_console;
+    DConsole m_console;
 
     DMessages m_consoleMessages;
     byte m_keyStates = 0;
@@ -33,11 +31,9 @@ private:
     DPoint m_position;
 
     DMessages m_systemMessages;
-    DrawBuffer<_CHAR_INFO> m_drawBuffer;
+    DDrawBufferWin m_drawBuffer;
 
     DLoop m_consoleLoop;
     DLoop m_systemLoop;
     DLoop m_drawLoop;
-
-    Root m_root;
 };

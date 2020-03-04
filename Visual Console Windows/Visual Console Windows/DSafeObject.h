@@ -24,14 +24,24 @@ private:
 public:
     template<typename... Args>
     DSafeObject(Args... args);
+    DSafeObject(const DSafeObject&);
+    DSafeObject(DSafeObject&&);
+    DSafeObject& operator=(const DSafeObject&);
+    DSafeObject& operator=(DSafeObject&&);
     DLockedObject operator->();
     DLockedObject getLocked();
-    T& operator*();
-    const T& operator*() const;
+
+    friend void swap(DSafeObject& object1, DSafeObject& object2)
+    {
+        std::scoped_lock lock(object1.m_mutex, object2.m_mutex);
+        std::swap(object1.m_object, object2.m_object);
+    }
+
 private:
     std::recursive_mutex m_mutex;
     T m_object;
 };
+
 
 template<typename T>
 DSafeObject<T>::DLockedObject::DLockedObject(T* object, std::recursive_mutex& mutex)
@@ -72,6 +82,34 @@ DSafeObject<T>::DSafeObject(Args... args)
 {}
 
 template<typename T>
+DSafeObject<T>::DSafeObject(const DSafeObject& object)
+{
+    void(operator=(object));
+}
+
+template<typename T>
+DSafeObject<T>::DSafeObject(DSafeObject&& object)
+{
+    void(operator=(std::move(object)));
+}
+
+template<typename T>
+DSafeObject<T>& DSafeObject<T>::operator=(const DSafeObject& object)
+{
+    std::scoped_lock lock(m_mutex, object.m_mutex);
+    m_object = object;
+    return *this;
+}
+
+template<typename T>
+DSafeObject<T>& DSafeObject<T>::operator=(DSafeObject&& object)
+{
+    std::scoped_lock lock(m_mutex, object.m_mutex);
+    m_object = std::move(object);
+    return *this;
+}
+
+template<typename T>
 inline auto DSafeObject<T>::operator->() -> DLockedObject
 {
     return getLocked();
@@ -81,16 +119,4 @@ template<typename T>
 inline auto DSafeObject<T>::getLocked() -> DLockedObject
 {
     return DLockedObject(&m_object, m_mutex);
-}
-
-template<typename T>
-inline T& DSafeObject<T>::operator*()
-{
-    return getLocked();
-}
-
-template<typename T>
-inline const T& DSafeObject<T>::operator*() const
-{
-    return getLocked();
 }

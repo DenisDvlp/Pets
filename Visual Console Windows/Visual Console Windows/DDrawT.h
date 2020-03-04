@@ -1,30 +1,57 @@
 //DDrawT.h
 #pragma once
 #include "IDDraw.h"
-#include "DSizableT.h"
-#include "BiArray.h"
+#include "DSizable.h"
+#include "DBiArray.h"
 
-template<typename P, typename D, typename S>
+template<typename T>
 class DDrawT
-    : public IDDraw<D>
-    , public DSizableT<S>
+    : public IDDraw
+    , public DSizable
 {
 public:
-    P* buffer();
+    void  fill(const DColor) override;
+    void  drawRect(const DRect&, const DColor) override;
+    void  drawText(const DRect&, const DString&, const DColor, const DAlign = DAlign::DEFAULT) override;
+    void  drawText(const DRect&, const DStringList&, const DColor, const DAlign = DAlign::DEFAULT) override;
+    DRect calcTextRect(const DString&) override;
+    DRect calcTextRect(const DStringList&) override;
+    T* raw();
+    const T* raw() const;
+    T* const* map();
+    const T* const* map() const;
 private:
-    void resize(DSizeT<S>&) override;
-protected:
-    BiArray<P> m_biArray;
+    void resize(DSize&) override;
+private:
+    DBiArray<T> m_buffer;
 };
 
-template<typename P, typename D, typename S>
-P* DDrawT<P, D, S>::buffer()
+template<typename T>
+inline T* DDrawT<T>::raw()
 {
-    return m_biArray.raw();
+    return m_buffer.raw();
 }
 
-template<typename P, typename D, typename S>
-void DDrawT<P, D, S>::resize(DSizeT<S>& size)
+template<typename T>
+inline const T* DDrawT<T>::raw() const
 {
-    m_biArray.size(size);
+    return m_buffer.raw();
+}
+
+template<typename T>
+inline T* const* DDrawT<T>::map()
+{
+    return m_buffer.grid();
+}
+
+template<typename T>
+inline const T* const* DDrawT<T>::map() const
+{
+    return m_buffer.grid();
+}
+
+template<typename T>
+inline void DDrawT<T>::resize(DSize& size)
+{
+    m_buffer.size(size);
 }

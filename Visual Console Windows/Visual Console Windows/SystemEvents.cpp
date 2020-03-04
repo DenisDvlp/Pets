@@ -1,5 +1,6 @@
 // SystemEvents.cpp
 #include "SystemEvents.h"
+#include "KeyState.h"
 
 bool SystemEvents::isCapsLockActive()
 {

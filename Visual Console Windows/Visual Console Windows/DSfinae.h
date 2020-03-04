@@ -1,5 +1,6 @@
 //sfinae.h
 #pragma once
+#include <xutility>
 
 // base
 
@@ -188,7 +189,7 @@ template<typename T> constexpr bool has_method_reverse = feature_detected<has_me
 template<typename T> using has_method_base_impl = decltype(&T::base);
 template<typename T> constexpr bool has_method_base = feature_detected<has_method_base_impl, T>;
 
-template<typename T> using has_method_data_impl = decltype(&T::data);
+template<typename T> using has_method_data_impl = decltype(std::declval<T>().data());
 template<typename T> constexpr bool has_method_data = feature_detected<has_method_data_impl, T>;
 
 template<typename T, typename... Args> using has_method_emplace_impl = decltype(&T::template emplace<Args...>);

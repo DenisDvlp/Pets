@@ -51,14 +51,14 @@ void Drawable::sendToBack()
     }
 }
 
-void Drawable::draw(IDraw* draw)
+/*void Drawable::draw(IDDraw* draw)
 {
     onDraw(draw);
     for(auto child : m_children)
     {
         child->draw(draw);
     }
-}
+}*/
 
 bool Drawable::mouseUp(Key key)
 {
@@ -82,7 +82,7 @@ bool Drawable::mouseUp(Key key)
     if(clicked != m_clicked)
     {
         onMouseUp(this, key);
-        if(!result || m_rect.hasPoint(m_mousePosition))
+        if(!result || m_rect.contains(m_mousePosition))
         {
             onClick(this, key);
             result = true;
@@ -103,7 +103,7 @@ bool Drawable::mouseDown(Key key)
             break;
         }
     }
-    if(!result && m_rect.hasPoint(m_mousePosition))
+    if(!result && m_rect.contains(m_mousePosition))
     {
         switch(key)
         {
@@ -117,7 +117,7 @@ bool Drawable::mouseDown(Key key)
     return result;
 }
 
-bool Drawable::mouseMove(Point16 position)
+bool Drawable::mouseMove(DPoint position)
 {
     auto result = false;
     m_mousePosition = position;
@@ -137,7 +137,7 @@ bool Drawable::mouseMove(Point16 position)
     }
     if(!result)
     {
-        if(m_rect.hasPoint(position))
+        if(m_rect.contains(position))
         {
             result = true;
             onMouseMove(this, position);
@@ -156,16 +156,10 @@ bool Drawable::mouseMove(Point16 position)
     return result;
 }
 
-void Drawable::resize(Size16& size)
+void Drawable::reshape(DRect& rect)
 {
-    m_rect.size(size);
 }
 
-void Drawable::reposition(Point16& position)
-{
-    m_rect.position(position);
-}
-
-void Drawable::onDraw(IDraw* draw)
+void Drawable::draw() const
 {
 }

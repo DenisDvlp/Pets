@@ -1,14 +1,15 @@
 //Drawable.h
 #pragma once
-#include "IDraw.h"
-#include "DVector.h"
+#include "Linkable.h"
+#include "DDrawable.h"
+#include "DShapeable.h"
 #include "Signal.h"
-#include "Sizable.h"
-#include "Positionable.h"
+#include "Key.h"
 
 class Drawable
-    : public Sizable16
-    , public Positionable16
+    : Linkable
+    , public DDrawable
+    , public DShapeable
 {
 public:
     explicit Drawable(Drawable* = nullptr);
@@ -17,26 +18,24 @@ public:
     void setParent(Drawable*);
     void bringToFront();
     void sendToBack();
-    void draw(IDraw*);
     bool mouseUp(Key);
     bool mouseDown(Key);
-    bool mouseMove(Point16);
+    bool mouseMove(DPoint);
     Signal<Sender, Key> onMouseUp;
     Signal<Sender, Key> onMouseDown;
-    Signal<Sender, Point16> onMouseMove;
+    Signal<Sender, DPoint> onMouseMove;
     Signal<Sender> onMouseEnter;
     Signal<Sender> onMouseLeave;
     Signal<Sender, Key> onClick;
 protected:
-    Rect16 m_rect;
+    DRect m_rect;
 private:
-    void resize(Size16&) override;
-    void reposition(Point16&) override;
-    virtual void onDraw(IDraw*);
+    void reshape(DRect& rect) override;
+    void draw() const override;
 private:
     DVector<Drawable*> m_children;
     Drawable* m_parent = nullptr;
-    Point16 m_mousePosition;
+    DPoint m_mousePosition;
     char m_clicked = 0;
     bool m_isEntered = false;
 };

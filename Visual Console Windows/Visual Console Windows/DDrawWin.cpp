@@ -1,5 +1,6 @@
-#include "DDrawWin.h"
-#include <Windows.h>
+//DDrawWin.cpp
+#include "DDraw.h"
+#include "DColor.h"
 
 #ifdef max
 #undef max
@@ -22,35 +23,40 @@ byte convertToConsoleColor(const DColor color)
     return intensity | r | g | b;
 }
 
+template<>
 void DDrawWin::fill(const DColor color)
 {
-    auto square = size().square();
-    auto raw = m_biArray.raw();
+    auto total = size().square();
+    auto raw = this->raw();
     const CHAR_INFO pixel = { ' ', convertToConsoleColor(color) << 4 };
-    for(decltype(square) i = 0; i < square; ++i)
+    for(dint i = 0; i < total; ++i)
     {
         raw[i] = pixel;
     }
 }
 
+template<>
 void DDrawWin::drawRect(const DRect& rect, const DColor color)
 {
-    auto intersection = rect & DRect(0, 0, width(), height());
+    auto intersection = rect & DRect(0, 0, size());
     const CHAR_INFO pixel = { ' ', convertToConsoleColor(color) << 4 };
-    intersection.forEach([this, color] (auto i, auto j)
+    auto map = this->map();
+    intersection.forEach([this, map, pixel] (auto i, auto j)
         {
-            m_biArray[i][j] = pixel;
+            map[i][j] = pixel;
         });
 }
 
 #define HAS_FLAG(IN, FLAG) ((static_cast<uint8>(IN) & static_cast<uint8>(FLAG)) == static_cast<uint8>(FLAG))
 
+template<>
 void DDrawWin::drawText(const DRect& rect, const DString& text, const DColor color, const DAlign align)
 {
     drawText(rect, DStringList(text), color, align);
 }
 
 
+template<>
 void DDrawWin::drawText(const DRect& rect, const DStringList& text, const DColor color, const DAlign align)
 {
     auto textRect = calcTextRect(text);
@@ -81,24 +87,27 @@ void DDrawWin::drawText(const DRect& rect, const DStringList& text, const DColor
     textRect.x(x);
     textRect.y(y);
 
-    auto intersection = rect & textRect & DRect(0, 0, width(), height());
+    auto intersection = rect & textRect & DRect(0, 0, size());
 
     x = std::max<dint>(0, intersection.x() - textRect.x());
     y = std::max<dint>(0, intersection.y() - textRect.y());
 
     const auto consoleTextColor = convertToConsoleColor(color);
-    intersection.forEach([this, consoleTextColor, &text, &x, &y] (auto i, auto j)
+    auto map = this->map();
+    intersection.forEach([this, map, consoleTextColor, &text, &x, &y] (auto i, auto j)
         {
-            m_biArray[i][j].Char.AsciiChar = text[y++][x++];
-            m_biArray[i][j].Attributes |= consoleTextColor;
+            map[i][j].Char.AsciiChar = text[y++][x++];
+            map[i][j].Attributes |= consoleTextColor;
         });
 }
 
+template<>
 DRect DDrawWin::calcTextRect(const DString& text)
 {
     return DRect(0, 0, static_cast<dint>(text.size()), 1);
 }
 
+template<>
 DRect DDrawWin::calcTextRect(const DStringList& text)
 {
     dint maxWidth = 0;
