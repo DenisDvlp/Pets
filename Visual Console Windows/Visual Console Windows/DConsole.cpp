@@ -253,8 +253,8 @@ DSize DConsole::getSize() const
 void DConsole::resize(DSize& size)
 {
     size.set(
-        std::min(m_maxSize.width(), width()),
-        std::min(m_maxSize.height(), height())
+        std::min(m_maxSize.width(), size.width()),
+        std::min(m_maxSize.height(), size.height())
     );
 
     CONSOLE_SCREEN_BUFFER_INFOEX info = { sizeof(CONSOLE_SCREEN_BUFFER_INFOEX) };

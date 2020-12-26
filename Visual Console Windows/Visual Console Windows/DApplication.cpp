@@ -178,10 +178,10 @@ void DApplication::systemLoop()
 
     if(!messages.empty())
     {
-        auto draw = m_drawBuffer->beginWrite();
+        auto* draw = m_drawBuffer->beginWrite();
         if(draw)
         {
-            draw->fill(DColors::GREEN);
+            draw->fill(DColors::GRAY);
             m_drawBuffer->endWrite(draw);
         }
     }

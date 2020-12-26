@@ -1,24 +1,28 @@
 //DColor.cpp
 #include "DColor.h"
 
-constexpr size_t ALPHA_SHIFT = sizeof(byte) * 3;
-constexpr size_t RED_SHIFT = sizeof(byte) * 2;
-constexpr size_t GREEN_SHIFT = sizeof(byte) * 1;
-constexpr size_t BLUE_SHIFT = sizeof(byte) * 0;
+constexpr size_t BITS_IN_BYTE = 8;
 
-#define INT_CHANNEL(IN, SHIFT) (static_cast<uint32>(IN) << SHIFT)
+#define INIT_CHANNEL_SHIFT(ÑHANNEL, BYTE_NUM) constexpr size_t ÑHANNEL##_SHIFT = BITS_IN_BYTE * BYTE_NUM;
+INIT_CHANNEL_SHIFT(ALPHA, 3) // constexpr size_t ALPHA_SHIFT = BITS_IN_BYTE * 3;
+INIT_CHANNEL_SHIFT(RED, 2)
+INIT_CHANNEL_SHIFT(GREEN, 1)
+INIT_CHANNEL_SHIFT(BLUE, 0)
 
-constexpr uint32 ALPHA_MASK = INT_CHANNEL(0xFF, ALPHA_SHIFT);
-constexpr uint32 RED_MASK = INT_CHANNEL(0xFF, RED_SHIFT);
-constexpr uint32 GREEN_MASK = INT_CHANNEL(0xFF, GREEN_SHIFT);
-constexpr uint32 BLUE_MASK = INT_CHANNEL(0xFF, BLUE_SHIFT);
+#define INT_CHANNEL(IN, ÑHANNEL) (static_cast<uint32>(IN) << ÑHANNEL##_SHIFT)
 
-#define GET_CHANNEL(IN, MASK, SHIFT) ((IN & MASK) >> SHIFT)
-#define SET_CHANNEL(OUT, IN, MASK, SHIFT) OUT &= ~static_cast<uint32>(MASK) | INT_CHANNEL(IN, SHIFT)
+#define INIT_CHANNEL_MASK(ÑHANNEL) constexpr uint32 ÑHANNEL##_MASK = INT_CHANNEL(0xFF, ÑHANNEL);
+INIT_CHANNEL_MASK(ALPHA) // constexpr uint32 ALPHA_MASK = INT_CHANNEL(0xFF, ALPHA);
+INIT_CHANNEL_MASK(RED)
+INIT_CHANNEL_MASK(GREEN)
+INIT_CHANNEL_MASK(BLUE)
+
+#define GET_CHANNEL(IN, ÑHANNEL) ((IN & ÑHANNEL##_MASK) >> ÑHANNEL##_SHIFT)
+#define SET_CHANNEL(OUT, IN, ÑHANNEL) OUT &= ~static_cast<uint32>(ÑHANNEL##_MASK) | INT_CHANNEL(IN, ÑHANNEL)
 
 inline byte DColor::Alpha(uint32 color)
 {
-    return GET_CHANNEL(color, ALPHA_MASK, ALPHA_SHIFT);
+    return GET_CHANNEL(color, ALPHA);
 }
 
 inline byte DColor::Alpha(DColors color)
@@ -28,7 +32,7 @@ inline byte DColor::Alpha(DColors color)
 
 inline byte DColor::Red(uint32 color)
 {
-    return GET_CHANNEL(color, RED_MASK, RED_SHIFT);
+    return GET_CHANNEL(color, RED);
 }
 
 inline byte DColor::Red(DColors color)
@@ -38,7 +42,7 @@ inline byte DColor::Red(DColors color)
 
 inline byte DColor::Green(uint32 color)
 {
-    return GET_CHANNEL(color, GREEN_MASK, GREEN_SHIFT);
+    return GET_CHANNEL(color, GREEN);
 }
 
 inline byte DColor::Green(DColors color)
@@ -48,7 +52,7 @@ inline byte DColor::Green(DColors color)
 
 inline byte DColor::Blue(uint32 color)
 {
-    return GET_CHANNEL(color, BLUE_MASK, BLUE_SHIFT);
+    return GET_CHANNEL(color, BLUE);
 }
 
 inline byte DColor::Blue(DColors color)
@@ -66,19 +70,19 @@ DColor::DColor(DColors color)
 
 DColor::DColor(byte red, byte green, byte blue)
     : m_color(
-        INT_CHANNEL(0xFF, ALPHA_SHIFT) |
-        INT_CHANNEL(red, RED_SHIFT) |
-        INT_CHANNEL(green, GREEN_SHIFT) |
-        INT_CHANNEL(blue, BLUE_SHIFT)
+        INT_CHANNEL(0xFF, ALPHA) |
+        INT_CHANNEL(red, RED) |
+        INT_CHANNEL(green, GREEN) |
+        INT_CHANNEL(blue, BLUE)
     )
 {}
 
 DColor::DColor(byte alpha, byte red, byte green, byte blue)
     : m_color(
-        INT_CHANNEL(alpha, ALPHA_SHIFT) |
-        INT_CHANNEL(red, RED_SHIFT) |
-        INT_CHANNEL(green, GREEN_SHIFT) |
-        INT_CHANNEL(blue, BLUE_SHIFT)
+        INT_CHANNEL(alpha, ALPHA) |
+        INT_CHANNEL(red, RED) |
+        INT_CHANNEL(green, GREEN) |
+        INT_CHANNEL(blue, BLUE)
     )
 {}
 
@@ -96,38 +100,38 @@ void DColor::set(byte red, byte green, byte blue)
 {
     m_color =
         ALPHA_MASK |
-        INT_CHANNEL(red, RED_SHIFT) |
-        INT_CHANNEL(green, GREEN_SHIFT) |
-        INT_CHANNEL(blue, BLUE_SHIFT);
+        INT_CHANNEL(red, RED) |
+        INT_CHANNEL(green, GREEN) |
+        INT_CHANNEL(blue, BLUE);
 }
 
 void DColor::set(byte alpha, byte red, byte green, byte blue)
 {
     m_color =
-        INT_CHANNEL(alpha, ALPHA_SHIFT) |
-        INT_CHANNEL(red, RED_SHIFT) |
-        INT_CHANNEL(green, GREEN_SHIFT) |
-        INT_CHANNEL(blue, BLUE_SHIFT);
+        INT_CHANNEL(alpha, ALPHA) |
+        INT_CHANNEL(red, RED) |
+        INT_CHANNEL(green, GREEN) |
+        INT_CHANNEL(blue, BLUE);
 }
 
 void DColor::setAlpha(byte color)
 {
-    SET_CHANNEL(m_color, color, ALPHA_MASK, ALPHA_SHIFT);
+    SET_CHANNEL(m_color, color, ALPHA);
 }
 
 void DColor::setRed(byte color)
 {
-    SET_CHANNEL(m_color, color, RED_MASK, RED_SHIFT);
+    SET_CHANNEL(m_color, color, RED);
 }
 
 void DColor::setGreen(byte color)
 {
-    SET_CHANNEL(m_color, color, GREEN_MASK, GREEN_SHIFT);
+    SET_CHANNEL(m_color, color, GREEN);
 }
 
 void DColor::setBlue(byte color)
 {
-    SET_CHANNEL(m_color, color, BLUE_MASK, BLUE_SHIFT);
+    SET_CHANNEL(m_color, color, BLUE);
 }
 
 inline DColor::operator uint32() const

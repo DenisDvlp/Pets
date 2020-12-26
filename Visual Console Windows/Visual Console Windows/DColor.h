@@ -13,10 +13,18 @@ enum class DColors : uint32
     RED         = 0xFF'FF'00'00,
     GREEN       = 0xFF'00'FF'00,
     BLUE        = 0xFF'00'00'FF,
+    DARK_BLACK  = 0xFF'00'00'00,
+    DARK_RED    = 0xFF'7F'00'00,
+    DARK_GREEN  = 0xFF'00'7F'00,
+    DARK_BLUE   = 0xFF'00'00'7F,
     CYAN        = GREEN | BLUE,
     YELLOW      = RED   | GREEN,
     PURPLE      = RED   | BLUE,
     WHITE       = RED   | GREEN | BLUE,
+    DARK_CYAN   = DARK_GREEN | DARK_BLUE,
+    DARK_YELLOW = DARK_RED   | DARK_GREEN,
+    DARK_PURPLE = DARK_RED   | DARK_BLUE,
+    GRAY        = DARK_RED   | DARK_GREEN | DARK_BLUE,
 };
 
 class DColor

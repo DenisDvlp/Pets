@@ -6,6 +6,8 @@ template<typename T, byte NUMBER_OF_BUFFERS = 1>
 class DMultiBufferT
     : public DSizable
 {
+    static_assert(NUMBER_OF_BUFFERS > 0, "NUMBER_OF_BUFFERS shall be positive number");
+
     enum class BufferState : byte
     {
         Empty,
@@ -75,7 +77,7 @@ auto DMultiBufferT<T, NUMBER_OF_BUFFERS>::findBufferAndChangeState(BufferState s
 {
     T* result = nullptr;
 
-    for(auto buffer : m_buffers)
+    for(auto& buffer : m_buffers)
     {
         if(buffer.state == state)
         {
@@ -91,12 +93,12 @@ auto DMultiBufferT<T, NUMBER_OF_BUFFERS>::findBufferAndChangeState(BufferState s
 template<typename T, byte NUMBER_OF_BUFFERS>
 inline void DMultiBufferT<T, NUMBER_OF_BUFFERS>::setBufferStateByContainer(const T* container, BufferState state)
 {
-    if(container)
+    if(!container)
     {
         return;
     }
 
-    for(auto buffer : m_buffers)
+    for(auto& buffer : m_buffers)
     {
         if(&(buffer.container) == container)
         {
@@ -109,7 +111,7 @@ inline void DMultiBufferT<T, NUMBER_OF_BUFFERS>::setBufferStateByContainer(const
 template<typename T, byte NUMBER_OF_BUFFERS>
 void DMultiBufferT<T, NUMBER_OF_BUFFERS>::resize(DSize& size)
 {
-    for(auto buffer : m_buffers)
+    for(auto& buffer : m_buffers)
     {
         buffer.container.size(size);
     }
