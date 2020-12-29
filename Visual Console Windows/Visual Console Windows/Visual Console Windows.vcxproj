@@ -136,6 +136,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="BasicTypes.h" />
+    <ClInclude Include="DButton.h" />
     <ClInclude Include="DAlign.h" />
     <ClInclude Include="DApplication.h" />
     <ClInclude Include="DColor.h" />
@@ -221,6 +222,7 @@
     <ClInclude Include="zlib\zutil.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="DButton.cpp" />
     <ClCompile Include="Color.cpp" />
     <ClCompile Include="DApplication.cpp" />
     <ClCompile Include="DColor.cpp" />
@@ -228,7 +230,6 @@
     <ClCompile Include="DDrawWin.cpp" />
     <ClCompile Include="DDrawable.cpp" />
     <ClCompile Include="DLoop.cpp" />
-    <ClCompile Include="DComposable.cpp" />
     <ClCompile Include="DSafeObject.cpp" />
     <ClCompile Include="DView.cpp" />
     <ClCompile Include="libpng\example.c" />

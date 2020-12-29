@@ -13,14 +13,14 @@ public:
     void       height(const T)                           override;
     void       size(const T, const T)                    override;
     void       size(const DSizeT<T>&)                    override;
-    DSizeT<T>  size() const                              override;
+    const DSizeT<T>&  size() const                       override;
     T          x() const                                 override;
     T          y() const                                 override;
     void       x(const T)                                override;
     void       y(const T)                                override;
     void       position(const T, const T)                override;
     void       position(const DPointT<T>&)               override;
-    DPointT<T> position() const                          override;
+    const DPointT<T>& position() const                   override;
     T          left() const                              override;
     void       left(const T)                             override;
     T          top() const                               override;
@@ -46,7 +46,7 @@ public:
     void       rect(const T, const T, const DSizeT<T>&)  override;
     void       rect(const T, const T, const T, const T)  override;
     void       rect(const DRectT<T>&)                    override;
-    DRectT<T>  rect() const                              override;
+    const DRectT<T>&  rect() const                       override;
 protected:
     virtual void reshape(DRectT<T>&);
 private:
@@ -98,7 +98,7 @@ void DShapeableT<T>::size(const DSizeT<T>& size)
 }
 
 template<typename T>
-inline DSizeT<T> DShapeableT<T>::size() const
+inline const DSizeT<T>& DShapeableT<T>::size() const
 {
     return m_rect.size();
 }
@@ -148,7 +148,7 @@ void DShapeableT<T>::position(const DPointT<T>& position)
 }
 
 template<typename T>
-inline DPointT<T> DShapeableT<T>::position() const
+inline const DPointT<T>& DShapeableT<T>::position() const
 {
     return m_rect.position();
 }
@@ -350,7 +350,7 @@ void DShapeableT<T>::rect(const DRectT<T>& rect)
 }
 
 template<typename T>
-inline DRectT<T> DShapeableT<T>::rect() const
+inline const DRectT<T>& DShapeableT<T>::rect() const
 {
     return m_rect;
 }

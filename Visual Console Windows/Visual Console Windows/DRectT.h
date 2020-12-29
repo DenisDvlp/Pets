@@ -58,10 +58,10 @@ public:
     DPointT<T> center() const;
     void       center(const DPointT<T>&);
     void       center(const T, const T);
-    DPointT<T> position() const;
+    const DPointT<T>& position() const;
     void       position(const DPointT<T>&);
     void       position(const T, const T);
-    DSizeT<T>  size() const;
+    const DSizeT<T>& size() const;
     void       size(const DSizeT<T>&);
     void       size(const T, const T);
 
@@ -215,7 +215,7 @@ template<typename T>
 void DRectT<T>::left(const T left)
 {
     const T r = right();
-    const T l = std::min(r + 1, left);
+    const T l = std::min<T>(r + 1, left);
     m_size.width(r - l + 1);
     m_position.x(l);
 }
@@ -230,7 +230,7 @@ template<typename T>
 void DRectT<T>::top(const T top)
 {
     const T b = bottom();
-    const T t = std::min(b + 1, top);
+    const T t = std::min<T>(b + 1, top);
     m_size.height(b - t + 1);
     m_position.y(t);
 }
@@ -245,7 +245,7 @@ template<typename T>
 void DRectT<T>::right(const T right)
 {
     const T l = left();
-    const T r = std::max(l - 1, right);
+    const T r = std::max<T>(l - 1, right);
     m_size.width(r - l + 1);
 }
 
@@ -259,7 +259,7 @@ template<typename T>
 void DRectT<T>::bottom(const T bottom)
 {
     const T t = top();
-    const T b = std::max(t - 1, bottom);
+    const T b = std::max<T>(t - 1, bottom);
     m_size.height(b - t + 1);
 }
 
@@ -362,7 +362,7 @@ void DRectT<T>::center(const T x, const T y)
 }
 
 template<typename T>
-inline DPointT<T> DRectT<T>::position() const
+inline const DPointT<T>& DRectT<T>::position() const
 {
     return m_position;
 }
@@ -380,7 +380,7 @@ void DRectT<T>::position(const T x, const T y)
 }
 
 template<typename T>
-inline DSizeT<T> DRectT<T>::size() const
+inline const DSizeT<T>& DRectT<T>::size() const
 {
     return m_size;
 }
@@ -446,7 +446,7 @@ bool DRectT<T>::contains(const DRectT& rect) const
 template<typename T>
 bool DRectT<T>::contains(const DPointT<T>& point) const
 {
-    return point >= leftTop() && point <= rightBottom();
+    return point >= leftTop() && point <= (rightBottom() - DPointT<T>(1, 1));
 }
 
 template<typename T>

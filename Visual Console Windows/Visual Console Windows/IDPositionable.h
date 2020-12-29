@@ -13,5 +13,5 @@ public:
     virtual void       y(const T) = 0;
     virtual void       position(const T, const T) = 0;
     virtual void       position(const DPointT<T>&) = 0;
-    virtual DPointT<T> position() const = 0;
+    virtual const DPointT<T>& position() const = 0;
 };

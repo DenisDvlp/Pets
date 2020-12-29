@@ -36,5 +36,5 @@ public:
     virtual void       rect(const T, const T, const DSizeT<T>&) = 0;
     virtual void       rect(const T, const T, const T, const T) = 0;
     virtual void       rect(const DRectT<T>&) = 0;
-    virtual DRectT<T>  rect() const = 0;
+    virtual const DRectT<T>& rect() const = 0;
 };

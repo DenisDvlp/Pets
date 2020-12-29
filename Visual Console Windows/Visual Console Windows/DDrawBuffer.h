@@ -4,4 +4,4 @@
 #include "DSafeObject.h"
 #include "DBuffer.h"
 
-using DDrawBufferWin = DSafeObject<DDoubleBuffer<DDrawWin>>;
+using DDrawBuffer = DSafeObject<DDoubleBuffer<DDraw>>;

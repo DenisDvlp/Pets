@@ -9,6 +9,7 @@
 #include "DPoint.h"
 #include "SystemEvents.h"
 #include "DDrawBuffer.h"
+#include "DView.h"
 
 class DApplication
 {
@@ -17,10 +18,12 @@ public:
     DApplication();
     void run();
     void exit();
+    void addView(DView*);
 private:
     void consoleLoop();
     void systemLoop();
     void drawLoop();
+    void drawRoot(IDDraw&, DView&);
 private:
     DConsole m_console;
 
@@ -31,9 +34,11 @@ private:
     DPoint m_position;
 
     DMessages m_systemMessages;
-    DDrawBufferWin m_drawBuffer;
+    DDrawBuffer m_drawBuffer;
 
     DLoop m_consoleLoop;
     DLoop m_systemLoop;
     DLoop m_drawLoop;
+
+    DView m_rootView;
 };

@@ -6,5 +6,5 @@ class DDrawable
     : public IDDrawable
 {
 public:
-    void draw() const override;
+    void draw(IDDraw&) const override;
 };

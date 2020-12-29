@@ -13,7 +13,7 @@ public:
     void      height(const T)        override;
     void      size(const T, const T) override;
     void      size(const DSizeT<T>&) override;
-    DSizeT<T> size() const           override;
+    const DSizeT<T>& size() const    override;
 protected:
     virtual void resize(DSizeT<T>&);
 private:
@@ -65,7 +65,7 @@ void DSizableT<T>::size(const DSizeT<T>& size)
 }
 
 template<typename T>
-inline DSizeT<T> DSizableT<T>::size() const
+inline const DSizeT<T>& DSizableT<T>::size() const
 {
     return m_size;
 }

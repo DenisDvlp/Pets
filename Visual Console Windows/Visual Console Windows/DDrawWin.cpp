@@ -1,6 +1,7 @@
 //DDrawWin.cpp
 #include "DDraw.h"
 #include "DColor.h"
+#include <Windows.h>
 
 #ifdef max
 #undef max

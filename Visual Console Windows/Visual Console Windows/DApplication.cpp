@@ -3,7 +3,6 @@
 #include "KeyState.h"
 #include "MouseState.h"
 #include "Utils.h"
-#include <Windows.h>
 
 DApplication::DApplication()
     : m_console()
@@ -18,6 +17,8 @@ DApplication::DApplication()
     m_console.title("Visual Console Windows");
 
     m_drawBuffer->size(80, 40);
+    m_rootView.position(10, 7);
+    m_rootView.size(10, 7);
 }
 
 void DApplication::run()
@@ -43,6 +44,11 @@ void DApplication::exit()
     m_consoleLoop.stop();
     m_systemLoop.stop();
     m_drawLoop.stop();
+}
+
+void DApplication::addView(DView* view)
+{
+  m_rootView.addChild(view);
 }
 
 void DApplication::consoleLoop()
@@ -130,6 +136,8 @@ void DApplication::consoleLoop()
             m_systemMessages->push(message);
         }
     }
+
+    utils::sleep(10);
 }
 
 void DApplication::systemLoop()
@@ -163,6 +171,10 @@ void DApplication::systemLoop()
         }
         case MessageType::MOUSE_MOVE:
         {
+            for (auto child : m_rootView.children())
+            {
+                child->onSystemMouseMove(msg.data.position);
+            }
             break;
         }
         case MessageType::MOUSE_DOUBLE_CLICK:
@@ -176,15 +188,14 @@ void DApplication::systemLoop()
         }
     }
 
-    if(!messages.empty())
+    auto* draw = m_drawBuffer->beginWrite();
+    if(draw)
     {
-        auto* draw = m_drawBuffer->beginWrite();
-        if(draw)
-        {
-            draw->fill(DColors::GRAY);
-            m_drawBuffer->endWrite(draw);
-        }
+        draw->fill(DColors::GRAY);
+        drawRoot(*draw, m_rootView);
+        m_drawBuffer->endWrite(draw);
     }
+    utils::sleep(10);
 }
 
 void DApplication::drawLoop()
@@ -196,5 +207,14 @@ void DApplication::drawLoop()
         m_drawBuffer->endRead(draw);
     }
 
-    utils::sleep(1);
+    utils::sleep(10);
+}
+
+void DApplication::drawRoot(IDDraw& draw, DView& parent)
+{
+    parent.draw(draw);
+    for (auto child : parent.children())
+    {
+        drawRoot(draw, *child);
+    }
 }

@@ -1,4 +1,4 @@
 #include "DDrawable.h"
 
-void DDrawable::draw() const
+void DDrawable::draw(IDDraw&) const
 {}

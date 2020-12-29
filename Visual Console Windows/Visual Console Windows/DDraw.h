@@ -1,6 +1,9 @@
 //DDraw.h
 #pragma once
 #include "DDrawT.h"
-#include <Windows.h>
 
-using DDrawWin = DDrawT<CHAR_INFO>;
+struct _CHAR_INFO;
+using DDrawWin = DDrawT<_CHAR_INFO>;
+
+// default draw
+using DDraw = DDrawWin;

@@ -14,9 +14,6 @@
     <Filter Include="Sources\D\Containers">
       <UniqueIdentifier>{c093d12f-c535-45b8-948d-26438e352dec}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Sources\D\Patterns">
-      <UniqueIdentifier>{6d0d3d27-22d2-4600-b12e-4b509f5bbdf2}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Sources\Stuff">
       <UniqueIdentifier>{4c6f9e59-d23c-4104-9f6e-7c7eda6418d7}</UniqueIdentifier>
     </Filter>
@@ -49,6 +46,18 @@
     </Filter>
     <Filter Include="Sources\D\Misc">
       <UniqueIdentifier>{b0bf85c3-86b2-4d2c-a530-c31d1e7917c1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Sources\D\Views">
+      <UniqueIdentifier>{58d62fb4-d3a1-40c8-bd74-77a5edc207a9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Sources\D\Views\Buttons">
+      <UniqueIdentifier>{ba4af56f-1211-40ed-bd55-5a1b12bdde09}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Sources\D\Views\Texts">
+      <UniqueIdentifier>{bd328982-dd70-40a9-a89e-46b96135d764}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Sources\D\Views\Panels">
+      <UniqueIdentifier>{831c89a7-60ac-4d23-bb9c-3b6c2aeaaa00}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -187,12 +196,6 @@
     <ClInclude Include="DStringList.h">
       <Filter>Sources\D\Containers</Filter>
     </ClInclude>
-    <ClInclude Include="DComposable.h">
-      <Filter>Sources\D\Patterns</Filter>
-    </ClInclude>
-    <ClInclude Include="DView.h">
-      <Filter>Sources\D\Patterns</Filter>
-    </ClInclude>
     <ClInclude Include="DSizeT.h">
       <Filter>Sources\D\Structures</Filter>
     </ClInclude>
@@ -303,6 +306,15 @@
     </ClInclude>
     <ClInclude Include="Function.h">
       <Filter>Sources\D\Structures</Filter>
+    </ClInclude>
+    <ClInclude Include="DButton.h">
+      <Filter>Sources\D\Views\Buttons</Filter>
+    </ClInclude>
+    <ClInclude Include="DComposable.h">
+      <Filter>Sources\D\Interfaces</Filter>
+    </ClInclude>
+    <ClInclude Include="DView.h">
+      <Filter>Sources\D\Views</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -423,12 +435,6 @@
     <ClCompile Include="SystemEvents.cpp">
       <Filter>Sources\System</Filter>
     </ClCompile>
-    <ClCompile Include="DComposable.cpp">
-      <Filter>Sources\D\Patterns</Filter>
-    </ClCompile>
-    <ClCompile Include="DView.cpp">
-      <Filter>Sources\D\Patterns</Filter>
-    </ClCompile>
     <ClCompile Include="Main.cpp">
       <Filter>Sources\Entry Point</Filter>
     </ClCompile>
@@ -455,6 +461,12 @@
     </ClCompile>
     <ClCompile Include="DSafeObject.cpp">
       <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="DButton.cpp">
+      <Filter>Sources\D\Views\Buttons</Filter>
+    </ClCompile>
+    <ClCompile Include="DView.cpp">
+      <Filter>Sources\D\Views</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

@@ -12,7 +12,7 @@ public:
     void       y(const T)                  override;
     void       position(const T, const T)  override;
     void       position(const DPointT<T>&) override;
-    DPointT<T> position() const            override;
+    const DPointT<T>& position() const     override;
 protected:
     virtual void reposition(DPointT<T>&);
 private:
@@ -64,7 +64,7 @@ void DPositionableT<T>::position(const DPointT<T>& position)
 }
 
 template<typename T>
-inline DPointT<T> DPositionableT<T>::position() const
+inline const DPointT<T>& DPositionableT<T>::position() const
 {
     return m_position;
 }
