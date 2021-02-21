@@ -30,6 +30,7 @@ public:
     DSafeObject& operator=(DSafeObject&&);
     DLockedObject operator->();
     DLockedObject getLocked();
+    void moveTo(T&);
 
     friend void swap(DSafeObject& object1, DSafeObject& object2)
     {
@@ -119,4 +120,11 @@ template<typename T>
 inline auto DSafeObject<T>::getLocked() -> DLockedObject
 {
     return DLockedObject(&m_object, m_mutex);
+}
+
+template<typename T>
+inline void DSafeObject<T>::moveTo(T& object)
+{
+  std::unique_lock<std::recursive_mutex> guard(m_mutex);
+  object = std::move(m_object);
 }

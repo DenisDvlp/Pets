@@ -194,7 +194,6 @@ void DConsole::show(const CHAR_INFO* buffer) const
 void DConsole::init()
 {
     DWORD mode =
-        ENABLE_PROCESSED_INPUT |
         ENABLE_LINE_INPUT |
         ENABLE_ECHO_INPUT |
         ENABLE_WINDOW_INPUT |
@@ -290,9 +289,55 @@ DVector<DMessage> DConsole::recentMessages() const
         case KEY_EVENT:
         {
             auto& event = events[i].Event.KeyEvent;
-            message.type = event.bKeyDown ? MessageType::KEY_DOWN : MessageType::KEY_UP;
-            message.keyStates = static_cast<byte>(event.dwControlKeyState);
-            message.data.key = keyMap[event.wVirtualKeyCode];
+            bool isKeyDown = event.bKeyDown;
+            switch (event.wVirtualKeyCode)
+            {
+            case VK_SHIFT:
+                // LEFT = 42; RIGHT = 54
+                message.data.key = event.wVirtualScanCode == 42 ? Key::SHIFT_L : Key::SHIFT_R;
+                break;
+            case VK_CONTROL:
+                {
+                    const bool previousLeft = m_controlKeyState & 8;
+                    const bool previousRight = m_controlKeyState & 4;
+                    const bool currentLeft = event.dwControlKeyState & 8;
+                    const bool currentRight = event.dwControlKeyState & 4;
+                    const bool anyChanges = previousLeft != currentLeft || previousRight != currentRight;
+                    if(anyChanges)
+                    {
+                        //isKeyDown = !previousLeft && currentLeft || !previousRight && currentRight;
+                        message.data.key = previousLeft != currentLeft ? Key::CTRL_L : Key::CTRL_R;
+                    }
+                    else
+                    {
+                        message.type = MessageType::NONE;
+                    }
+                    break;
+                }
+            case VK_MENU:
+                {
+                    const bool previousLeft = m_controlKeyState & 2;
+                    const bool previousRight = m_controlKeyState & 1;
+                    const bool currentLeft = event.dwControlKeyState & 2;
+                    const bool currentRight = event.dwControlKeyState & 1;
+                    const bool anyChanges = previousLeft != currentLeft || previousRight != currentRight;
+                    if(anyChanges)
+                    {
+                        //isKeyDown = !previousLeft && currentLeft || !previousRight && currentRight;
+                        message.data.key = previousLeft != currentLeft ? Key::ALT_L : Key::ALT_R;
+                    }
+                    else
+                    {
+                        message.type = MessageType::NONE;
+                    }
+                    break;
+                }
+            default:
+                message.data.key = keyMap[event.wVirtualKeyCode];
+            }
+            message.type = isKeyDown ? MessageType::KEY_DOWN : MessageType::KEY_UP;
+            //message.keyStates = static_cast<byte>(event.dwControlKeyState);
+            m_controlKeyState = static_cast<byte>(event.dwControlKeyState);
             break;
         }
         case MOUSE_EVENT:
@@ -305,7 +350,7 @@ DVector<DMessage> DConsole::recentMessages() const
             case MessageType::MOUSE_BUTTONS:
             case MessageType::MOUSE_DOUBLE_CLICK:
                 message.data.byte = static_cast<byte>(LOWORD(event.dwButtonState));
-                break;
+                [[fallthrough]];
             case MessageType::MOUSE_MOVE:
                 message.data.position = DPoint(event.dwMousePosition.X, event.dwMousePosition.Y);
                 break;
@@ -320,6 +365,13 @@ DVector<DMessage> DConsole::recentMessages() const
             auto& event = events[i].Event.WindowBufferSizeEvent;
             message.type = MessageType::DISPLAY_RESIZE;
             message.data.size = DSize(event.dwSize.X, event.dwSize.Y);
+            break;
+        }
+        case FOCUS_EVENT:
+        {
+            auto& event = events[i].Event.FocusEvent;
+            message.type = MessageType::APP_FOCUS;
+            message.data.byte = event.bSetFocus;
             break;
         }
         }

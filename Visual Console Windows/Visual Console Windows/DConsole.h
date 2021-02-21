@@ -3,7 +3,7 @@
 #include "DSizable.h"
 #include "DString.h"
 #include "DVector.h"
-#include "DMessage.h"
+#include "DMessages.h"
 #include <Windows.h>
 
 class DConsole
@@ -38,4 +38,5 @@ private:
     DSize m_maxSize;
     DString m_title;
     mutable DVector<INPUT_RECORD> m_inputEvents;
+    mutable byte m_controlKeyState = 0;
 };

@@ -65,23 +65,8 @@ void DApplication::consoleLoop()
         case MessageType::KEY_UP:
         case MessageType::KEY_DOWN:
         {
-            switch(m_keyStates ^ msg.keyStates)
-            {
-            case KeyState::NONE:
-                switch(msg.data.key)
-                {
-                case Key::CTRL: message.data.key = m_keyStates & KeyState::CTRL_L ? Key::CTRL_L : Key::CTRL_R; break;
-                case Key::ALT:  message.data.key = m_keyStates & KeyState::ALT_L ? Key::ALT_L : Key::ALT_R;  break;
-                default:        message.data.key = msg.data.key;
-                }
-                break;
-            case KeyState::ALT_L:  message.data.key = Key::ALT_L;  break;
-            case KeyState::ALT_R:  message.data.key = Key::ALT_R;  break;
-            case KeyState::CTRL_L: message.data.key = Key::CTRL_L; break;
-            case KeyState::CTRL_R: message.data.key = Key::CTRL_R; break;
-            default:               message.data.key = msg.data.key;
-            }
-            break;
+          message.data.key = msg.data.key;
+          break;
         }
         case MessageType::MOUSE_DOUBLE_CLICK:
         case MessageType::MOUSE_BUTTONS:
@@ -91,6 +76,7 @@ void DApplication::consoleLoop()
             if(MessageType::MOUSE_BUTTONS == msg.type)
             {
                 message.type = m_mouseButtons & button ? MessageType::MOUSE_DOWN : MessageType::MOUSE_UP;
+                message.data.position = msg.data.position;
             }
             switch(button)
             {
@@ -144,13 +130,11 @@ void DApplication::systemLoop()
 {
     DVector<DMessage> messages;
 
-    {
-        auto locked_messages = m_systemMessages.getLocked();
-        messages = std::move(*locked_messages);
-    }
+    m_systemMessages.moveTo(messages);
 
     for(auto msg : messages)
     {
+        m_cachedMessage = msg;
         switch(msg.type)
         {
         case MessageType::KEY_UP:
@@ -163,18 +147,17 @@ void DApplication::systemLoop()
         }
         case MessageType::MOUSE_UP:
         {
+            onSystemMouseUp();
             break;
         }
         case MessageType::MOUSE_DOWN:
         {
+            onSystemMouseDown();
             break;
         }
         case MessageType::MOUSE_MOVE:
         {
-            for (auto child : m_rootView.children())
-            {
-                child->onSystemMouseMove(msg.data.position);
-            }
+            onSystemMouseMove();
             break;
         }
         case MessageType::MOUSE_DOUBLE_CLICK:
@@ -185,6 +168,10 @@ void DApplication::systemLoop()
         {
             break;
         }
+        case MessageType::APP_FOCUS:
+        {
+            break;
+        }
         }
     }
 
@@ -192,7 +179,7 @@ void DApplication::systemLoop()
     if(draw)
     {
         draw->fill(DColors::GRAY);
-        drawRoot(*draw, m_rootView);
+        drawRoot(m_rootView, *draw);
         m_drawBuffer->endWrite(draw);
     }
     utils::sleep(10);
@@ -210,11 +197,57 @@ void DApplication::drawLoop()
     utils::sleep(10);
 }
 
-void DApplication::drawRoot(IDDraw& draw, DView& parent)
+void DApplication::drawRoot(DView& parent, IDDraw& draw)
 {
     parent.draw(draw);
     for (auto child : parent.children())
     {
-        drawRoot(draw, *child);
+        drawRoot(*child, draw);
     }
+}
+
+bool DApplication::onSystemMouseEvent(DView& parent, const MouseCallback& callback)
+{
+  auto& children = parent.children();
+  bool handled = false;
+
+  for (auto b = children.rbegin(), e = children.rend(); !handled && b != e; ++b)
+  {
+    handled = onSystemMouseEvent(**b, callback);
+  }
+
+  if (!handled && parent.rect().contains(m_cachedMessage.data.position))
+  {
+    handled = true;
+    callback(parent, { m_cachedMessage.data.key, m_cachedMessage.data.position });
+  }
+
+  return handled;
+}
+
+bool DApplication::onSystemMouseUp()
+{
+  auto callback = [](DView& parent, const DMouseMessage& msg)
+  {
+    parent.onSystemMouseUp(msg);
+  };
+  return onSystemMouseEvent(m_rootView, callback);
+}
+
+bool DApplication::onSystemMouseDown()
+{
+  auto callback = [](DView& parent, const DMouseMessage& msg)
+  {
+    parent.onSystemMouseDown(msg);
+  };
+  return onSystemMouseEvent(m_rootView, callback);
+}
+
+bool DApplication::onSystemMouseMove()
+{
+  auto callback = [](DView& parent, const DMouseMessage& msg)
+  {
+      parent.onSystemMouseMove(msg);
+  };
+  return onSystemMouseEvent(m_rootView, callback);
 }

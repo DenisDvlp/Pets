@@ -268,9 +268,6 @@
     <ClInclude Include="DSfinae.h">
       <Filter>Sources\D\Misc</Filter>
     </ClInclude>
-    <ClInclude Include="DMessage.h">
-      <Filter>Sources\D\Structures</Filter>
-    </ClInclude>
     <ClInclude Include="DConsole.h">
       <Filter>Sources\D\System</Filter>
     </ClInclude>
@@ -315,6 +312,9 @@
     </ClInclude>
     <ClInclude Include="DView.h">
       <Filter>Sources\D\Views</Filter>
+    </ClInclude>
+    <ClInclude Include="DMessages.h">
+      <Filter>Sources\D\Structures</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

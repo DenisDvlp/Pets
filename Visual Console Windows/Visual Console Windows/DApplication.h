@@ -4,16 +4,18 @@
 #include "DLoop.h"
 #include "DSafeObject.h"
 #include "DVector.h"
-#include "DMessage.h"
+#include "DMessages.h"
 #include "DSize.h"
 #include "DPoint.h"
 #include "SystemEvents.h"
 #include "DDrawBuffer.h"
+#include "Function.h"
 #include "DView.h"
 
 class DApplication
 {
     using DMessages = DSafeObject<DVector<DMessage>>;
+    using MouseCallback = Function<void(DView&, const DMouseMessage&)>;
 public:
     DApplication();
     void run();
@@ -23,7 +25,11 @@ private:
     void consoleLoop();
     void systemLoop();
     void drawLoop();
-    void drawRoot(IDDraw&, DView&);
+    void drawRoot(DView&, IDDraw&);
+    bool onSystemMouseEvent(DView&, const MouseCallback&);
+    bool onSystemMouseUp();
+    bool onSystemMouseDown();
+    bool onSystemMouseMove();
 private:
     DConsole m_console;
 
@@ -41,4 +47,7 @@ private:
     DLoop m_drawLoop;
 
     DView m_rootView;
+
+    DMessage m_cachedMessage;
+    DView* m_lastView = nullptr;
 };

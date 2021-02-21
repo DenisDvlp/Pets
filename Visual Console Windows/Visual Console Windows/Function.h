@@ -112,7 +112,7 @@ private:
     template<typename T>
     static Return lambda_call(void* object, Args... args)
     {
-        return (*reinterpret_cast<T*>(object))(args...);
+        return (*reinterpret_cast<T*>(object))(std::forward<Args>(args)...);
     }
 
     template<typename T>
@@ -160,7 +160,7 @@ public:
     bool operator==(const Function& function) const;
     bool operator!=(const Function& function) const;
 
-    Return operator()(Args... args);
+    Return operator()(Args... args) const;
 
 private:
     void reset();
@@ -331,29 +331,29 @@ bool Function<Return(Args...)>::operator!=(const Function& function) const
 }
 
 template<typename Return, typename... Args>
-Return Function<Return(Args...)>::operator()(Args... args)
+Return Function<Return(Args...)>::operator()(Args... args) const
 {
     if(m_object)
     {
         switch(m_callType)
         {
             case CallType::CLASS_METHOD_1:
-                return (reinterpret_cast<FakeSingle*>(m_object)->*m_method.method1)(std::move(args)...);
+                return (reinterpret_cast<FakeSingle*>(m_object)->*m_method.method1)(std::forward<Args>(args)...);
                 break;
             case CallType::CLASS_METHOD_2:
-                return (reinterpret_cast<FakeMultiple*>(m_object)->*m_method.method2)(std::move(args)...);
+                return (reinterpret_cast<FakeMultiple*>(m_object)->*m_method.method2)(std::forward<Args>(args)...);
                 break;
             case CallType::CLASS_METHOD_3:
-                return (reinterpret_cast<FakeVirtual*>(m_object)->*m_method.method3)(std::move(args)...);
+                return (reinterpret_cast<FakeVirtual*>(m_object)->*m_method.method3)(std::forward<Args>(args)...);
                 break;
             case CallType::CLASS_METHOD_4:
-                return (reinterpret_cast<FakeForward*>(m_object)->*m_method.method4)(std::move(args)...);
+                return (reinterpret_cast<FakeForward*>(m_object)->*m_method.method4)(std::forward<Args>(args)...);
                 break;
             case CallType::GLOBAL_FUNCTION:
-                return reinterpret_cast<GlobalFunction>(m_object)(std::move(args)...);
+                return reinterpret_cast<GlobalFunction>(m_object)(std::forward<Args>(args)...);
                 break;
             case CallType::LAMBDA_FUNCTION:
-                return (m_method.lambdaCall)(m_object, std::move(args)...);
+                return (m_method.lambdaCall)(m_object, std::forward<Args>(args)...);
                 break;
         }
     }

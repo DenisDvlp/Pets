@@ -1,4 +1,4 @@
-//DMessage.h
+//DMessages.h
 #pragma once
 #include "Key.h"
 #include "MessageType.h"
@@ -6,18 +6,26 @@
 #include "DSize.h"
 #include "DTypes.h"
 
-class DMessage
+struct DMessage
 {
-public:
     MessageType type{};
     byte keyStates = 0;
     union Data
     {
-        Data(){};
-        byte byte = 0;
-        Key key;
-        DPoint position;
+        Data(){}
+        struct
+        {
+            byte byte;
+            DPoint position;
+        };
+        Key key{};
         DSize size;
     } data;
 };
 
+
+struct DMouseMessage
+{
+  Key key{};
+  DPoint position;
+};

@@ -16,6 +16,7 @@ enum class MessageType : byte
     MOUSE_DOUBLE_CLICK,
     MOUSE_WHEEL,
     DISPLAY_RESIZE,
+    APP_FOCUS,
 
     SIZE
 };

@@ -151,7 +151,7 @@
     <ClInclude Include="DDrawable.h" />
     <ClInclude Include="DList.h" />
     <ClInclude Include="DLoop.h" />
-    <ClInclude Include="DMessage.h" />
+    <ClInclude Include="DMessages.h" />
     <ClInclude Include="DPoint.h" />
     <ClInclude Include="DPointT.h" />
     <ClInclude Include="DPositionable.h" />

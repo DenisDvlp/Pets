@@ -67,6 +67,8 @@ std::unordered_map<Key, std::string> keyStringMap =
   { Key::F11,              "Key::F11"              },
   { Key::F12,              "Key::F12"              },
   { Key::SHIFT,            "Key::SHIFT"            },
+  { Key::SHIFT_L,          "Key::SHIFT_L"          },
+  { Key::SHIFT_R,          "Key::SHIFT_R"          },
   { Key::CTRL,             "Key::CTRL"             },
   { Key::ALT,              "Key::ALT"              },
   { Key::BREAK,            "Key::BREAK"            },

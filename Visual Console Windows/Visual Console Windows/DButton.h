@@ -11,14 +11,18 @@ class DButton : public DView
     Hover,
   };
 public:
-    DButton();
+    DButton(Key);
     using DView::DView;
     void setMainColor(DColor);
     void setClickColor(DColor);
     void setDisableColor(DColor);
     void setHoverColor(DColor);
     void draw(IDDraw&) const override;
-    void onSystemMouseMove(const DPoint&) override;
+    void onSystemMouseMove(const DMouseMessage&) override;
+    void onSystemMouseUp(const DMouseMessage&) override;
+    void onSystemMouseDown(const DMouseMessage&) override;
+    void onSystemKeyUp(Key) override;
+    void onSystemKeyDown(Key) override;
 private:
     StatusType m_status = StatusType::Main;
     DColor m_colors[4] = {
@@ -27,5 +31,6 @@ private:
       DColors::WHITE,
       DColors::WHITE
     };
+    Key m_key = Key::NONE;
 };
 

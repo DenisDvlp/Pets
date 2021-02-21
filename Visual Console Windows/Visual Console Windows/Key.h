@@ -1,8 +1,9 @@
 //Key.h
 #pragma once
+#include "DTypes.h"
 #include <xstring>
 
-enum class Key : unsigned char
+enum class Key : byte
 {
   NONE = 0,
 
@@ -93,6 +94,8 @@ enum class Key : unsigned char
   F12,
 
   SHIFT,
+  SHIFT_L,//empty
+  SHIFT_R,//empty
   CTRL,
   ALT,
   CTRL_L,//empty

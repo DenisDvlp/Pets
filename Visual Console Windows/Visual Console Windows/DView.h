@@ -3,8 +3,7 @@
 #include "DComposable.h"
 #include "DShapeable.h"
 #include "DDrawable.h"
-#include "DDrawable.h"
-#include "MessageType.h"
+#include "DMessages.h"
 
 class DView
     : public DComposable<DView>
@@ -13,16 +12,10 @@ class DView
 {
 public:
     using DComposable<DView>::DComposable;
-    virtual void onSystemMouseMove(const DPoint&);
-protected:
-    void subscribeSystemMessages(std::initializer_list<MessageType>);
-    void subscribeSystemMessages(MessageType);
-    void unsubscribeSystemMessages(std::initializer_list<MessageType>);
-    void unsubscribeSystemMessages(MessageType);
-private:
-    void subscriptionMessagHelper(std::initializer_list<MessageType>, bool turn);
-    void subscriptionMessagHelper(MessageType, bool turn);
-private:
-    byte m_systemMessagesSubscription = 0;
+    virtual void onSystemMouseMove(const DMouseMessage&);
+    virtual void onSystemMouseUp(const DMouseMessage&);
+    virtual void onSystemMouseDown(const DMouseMessage&);
+    virtual void onSystemKeyUp(Key);
+    virtual void onSystemKeyDown(Key);
 };
 
