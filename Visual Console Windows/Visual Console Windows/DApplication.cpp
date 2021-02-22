@@ -3,6 +3,7 @@
 #include "KeyState.h"
 #include "MouseState.h"
 #include "Utils.h"
+#include <ranges>
 
 DApplication::DApplication()
     : m_console()
@@ -211,9 +212,9 @@ bool DApplication::onSystemMouseEvent(DView& parent, const MouseCallback& callba
   auto& children = parent.children();
   bool handled = false;
 
-  for (auto b = children.rbegin(), e = children.rend(); !handled && b != e; ++b)
+  for(auto *view : children | std::views::reverse)
   {
-    handled = onSystemMouseEvent(**b, callback);
+    if (handled = onSystemMouseEvent(*view, callback)) break;
   }
 
   if (!handled && parent.rect().contains(m_cachedMessage.data.position))
