@@ -1,0 +1,117 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Файлы исходного кода">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Заголовочные файлы">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;hm;inl;inc;xsd</Extensions>
+    </Filter>
+    <Filter Include="Файлы ресурсов">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="Файлы исходного кода\Interface">
+      <UniqueIdentifier>{84d69646-3f9a-41ec-b82b-f96439ecd0f8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Файлы исходного кода\Utils">
+      <UniqueIdentifier>{4819fbb0-671b-4308-bb3a-e4d59403d323}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Файлы исходного кода\Pseudo GUI">
+      <UniqueIdentifier>{d4ca3a63-7e3f-423b-8eed-e0bff91d5051}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Файлы исходного кода\Components">
+      <UniqueIdentifier>{ffd4ad5a-7886-43d7-bdc4-3ee728aaa9ef}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Файлы исходного кода\Actions">
+      <UniqueIdentifier>{d24dad31-9227-42fe-b26b-a42338821477}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Файлы исходного кода\Game core">
+      <UniqueIdentifier>{c29489bc-cf96-467f-ba72-ca99151c5222}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="main.cpp">
+      <Filter>Файлы исходного кода</Filter>
+    </ClCompile>
+    <ClCompile Include="console.cpp">
+      <Filter>Файлы исходного кода\Pseudo GUI</Filter>
+    </ClCompile>
+    <ClCompile Include="display.cpp">
+      <Filter>Файлы исходного кода\Pseudo GUI</Filter>
+    </ClCompile>
+    <ClCompile Include="interface.cpp">
+      <Filter>Файлы исходного кода\Interface</Filter>
+    </ClCompile>
+    <ClCompile Include="object.cpp">
+      <Filter>Файлы исходного кода\Pseudo GUI</Filter>
+    </ClCompile>
+    <ClCompile Include="card.cpp">
+      <Filter>Файлы исходного кода\Components</Filter>
+    </ClCompile>
+    <ClCompile Include="stringUtils.cpp">
+      <Filter>Файлы исходного кода\Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="board.cpp">
+      <Filter>Файлы исходного кода\Components</Filter>
+    </ClCompile>
+    <ClCompile Include="bone.cpp">
+      <Filter>Файлы исходного кода\Components</Filter>
+    </ClCompile>
+    <ClCompile Include="button.cpp">
+      <Filter>Файлы исходного кода\Components</Filter>
+    </ClCompile>
+    <ClCompile Include="chip.cpp">
+      <Filter>Файлы исходного кода\Components</Filter>
+    </ClCompile>
+    <ClCompile Include="infopanel.cpp">
+      <Filter>Файлы исходного кода\Components</Filter>
+    </ClCompile>
+    <ClCompile Include="dialog.cpp">
+      <Filter>Файлы исходного кода\Components</Filter>
+    </ClCompile>
+    <ClCompile Include="dispatcher.cpp">
+      <Filter>Файлы исходного кода\Actions</Filter>
+    </ClCompile>
+    <ClCompile Include="animations.cpp">
+      <Filter>Файлы исходного кода\Actions</Filter>
+    </ClCompile>
+    <ClCompile Include="player.cpp">
+      <Filter>Файлы исходного кода\Game core</Filter>
+    </ClCompile>
+    <ClCompile Include="core.cpp">
+      <Filter>Файлы исходного кода\Game core</Filter>
+    </ClCompile>
+    <ClCompile Include="gamecard.cpp">
+      <Filter>Файлы исходного кода\Game core</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="console.h">
+      <Filter>Заголовочные файлы</Filter>
+    </ClInclude>
+    <ClInclude Include="pseudoGUI.h">
+      <Filter>Заголовочные файлы</Filter>
+    </ClInclude>
+    <ClInclude Include="interface.h">
+      <Filter>Заголовочные файлы</Filter>
+    </ClInclude>
+    <ClInclude Include="utils.h">
+      <Filter>Заголовочные файлы</Filter>
+    </ClInclude>
+    <ClInclude Include="components.h">
+      <Filter>Заголовочные файлы</Filter>
+    </ClInclude>
+    <ClInclude Include="dispatcher.h">
+      <Filter>Заголовочные файлы</Filter>
+    </ClInclude>
+    <ClInclude Include="animations.h">
+      <Filter>Заголовочные файлы</Filter>
+    </ClInclude>
+    <ClInclude Include="gamecore.h">
+      <Filter>Заголовочные файлы</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>

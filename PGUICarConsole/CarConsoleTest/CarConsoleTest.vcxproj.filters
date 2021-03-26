@@ -1,0 +1,82 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Source Files\Objects">
+      <UniqueIdentifier>{22327fe4-397f-4fde-982f-0c1fdbb48bed}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Objects\inc">
+      <UniqueIdentifier>{17935470-65e3-4408-9f63-48b867c9f1e1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Objects\src">
+      <UniqueIdentifier>{91a243a5-d9b9-4369-8f56-1fd634ef9be5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Core">
+      <UniqueIdentifier>{cfb5b33c-04ed-48c7-a33c-7f9fccd17406}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Core\inc">
+      <UniqueIdentifier>{e171a2a8-93b2-4511-85cd-d430d8c9f39d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Core\src">
+      <UniqueIdentifier>{33306515-63fc-4c2b-af88-d9a8b6186b5f}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="Main.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Console.cpp">
+      <Filter>Source Files\Core\src</Filter>
+    </ClCompile>
+    <ClCompile Include="Application.cpp">
+      <Filter>Source Files\Core\src</Filter>
+    </ClCompile>
+    <ClCompile Include="Canvas.cpp">
+      <Filter>Source Files\Core\src</Filter>
+    </ClCompile>
+    <ClCompile Include="Utils.cpp">
+      <Filter>Source Files\Core\src</Filter>
+    </ClCompile>
+    <ClCompile Include="GameObject.cpp">
+      <Filter>Source Files\Objects\src</Filter>
+    </ClCompile>
+    <ClCompile Include="MainObject.cpp">
+      <Filter>Source Files\Objects\src</Filter>
+    </ClCompile>
+    <ClCompile Include="MenuObject.cpp">
+      <Filter>Source Files\Objects\src</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Object.h">
+      <Filter>Source Files\Objects\inc</Filter>
+    </ClInclude>
+    <ClInclude Include="Macros.h">
+      <Filter>Source Files\Core\inc</Filter>
+    </ClInclude>
+    <ClInclude Include="Application.h">
+      <Filter>Source Files\Core\inc</Filter>
+    </ClInclude>
+    <ClInclude Include="Canvas.h">
+      <Filter>Source Files\Core\inc</Filter>
+    </ClInclude>
+    <ClInclude Include="Utils.h">
+      <Filter>Source Files\Core\inc</Filter>
+    </ClInclude>
+    <ClInclude Include="Console.h">
+      <Filter>Source Files\Core\inc</Filter>
+    </ClInclude>
+    <ClInclude Include="GameObject.h">
+      <Filter>Source Files\Objects\inc</Filter>
+    </ClInclude>
+    <ClInclude Include="MainObject.h">
+      <Filter>Source Files\Objects\inc</Filter>
+    </ClInclude>
+    <ClInclude Include="MenuObject.h">
+      <Filter>Source Files\Objects\inc</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>
