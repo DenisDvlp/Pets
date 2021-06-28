@@ -27,7 +27,7 @@ enum class DColors : uint32
     GRAY        = DARK_RED   | DARK_GREEN | DARK_BLUE,
 };
 
-class DColor
+class alignas(alignof(uint32)) DColor
 {
 public:
     static byte Alpha(uint32 color);

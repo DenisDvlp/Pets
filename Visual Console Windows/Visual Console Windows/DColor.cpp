@@ -99,7 +99,7 @@ inline void DColor::set(DColors color)
 void DColor::set(byte red, byte green, byte blue)
 {
     m_color =
-        ALPHA_MASK |
+        INT_CHANNEL(0xFF, ALPHA) |
         INT_CHANNEL(red, RED) |
         INT_CHANNEL(green, GREEN) |
         INT_CHANNEL(blue, BLUE);
