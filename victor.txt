@@ -1025,3 +1025,37 @@ uint32_t(-42) < uint16_t(42); // false
 uint32_t(-42) < uint32_t(42); // false
 
 ---------------------------------
+
+  std::cout << std::boolalpha;
+
+  char x = -128;
+  std::cout << (x == -x) << std::endl;
+  char y = -x;
+  std::cout << (x == y) << std::endl;
+  
+  char x = -127;
+  std::cout << (x == -x) << std::endl;
+  char y = -x;
+  std::cout << (x == y) << std::endl;
+ 
+---------------------------------
+
+чтобы найти точку входа в огромном проекте нужно запустить отладку по F10(Step over - Шаг с обходом).
+
+
+----------------------------------
+
+  if (x < 1000) result of comparison of constant 1000 with expression of type 'char' is always true
+  {}
+
+  if (y > -40000) result of comparison of constant -40000 with expression of type 'short' is always true
+  {}
+  
+  
+----------------------------------
+
+  int x[1][5] = { {1,2,3,4,5} };
+  auto y3 = x[0][4];
+  int** y1 = (int**)x;
+  auto y4 = y1[0][4];
+  
