@@ -1059,3 +1059,107 @@ uint32_t(-42) < uint32_t(42); // false
   int** y1 = (int**)x;
   auto y4 = y1[0][4];
   
+  
+----------------------------------
+
+объявление гибкого члена массива FAM в С
+
+struct Array {
+  size_t size;
+  int content[];
+};
+
+----------------------------------
+
+конкатенация строк
+
+char const arr[3] = "1"
+"2";
+
+----------------------------------
+в С designator
+int y[4][3] = {[0][0]=1, [1][1]=1, [2][0]=1};  // row 0 initialized to {1, 0, 0}
+                                               // row 1 initialized to {0, 1, 0}
+                                               // row 2 initialized to {1, 0, 0}
+                                               // row 3 initialized to {0, 0, 0}
+short q4[4][3][2] = {1, [1]=2, 3, [2]=4, 5, 6};
+short q3[4][3][2] = {
+        {
+            { 1 },
+        },
+        {
+            { 2, 3 },
+        },
+        {
+            { 4, 5 },
+            { 6 },
+        }
+    };
+	int a[3] = {0}; // valid C and C++ way to zero-out a block-scope array
+int a[3] = {}; // invalid C but valid C++ way to zero-out a block-scope array
+
+----------------------------------
+new (int (*[10])()); // okay: allocates an array of 10 pointers to functions
+
+----------------------------------
+
+кастомная инициализация
+
+template<typename T>
+struct alignas(alignof(T)) Inc {
+  T x;
+  Inc() {
+    x = (this - 1)->x + 1;
+  }
+  Inc(int& i) {
+    x = i;
+  }
+};
+int main()
+{
+  int i = 7;
+  int* arr = (int*)new Inc<int>[10]{i};
+}
+  
+----------------------------------
+typedef is a language construct that associates a name to a type.
+You use it the same way you would use the original type, for instance
+
+  typedef int myinteger;
+  typedef char *mystring;
+  typedef void (*myfunc)();
+typedef int ai[2];
+
+
+----------------------------------
+
+int x[2][2];
+int **p;
+
+x[1][1] не то же самое что p[1][1]
+
+
+----------------------------------
+const int bufferSize = 32;
+
+void first()
+{
+    char buffer1[bufferSize];
+    strcpy(buffer1,  "first");
+}
+
+void second()
+{
+    char buffer2[bufferSize];
+    printf( "%s", buffer2 );
+}
+
+int main()
+{
+   first();
+   second();
+}
+
+----------------------------------
+[[no_unique_address]]
+https://en.cppreference.com/w/cpp/language/attributes/no_unique_address
