@@ -1,0 +1,1298 @@
+35563	pc	PENTIUM II400	1
+35565	pc	Pentium III-500	30
+35589	printer	Принтер LX-300	109
+35591	printer	Принтер Epson LX-300	125
+35606	ups	Источник беспереб.питания UPS APC Back 500	Списан
+35613	drhfj	Блок бесперебойного питания	135
+356131h	drhfj	Блок бесперебойного питания	135
+35623	printer	Принтер LX 300c	Списан
+35624	printer	Принтер LX 300	122
+35624r	printer	Принтер LX 300	122
+35628	printer	Принтер LX 300	96
+35631	printer	Принтер LX 300	203
+35635	ups	UPS 280 VA	215
+35636	ups	БЛОК НHUB	203
+35638	printer	ПРИНТЕР STAR DP 8340	203
+35640	video	ВИДЕОКАМЕРА Panasonic	
+35641	cardreader	РИДЕР-РАЙТЕР APP 205-3	244
+35642	pin	PIN-КЛАВИАТУРА	1
+35643	pin	PIN-КЛАВИАТУРА	
+35644	cardreader	КАРТРИДЕР КР 203.1	203
+35646	cardreader	РИДЕР-РАЙДЕР АРР205.3	203
+35647	printer	ТЕРМОПРИНТЕР Р 300	
+35648	ups	UPS 280 VA	213
+35649	ups	UPS 280 VA	404
+35651	cisco	МАРШРУТИЗАТОР МОДУЛЬНЫЙ CISCO 2600	4
+35652	cisco	МАРШРУТИЗАТОР CISCO 1005	109
+35653	cisco	МАРШРУТИЗАТОР CISCO 1005	Списан
+35654	modem	МОДЕМ SAGEM	210
+35655	modem	МОДЕМ SAGEM	210
+35656	modem	МОДЕМ SAGEM	210
+35657	printer	Принтер Epson LX 300	130
+35658	video	ВИДЕОКАМЕРА Panasonic	
+35659	pin	PIN КЛАВИАТУРА	
+35660	cardreader	КАРТРИДЕР КР 203.1	203
+35664	printer	Принтер Epson LX -300	203
+35670	ups	Блок бесперебойного питания   SMART UPS 600	401
+35671	ups	Блок бесперебойного питания   SMART UPS 600	Списан
+35675	modem	MODEM ZYXEL U-1496	203
+35677	ups	БЛОК БЕСПЕР. ПИТАНИЯ	203
+35678	zip	Ziq Dzive Iomeqa	203
+35682	printer	Принтер Eрson  LX-300	2 22121
+35687	ups	Блок бесперебойного питания	210
+35690	printer	Принтер Epson LX-300	130
+35691	printer	Принтер Epson LX-300	30
+35692	printer	Принтер Epson LX 300	200
+35693	printer	Принтер Epson LX 300	30
+35697	ups	Блок бесперебойного питания	203
+35698	ups	Блок бесперебойного питания	212
+35699	ups	Источник бесперебойного питания АРС 250	304
+35703	printer	Принтер LX 300	120
+35705	printer	Принтер Epson LX-300	118
+35706	printer	Принтер Epson LX-300	203
+35707	printer	Принтер Laserjet	200
+35708	printer	Принтер LX 300	121
+35709	printer	Принтер LX 300	135
+35710	printer	Принтер LX 300	76
+35712	zip	Устр-во резерв копиров	203
+35713	zip	Устр-во резерв копиров	203
+35726	zip	Омега ZIP	203
+35736	printer	Принтер LX-300	127
+35746	modem	Модем Zyxel U 1496	210
+35789	printer	ПРИНТЕР STAR DP 8340	203
+35974	pc	компьютер  P III 500,64,20	30
+35975	printer	Принтер  Epson LX 300	2 22121
+35977	pc	Компьютер Pentium III-700	30
+35978	pc	Компьютер Pentium III-500	30
+35979	pc	Компьютер Pentium III-500	30
+35980	pc	Компьютер Pentium III-500	30
+35981	pc	Компьютер Pentium III-500	405
+35982	printer	Принтер Epson LX-300	95
+359822	modem	Принтер Epson LX-300	582
+35983	printer	Принтер Epson LX-300	76
+35984	printer	Принтер Epson LX-300	130
+35985	printer	Принтер Epson LX-300	125
+35986	printer	Принтер Epson LX-300	127
+35989	cisco	МАРШРУТИЗАТОР CISCO 1005	118
+35991	cisco	МАРШРУТИЗАТОР CISCO 1005	210
+35994	pc	Компьютер Celeron 667	ОЧ
+35997	modem	Модем ZYXELL U-90	210
+35998	modem	Модем ZYXELL U-90	Списан
+36004	pc	Компьютер CELERON 667 Mb 30,0 Gb NE-2000 PCI	30
+36004kp'	pc	Компьютер CELERON 667 Mb 30,0 Gb NE-2000 PCI	30
+36005	pc	Компьютер CELERON 667/64 Mb/30 Gb	30
+36006	pc	Компьютер PIII-866/128 Mb/30 Gb	ОЧ
+36007	server	Сервер ATLANT C-133	210
+36008	ups	UPS-500 VA APC Back	215
+36009	ups	UPS-500 VA	213
+36011	printer	Принтер Epson LX-300+	135
+36012	printer	Принтер Epson LX-300+	58
+36013	printer	Принтер лазерный HP 1100A	203
+36014	ups	UPS-500 VA	124
+36018	modem	Модем Zyxel U-90E	210
+36019	modem	Модем Zyxel U-90E	210
+36090	cd-rw	Устройство СД ТЕАС(для записи лазерных дисков)	203
+36091	fax	Факс-модем  US Robotics	203
+36092	fax	Факс-модем  US Robotics	203
+36095	pc	ПТК на базе Celeron-1000A Tualanit	29
+36096	pc	ПТК на базе Celeron-1000A Tualanit	8
+36097	pc	ПТК на базе Celeron-1000A Tualanit	9
+36101	printer	Epson DFX-8500	210
+36102	printer	EPSON LX-300+	127
+36103	printer	EPSON LX-300+	97
+36104	printer	EPSON LX-300+	112
+36105	ups	UPS -650 VA APC BACK	210
+36106	ups	UPS -650 VA APC BACK	210
+36107	ups	UPS -650 VA APC BACK	210
+36108	ups	UPS CS VA APC BACK	301
+36109	pc	Celeron-1000A/128 Mg-30GB/NE-10Mbit/15SAMSUNG SSOB	30
+36110	pc	Celeron-1000A/128 Mg-30GB/NE-10Mbit/15SAMSUNG SSOB	96
+36111	pc	Celeron-1000A/128 Mg-30GB/NE-10Mbit/15SAMSUNG SSOB	
+36112	modem	Модем TAIMET DT-128	210
+36113	modem	Модем TAIMET DT-128	210
+36115	mfu	Ксерокс Canon FC-204	203
+36118	pc	ПТК на базе CELERON-1000A	30
+36119	printer	Принтер LX-EPSON 300+	60
+361192	pin	Принтер LX	77
+36120	printer	Принтер LX-EPSON 1170	135
+36136	pc	Компьютер Сеl 1100/Abit ST/128 MB/ATT 8Mb/1.44/40	30
+36137	pc	Компьютер Сеl 1100/Abit ST/128 MB/ATT 8Mb/1.44/40	30
+36138	pc	Компьютер Сеl 1100/Abit ST/128 MB/ATT 8Mb/1.44/40	8
+36140	pc	Компьютер ПТК на базе CELERON-1000	403
+36141	pc	Компьютер ПТК на базе CELERON-1000	30
+36142	pc	Компьютер ПТК на базе CELERON-1000	58
+36143	pc	Компьютер ПТК на базе CELERON-1000	76
+36144	pc	Компьютер ПТК на базе CELERON-100/CD-R	125
+36145	ups	UPS CS 500 VA APC Back	215
+36146	ups	UPS CS 	212
+36147	ups	UPS CS 500 VA APC Back	2 22121
+36148	ups	UPS CS 500 VA APC Back	406
+36149	ups	UPS CS 500 VA APC Back	135
+36150	printer	EPSON LX-300	77
+36162	pc	ПТК на базе Celeron-1100A/Mb/40 Gb	30
+36163	pc	ПТК на базе Celeron-1100A/Mb/40 Gb	200
+36164	pc	ПТК на базе Celeron-1100A/Mb/40 Gb	203
+36165	pc	ПТК на базе Celeron-1100A/Mb/40 Gb	213
+36166	pc	ПТК на базе Celeron-1100A/Mb/40 Gb	30
+36167	pc	ПТК на базе Celeron-1100A/Mb/40 Gb	30
+36168	printer	EPSON LX-300+	112
+36169	printer	EPSON LX-300+	9
+36170	printer	EPSON LX-300+	203
+36171	printer	EPSON LX-300+	120
+36172	printer	EPSON LX-300+	122
+36173	printer	EPSON LX-300+	200
+36187	printer	Принтер лазерный Canon LBP и кабель	8
+36188	pc	ПТК на базе CELERON-1100A/128 Mb/40	28
+36189	pc	ПТК на базе CELERON-1100A/128 Mb/40	30
+36190	printer	Принтер  Canon LBP-810	58
+36191	ups	UPS Back-500 AVR/Pro/	8
+36192	ups	UPS Back-500 AVP/Pro/	410
+36198	ups	Блок резервного питания /UPS/	204
+36199	pc	Celeron 1100a/128 MB SDRAM PC 133/40 GB	30
+36200	pc	ПТК на базе Celeron 1200/128 MB/40 GB/15	30
+36203	pc	Сеl 110A/128/40	109
+36204	ups	UPS RS 500 ИПС APC bac	301
+36205	modem	Модем Zyxel U-336E	210
+36206	pc	ПТК на базе Celeron 1300/128/40/32/NE/15-Samsung 550B/Win 2000 Pro Rus	135
+36207	pc	ПТК на базе Celeron 1300/128/40/32/NE/15-Samsung 550B/Win 2000 Pro Rus	204
+36208	printer	Принтер-Samsung ML-1250	301
+36209	fax	Факс-модем US Robotics Courier	203
+36210	fax	Факс-модем US Robotics Courier	203
+36229	modem	Модем ZeXeL U-336E	210
+36230	modem	Модем ZeXeL U-336E	210
+36238	pc	Компьютер EVERESTmini/845LV-SV-Video	208
+36239	pc	Компьютер EVERESTmini/845LV-SV-Video	402
+36240	pc	Компьютер EVERESTmini/845LV-SV-Video	208
+36241	pc	Компьютер EVERESTmini/845LV-SV-Video	99
+36243	printer	Принтер лазерный hp Laserjet 1200 series	215
+36244	ups	Блок бесперебойного питания UPS-500VA	407
+36245	ups	Блок бесперебойного питания UPS-500VA	407
+36247	printer	Принтер матричный EPSON FX-890	135
+36248	printer	Принтер матричный EPSON FX-2190	28
+36249	printer	Принтер лазерный HP LJ1220	135
+36250	ups	Источник бесперебойного питания UPS BATTERY Backup 500VA	203
+36251	ups	Источник бесперебойного питания UPS BATTERY Backup 500VA	215
+36252	ups	Источник бесперебойного питания UPS BATTERY Backup 500VA	203
+36253	ups	Источник бесперебойного питания UPS BATTERY Backup 500VA	30
+36258	pc	Компьютер Intel Celeron mPGA 2.4GHz 128k с CDR	132
+36259	pc	Компьютер Intel Celeron mPGA 2.4GHz 128k с CDR	210
+36260	pc	Компьютер Intel Celeron mPGA 2.4GHz 128k	10
+36261	pc	Компьютер Intel Celeron mPGA 2.4GHz 128k	203
+36262	pc	Компьютер Intel Celeron mPGA 2.4GHz 128k	210
+36263	pc	Компьютер Intel Celeron mPGA 2.4GHz 128k	121
+36265	modem	модем Zyxel U-336 E	210
+36266	modem	модем Zyxel U-336 E	210
+36267	printer	Принтер лазерный HP LJ	96
+36270	xerox	Ксерокс KMA CANON FC-228	412
+36272	pc	Компьютер Mistral Rlus4/256MB/40GB	204
+36273	pc	Компьютер Mistral Rlus4/256MB/40GB	76
+36274	fax	Факсмодем внешний	203
+36275	modem	Модем Asotel Vector f366E/ZLL	210
+36276	modem	Модем Asotel Vector f366E/ZLL	210
+36277	modem	Модем Asotel Vector f366E/ZLL	210
+36278	xerox	Ксерокс KMA CANON FS-128	203
+36282	printer	Принтер EPSON LX 300+ с кабелем	135
+36283	printer	Принтер EPSON LX 300+ с кабелем	304
+36288	printer	Принтер матричный Star 8340	30
+36289	printer	Принтер матричный Star 8340	208
+36290	printer	Термопринтер P 300	
+36312	pc	Компьютер PC Celeron 2400/256/40/52/	304
+36313	pc	Компьютер PC Celeron 2400/256/40/52	26
+36313dg	pc	Компьютер PC Celeron 2400/256/40/52	26
+36313w	pc	Компьютер PC Celeron 2400/256/40/52	26
+36314	pc	Компьютер PC Celeron 2400/256/40/52/	2 22121
+36315	pc	Компьютер PC Celeron 2400/256/40/52/	121
+36316	pc	Компьютер PC Celeron 2400/256/40/52/	122
+36317	pc	Компьютер PC Celeron 2400/256/40/52/	122
+36318	pc	Компьютер PC Celeron 2400/256/40/52/	135
+36319	pc	Компьютер PC Celeron 2400/256/40/52/	407
+36320	pc	Компьютер PC Celeron 2400/256/40/52/	135
+36321	pc	Компьютер PC Celeron 2400/256/40/52/	60
+36322	pc	Компьютер PC Celeron 2400/256/40/52/	ОЧ
+36323	pc	Компьютер PC Celeron 2400/256/40/52/	60
+36324	printer	Принтер HP LJ 2300 DN	408
+36325	printer	Принтер Epson FX-2190	28
+36326	printer	Принтер Epson FX-890	9
+36327	printer	Принтер Epson FX-890	96
+36328	printer	Принтер Epson FX-890	203
+36329	printer	Принтер Epson LX-300	60
+36330	printer	Принтер Epson LX-300	112
+36331	printer	Принтер Epson LX-300	1
+36332	printer	Принтер Epson LX-300	135
+36333	printer	Принтер Epson LX-300	301
+36334	printer	Принтер Epson LX-300	200
+36335	printer	Принтер Epson LX-300	401
+36336	printer	Принтер ЕРSON Lx-300	203
+36337	printer	Принтер Epson LX-300	58
+36339	ups	UPS-back RS-500	203
+36340	ups	UPS-back RS-500	304
+36341	ups	UPS-back RS-500	301
+36342	ups	UPS-back RS-500	203
+36343	ups	UPS SMART 1500 VAUSB	204
+36344	ups	UPS SMART 1500 VAUSB	29
+36345	ups	UPS SMART 1500 VAUSB	210
+36346	ups	UPS SMART 1500 VAUSB	210
+36357	cisco	Маршрутизатор ZYXEL 791REE	210
+36358	cisco	Маршрутизатор CISCO 2610XM	210
+36359	modem	Модем ZYXEL Prestige 724 с инт.каб.С35	210
+36360	network	Компьютерная локальная сеть	135
+36372	printer	Принтер Epson LX-300	105
+36373	ups	UPS ДБЖ АРС SMART-UPS 1500VAUSB	банкомат
+36375	modem	Модем Asotel Vector F336E/2LL	210
+36377	modem	Модем Asotel Vector F336E/2LL	210
+36378	modem	Модем Asotel Vector F336E/2LL	210
+36382	modem	Модем Dinamix UM-SN/35	210
+36386	modem	Модем ZyXEL Prestige724 с инт.каб	210
+36387	modem	Модем ZyXEL Prestige724 с инт.каб	210
+36388	printer	ПРИНТЕР EPSON LX300+	135
+36394	pc	Системный блок Impression СМ:РС MB	58
+36395	pc	Системный блок Impression СМ:РС MB	8
+36396	cisco	Маршрутизатор CISCO 1720	210
+36397	printer	Принтер HP Laser jet 2200 DN (с кабелем)	407
+36398	printer	Принтер EPSON LX-300 (с кабелем)	301
+36399	printer	Принтер EPSON LX-300 (с кабелем)	109
+36400	printer	Принтер EPSON LX-300 (с кабелем)	132
+36401	printer	Принтер EPSON LX-300 (с кабелем)	133
+36402	pc	Компьютер с ПО PENTIUM III 800	30
+36403	pc	Компьютер с ПО PENTIUM III 800	30
+36404	pc	Компьютер с ПО PENTIUM III 800	212
+36405	pc	Компьютер с ПО PENTIUM III 800	30
+36406	pc	Компьютер с ПО PENTIUM III 800	30
+36407	pc	Компьютер с ПО PENTIUM III 800	402
+36409	printer	Принтер Epson FX-2190	45
+36410	modem	Модем ZyXEL Prestige 724 с инт.каб С35	210
+36411	modem	Модем ZyXEL Prestige 724 с инт.каб С35	210
+36417	mfu	XEROX Work Centre PE 114e	76
+36432	mfu	Копир.xerox Work Centre PE 114e	8
+36433	mfu	Копир.xerox Work Centre PE 114e	60
+36434	printer	Принтер Samsung ML-1520P	135
+36435	modem	Модем Asotel Vector F336E/2LL	210
+36436	mfu	XEROX Work Centre PE 114e	203
+36437	mfu	XEROX Work Centre PE 114e	124
+36438	mfu	XEROX Work Centre PE 114e	124
+36439	mfu	XEROX Work Centre PE 114e	122
+36440	mfu	XEROX Work Centre PE 114e	128
+36441	pc	Системный блок AMI PC4xx P4P800-MX Celeron	2 22121
+36450	printer	Принтер Samsung ML-1520P	203
+36451	printer	Принтер Epson LX-300+	105
+36452	printer	Принтер Epson LX-300+	60
+36453	printer	Принтер Epson LX-300+	122
+36454	printer	Принтер Epson LX-300+	ОЧ
+36455	printer	Принтер Epson LX-300+	203
+36456	printer	Принтер Epson LX-300+	126
+36457	printer	Принтер Epson LX-300+	135
+36458	printer	Принтер Epson FX-2190	28
+36459	printer	Принтер HP LJ 2420 DN	409
+36460	printer	Принтер Epson FX-890	135
+36461	printer	Принтер Epson FX-890	76
+36462	printer	Принтер Epson FX-890	118
+36463	printer	Принтер Epson FX-890	30
+36464	printer	Принтер Epson FX-890	58
+36465	printer	Принтер Epson FX-890	127
+36466	printer	Принтер Epson FX-890	120
+36493	printer	Принтер OKI Microline 4410	304
+36494	pc	Системн.блок Pentium IV 3.2GHz FSB	304
+36495	pc	Системн.блок Celeron FSB 800MHz CPU	215
+36496	pc	Системн.блок Celeron FSB 800MHz CPU	58
+36497	pc	Системн.блок Celeron FSB 800MHz CPU	97
+36498	pc	Системн.блок Celeron FSB 800MHz CPU	109
+36499	pc	Системн.блок Celeron FSB 800MHz CPU	60
+36500	pc	Системн.блок Celeron FSB 800MHz CPU	109
+36501	pc	Системн.блок Celeron FSB 800MHz CPU	203
+36502	pc	Системн.блок Celeron FSB 800MHz CPU	125
+36503	pc	Системн.блок Celeron FSB 800MHz CPU	58
+36504	pc	Системн.блок Celeron FSB 800MHz CPU	126
+36505	pc	Системн.блок Celeron FSB 800MHz CPU	130
+36506	pc	Системн.блок Celeron FSB 800MHz CPU	203
+36507	pc	Системн.блок Celeron FSB 800MHz CPU	203
+36508	pc	Системн.блок Celeron FSB 800MHz CPU	9
+36509	pc	Системн.блок Celeron FSB 800MHz CPU	96
+36510	pc	Системн.блок Celeron FSB 800MHz CPU	120
+36511	pc	Системн.блок Celeron FSB 800MHz CPU	203
+36512	pc	Системн.блок Celeron FSB 800MHz CPU	119
+36513	pc	Систем.блок Celeron FSB 800MHZ CPU	112
+36514	monitor	МОНИТОР ЕПТ 17"SAMSUNG 797DF	133
+36515	monitor	МОНИТОР ЕПТ 17"SAMSUNG 797DF	135
+36516	monitor	МОНИТОР ЕПТ 17"SAMSUNG 797DF	28
+36517	monitor	МОНИТОР ЕПТ 17"SAMSUNG 797DF	28
+36518	monitor	МОНИТОР ЕПТ 17"SAMSUNG 797DF	200
+36519	monitor	МОНИТОР ЕПТ 17"SAMSUNG 797DF	58
+36520	monitor	МОНИТОР ЕПТ 17"SAMSUNG 797DF	130
+36521	monitor	МОНИТОР ЕПТ 17"SAMSUNG 797DF	128
+36522	monitor	МОНИТОР ЕПТ 17"SAMSUNG 797DF	96
+36523	monitor	МОНИТОР ЕПТ 17"SAMSUNG 797DF	122
+36524	monitor	МОНИТОР ЕПТ 17"SAMSUNG 797DF	122
+36525	monitor	МОНИТОР ЕПТ 17"SAMSUNG 797DF	203
+36526	monitor	МОНИТОР ЕПТ 17"SAMSUNG 797DF	301
+36527	monitor	МОНИТОР ЕПТ 17"SAMSUNG 797DF	301
+36528	monitor	МОНИТОР ЕПТ 17"SAMSUNG 797DF	301
+36529	monitor	МОНИТОР ЕПТ 17"SAMSUNG 797DF	125
+36530	monitor	МОНИТОР ЕПТ 17"SAMSUNG 797DF	120
+36531	monitor	МОНИТОР ЕПТ 17"SAMSUNG 797DF	ОЧ
+36532	monitor	МОНИТОР ЕПТ 17"SAMSUNG 797DF	244
+36533	monitor	МОНИТОР ЕПТ 17"SAMSUNG 797DF	135
+36534	pc	Систем.блок Celeron FSB800MHz CPU	96
+36535	monitor	МОНИТОР ЕПТ 17"SAMSUNG 797DF	99
+36536	monitor	Монитор ЕПТ 17"Samsung 797DF"	28
+36537	monitor	Монитор ЕПТ 17"Samsung 797DF"	76
+36538	monitor	Монитор 17 "Samsung 793DF"	ОЧ
+36539	printer	Принтер Epson FX 890 и каб.BI-Centr.1.8m	130
+36540	printer	Принтер HP LJ 1320 и каб.BI-Centr.1.8m	9
+36555	mfu	Копир Canon MF 3228	106
+36556	mfu	Копир Canon MF 3228	9
+36557	mfu	Копир Canon MF 3228	125
+36558	mfu	Копир Canon MF 3228	203
+36576	pc	системный блок нр1 Р4М800РR0-V2/C3.06GHz	301
+36577	pc	системный блок нр1 Р4М800РR0-V2/C3.06GHz	404
+36578	pc	системный блок нр1 Р4М800РR0-V2/C3.06GHz	135
+36579	pc	системный блок нр1 Р4М800РR0-V2/C3.06GHz	135
+36580	pc	системный блок нр1 Р4М800РR0-V2/C3.06GHz	58
+36581	pc	системный блок нр1 Р4М800РR0-V2/C3.06GHz	120
+36582	pc	системный блок нр1 Р4М800РR0-V2/C3.06GHz	203
+36583	pc	системный блок нр1 Р4М800РR0-V2/C3.06GHz	215
+36584	pc	системный блок нр1 Р4М800РR0-V2/C3.06GHz	2 22121
+36585	pc	системный блок нр1 Р4М800РR0-V2/C3.06GHz	118
+36586	pc	системный блок нр1 Р4М800РR0-V2/C3.06GHz	304
+36587	pc	системный блок нр1 Р4М800РR0-V2/C3.06GHz	412
+36588	pc	системный блок нр1 Р4М800РR0-V2/C3.06GHz	106
+36589	monitor	монитор 17"Samsung 795 DF	125
+36590	monitor	монитор 17"Samsung 795 DF	120
+36591	monitor	монитор 17"Samsung 795 DF	135
+36592	monitor	монитор 17"Samsung 795 DF	112
+36593	monitor	монитор 17"Samsung 795 DF	135
+36594	monitor	монитор 17"Samsung 795 DF	30
+36595	monitor	Монитор 17" Samsung 795 DF	2 22121
+36596	monitor	Монитор 17" Samsung 795 DF	109
+36597	monitor	Монитор 17" Samsung 795 DF	109
+36598	monitor	Монитор 17" Samsung 795 DF	241
+36599	monitor	Монитор 17" Samsung 795 DF	109
+36600	monitor	Монитор 17" Samsung 795 DF	29
+36601	monitor	Монитор 17" Samsung 795 DF	118
+36604	poster		208
+36605	ups	АРС Smart-UPS 1500VA USB&Serial	банкомат
+36606	mfu	Canon LaserDaseMF3228	135
+36607	mfu	копир Canon LaserBase MF3228	131
+36608	mfu	копир Canon LaserBase MF3228	
+36609	mfu	копир Canon LaserBase MF3228	126
+36610	mfu	копир Canon LaserBase MF3228	121
+36611	mfu	копир Canon LaserBase MF3228	105
+36612	mfu	копир Canon LaserBase MF3228	96
+36613	mfu	копир Canon LaserBase MF3228	200
+36614	mfu	копир Canon LaserBase MF3228	54
+36615	mfu	копир Canon LaserBase MF3228	132
+36616	mfu	копир Canon LaserBase MF3228	118
+36618	kvm	переключатель D-Link DKVM-8E Pro Connect	210
+36622	server	Сервер к-кт нр1 PEDESTAL 7230/P	210
+36623	server	Сервер к-кт нр3 PEDESTAL 7520/2х	210
+36624	printer	Принтер Oki Microline ML1120	402
+36625	printer	Принтер Oki Microline ML5520	213
+36626	printer	Принтер Oki Microline ML5520	212
+36627	printer	Принтер Oki Microline ML5520	408
+36628	printer	Принтер Oki Microline ML5520	203
+36629	printer	Принтер Oki Microline ML5520	402
+36630	printer	Принтер Oki Microline ML5520	210
+36631	printer	Принтер Oki Microline ML5520	404
+36632	printer	Принтер Oki Microline ML5520	214
+36633	printer	Принтер Oki Microline ML5520	207
+36634	modem	Модем Dinamix UM SHDSL NTU	109
+36635	modem	Модем Dinamix UM SHDSL NTU	210
+36636	modem	Маршрутизатор ZyXEL 153X	210
+36647	modem	Модем DYNAMIX UM SHDSL NTU V.35V	210
+36648	modem	Модем DYNAMIX UM SHDSL NTU V.35V	210
+36649	cisco	МАРШРУТИЗАТОР CISCO 1005	210
+36675	fax	факс-модем U-1496 ZyXEL	203
+36677	printer	Принтер OKI Microline ML 5520	408
+36678	pc	Системный блок	135
+36679	pc	Системный блок	241
+36680	pc	Системный блок	135
+36681	monitor	Монитор  17"Samsung 793D	135
+36682	monitor	Монитор  17"Samsung 793D	135
+36683	monitor	Монитор  17"Samsung 793D	135
+36684	printer	Принтер матричный EPSON FX-890	2 22121
+36685	printer	Принтер матричный EPSON FX-890	118
+36686	printer	Принтер матричный EPSON FX-890	132
+36694	pc	Системный блок нр1	122
+36695	pc	Системный блок нр1	132
+36696	pc	Системный блок нр1	ОЧ
+36697	pc	Системный блок нр1	245
+36698	pc	Системный блок нр1	408
+36699	pc	Системный блок нр1	408
+36700	pc	Системный блок нр1	121
+36701	monitor	Монитор ЖК TFT17 ASUS VB171D	135
+36702	monitor	Монитор ЖК TFT17 ASUS VB171D	26
+36703	monitor	Монитор ЖК TFT17 ASUS VB171D	105
+36704	monitor	Монитор ЖК TFT17 ASUS VB171D	128
+36705	monitor	Монитор ЖК TFT17 ASUS VB171D	122
+36706	monitor	Монитор ЖК TFT17 ASUS VB171D	54
+36707	monitor	Монитор ЖК TFT17 ASUS VB171D	203
+36708	printer	Принтер матричный Epson FX 890	200
+36709	printer	Принтер матричный Epson FX 890	203
+36710	printer	Принтер матричный Epson FX 890	76
+36711	printer	Принтер матричный Epson FX 890	121
+36712	printer	Принтер матричный Epson FX 890	54
+36713	printer	Принтер матричный Epson FX 890	121
+36714	printer	Принтер матричный Epson FX 890	130
+36715	mfu	Canon LaserBase MF3228	2 22121
+36717	poster		208
+36718	poster		208
+36719	poster		208
+36726	modem	Модем DYNAMIX UM SHDSL NTU V.35V	4
+36727	modem	Модем DYNAMIX UM SHDSL NTU V.35V	118
+36729	cisco	Маршрутизатор CISCO 851-R9	банкомат
+36730	cisco	Маршрутизатор CISCO 851-R9	9
+36731	modem	Модем Dynamix UM-S	210
+36732	modem	Модем Dynamix UM-S	210
+36750	cisco	Маршрутизатор Cisco 831 IP/FW/IPS	112
+36751	modem	Модем DYNAMIX UM SHDSL NTU V.35V	210
+36752	modem	Модем DYNAMIX UM SHDSL NTU V.35V	4
+36755	cisco	Маршрутизатор CISCO 851-K9	8
+36756	cisco	Маршрутизатор CISCO 851-K9	210
+36757	modem	Модем DYNAMIX UM SHDSL NTU V.35V	210
+36758	modem	Модем DYNAMIX UM SHDSL NTU V.35V	210
+36867	pc	Системный блок Intel CelD420/P5	96
+36868	monitor	Монитор TFT 17 NEC 170 V	96
+36869	monitor	Монитор TFT 17 NEC 170 V	207
+36870	monitor	Монитор TFT 17 NEC 170 V	2 22121
+36871	monitor	Монитор TFT 17 NEC 170 V	409
+36872	monitor	Монитор TFT 17 NEC 170 V	410
+36873	printer	Принтер OKI B 6300 dn	207
+36874	pc	Системный блок Intel CelD420/P5	207
+36875	pc	Системный блок Intel CelD420/P5	410
+36876	pc	Системный блок Intel CelD420/P5	409
+36877	pc	Системный блок Intel CelD420/P5	135
+36879	cisco	Маршрутизатор CISCO 851 -K9	121
+36887	cisco	маршрутизатор Cisco 871-k9	122
+36890	ups	ИБП АРС Smart-UPS 1500VA USB & Serja 1230	210
+36891	modem	Модем DYNAMIX UM SHDSL NTU V.35V	210
+36933	cardreader	Ридеррайдер для СБОН	96
+36934	cisco	Маршрутизатор Cisco 871 K-9	29
+36940	monitor	Монитор BENQ 17" TFT	412
+36941	monitor	Монитор BENQ 17" TFT	412
+36942	monitor	Монитор BENQ 17" TFT	133
+36943	monitor	Монитор BENQ 17" TFT	127
+36944	monitor	Монитор BENQ 17" TFT	132
+36945	monitor	Монитор BENQ 17" TFT	118
+36946	monitor	Монитор BENQ 17" TFT	136
+36947	monitor	Монитор BENQ 17" TFT	124
+36948	monitor	Монитор BENQ 17" TFT	109
+36949	monitor	Монитор BENQ 17" TFT	412
+36950	monitor	Монитор BENQ 17" TFT	8
+36951	monitor	Монитор BENQ 17" TFT	203
+36952	monitor	Монитор BENQ 17" TFT	135
+36953	monitor	Монитор BENQ 17" TFT	106
+36954	monitor	Монитор BENQ 17" TFT	200
+36955	monitor	Монитор BENQ 17" TFT	60
+36956	monitor	Монитор BENQ 17" TFT	58
+36957	monitor	Монитор BENQ 17" TFT	120
+36958	monitor	Монитор BENQ 17" TFT	96
+36959	monitor	Монитор BENQ 17" TFT	131
+36960	monitor	Монитор BENQ 17" TFT	245
+36961	monitor	Монитор BENQ 17" TFT	126
+36962	monitor	Монитор BENQ 17" TFT	112
+36963	monitor	Монитор BENQ 17" TFT	121
+36964	monitor	Монитор BENQ 17" TFT	95
+36965	monitor	Монитор BENQ 17" TFT	401
+36966	monitor	Монитор BENQ 17" TFT	203
+36967	monitor	Монитор BENQ 17" TFT	125
+36968	monitor	Монитор BENQ 17" TFT	76
+36969	printer	ПРИНТЕР EPSON FX 890	122
+36970	printer	ПРИНТЕР EPSON FX 890	96
+36971	printer	ПРИНТЕР EPSON FX 890	135
+36972	printer	ПРИНТЕР EPSON FX 890	135
+36973	printer	ПРИНТЕР EPSON FX 890	2 22121
+36974	printer	ПРИНТЕР EPSON FX 890	200
+36975	printer	ПРИНТЕР EPSON FX 890	97
+36976	printer	ПРИНТЕР EPSON FX 890	203
+36977	printer	ПРИНТЕР EPSON FX 890	106
+36978	printer	ПРИНТЕР EPSON FX 890	120
+36979	printer	ПРИНТЕР EPSON FX 890	132
+36980	printer	ПРИНТЕР EPSON FX 890	130
+36981	printer	ПРИНТЕР EPSON FX 890	95
+36982	printer	ПРИНТЕР EPSON FX 890	26
+36983	printer	ПРИНТЕР EPSON FX 890	200
+36984	printer	ПРИНТЕР EPSON FX 890	126
+36985	printer	ПРИНТЕР EPSON FX 890	58
+36986	printer	ПРИНТЕР EPSON FX 890	76
+36987	printer	ПРИНТЕР EPSON FX 890	58
+36988	printer	ПРИНТЕР EPSON FX 890	135
+36989	printer	ПРИНТЕР EPSON FX 890	122
+36990	printer	ПРИНТЕР EPSON FX 890	118
+36991	printer	ПРИНТЕР EPSON FX 890	125
+36992	printer	ПРИНТЕР EPSON FX 890	135
+36993	printer	ПРИНТЕР EPSON FX 890	126
+36994	printer	Принтер OKI B2400	203
+36995	printer	Принтер OKI B2400	135
+36996	printer	Принтер OKI 6250	407
+36997	printer	принтер EPSON FDX 9000s	304
+36998	printer	принтер EPSON FDX 9000s	204
+36999	pc	СИСТЕМ.БЛОК №1А CELERON 1.8GHz/1Gb/160Gb	130
+37000	pc	СИСТЕМ.БЛОК №1А CELERON 1.8GHz/1Gb/160Gb	408
+37001	pc	СИСТЕМ.БЛОК №1А CELERON 1.8GHz/1Gb/160Gb	124
+37002	pc	СИСТЕМ.БЛОК №1Б CELERON 1.8GHz/1Gb/160Gb	128
+37003	pc	СИСТЕМ.БЛОК №1Б CELERON 1.8GHz/1Gb/160Gb	58
+37004	pc	СИСТЕМ.БЛОК №1Б CELERON 1.8GHz/1Gb/160Gb	203
+37005	pc	СИСТЕМ.БЛОК №1 CELERON 1.8GHz/1Gb/160Gb	2 22121
+37006	pc	СИСТЕМ.БЛОК №1 CELERON 1.8GHz/1Gb/160Gb	200
+37007	pc	СИСТЕМ.БЛОК №1 CELERON 1.8GHz/1Gb/160Gb	126
+37008	pc	СИСТЕМ.БЛОК №1 CELERON 1.8GHz/1Gb/160Gb	203
+37009	pc	СИСТЕМ.БЛОК №1 CELERON 1.8GHz/1Gb/160Gb	76
+37010	pc	СИСТЕМ.БЛОК №1 CELERON 1.8GHz/1Gb/160Gb	128
+37011	pc	СИСТЕМ.БЛОК №1 CELERON 1.8GHz/1Gb/160Gb	126
+37012	pc	СИСТЕМ.БЛОК №1 CELERON 1.8GHz/1Gb/160Gb	132
+37013	pc	СИСТЕМ.БЛОК №1 CELERON 1.8GHz/1Gb/160Gb	76
+37014	pc	СИСТЕМ.БЛОК №1 CELERON 1.8GHz/1Gb/160Gb	118
+37015	pc	СИСТЕМ.БЛОК №1 CELERON 1.8GHz/1Gb/160Gb	301
+37016	pc	СИСТЕМ.БЛОК №1 CELERON 1.8GHz/1Gb/160Gb	135
+37017	pc	СИСТЕМ.БЛОК №1 CELERON 1.8GHz/1Gb/160Gb	203
+37018	pc	СИСТЕМ.БЛОК №1 CELERON 1.8GHz/1Gb/160Gb	203
+37019	pc	СИСТЕМ.БЛОК №1 CELERON 1.8GHz/1Gb/160Gb	301
+37020	pc	СИСТЕМ.БЛОК №1 CELERON 1.8GHz/1Gb/160Gb	406
+37021	pc	СИСТЕМ.БЛОК №1 CELERON 1.8GHz/1Gb/160Gb	301
+37022	pc	СИСТЕМ.БЛОК №1 CELERON 1.8GHz/1Gb/160Gb	405
+37023	pc	СИСТЕМ.БЛОК №1 CELERON 1.8GHz/1Gb/160Gb	121
+37024	pc	СИСТЕМ.БЛОК №1 CELERON 1.8GHz/1Gb/160Gb	136
+37025	pc	СИСТЕМ.БЛОК №1 CELERON 1.8GHz/1Gb/160Gb	118
+37026	pc	СИСТЕМ.БЛОК №1 CELERON 1.8GHz/1Gb/160Gb	96
+37027	pc	СИСТЕМ.БЛОК №1 CELERON 1.8GHz/1Gb/160Gb	130
+37094	cisco	Маршрутизатор CISCO 851-K9	60
+37095	pc	Систем.блок №2 DUO Core 2.2 /1G/320G	203
+37096	monitor	Монитор 17" TFT	210
+37097	ups	ИБП АРС Smart-UPS 1500VA USB & Serjal	банкмат
+37098	ups	ИБП АРС Smart-UPS 1500VA USB & Serjal	203
+37099	ups	ИБП АРС Smart-UPS 1500VA USB & Serjal	банкомат
+37100	ups	ИБП АРС Smart-UPS 1500VA USB & Serjal	банкомат
+37101	ups	ИБП АРС Smart-UPS 1500VA USB & Serjal	банкомат
+37102	ups	ИБП АРС Smart-UPS 1500VA USB & Serjal	203
+37138	ups	Нормализатор сетевого напряжения HOHC-4000	203
+37138	ups	Нормализатор напряжения НОНС-4000	208
+37143	printer	ПРИНТЕР EPSON FX 890	58
+37144	mfu	ксерокс 3200 MFP	201
+37145	pc	Компьютер Celeron 600 	30
+37146	pc	Компьютер P-III	30
+37147	pc	Компьютер Celeron 667	30
+37148	pc	Компьютер Celeron 667	30
+37152	cisco	Маршрутизатор CISCO 851-K9	124
+37153	cisco	Маршрутизатор Cisco 2811	210
+37178	cisco	маршрутизатор Cisco 871-k9	131
+37179	printer	ПРИНТЕР EPSON FX 890	30
+37180	printer	ПРИНТЕР EPSON FX 890	124
+37181	printer	ПРИНТЕР EPSON FX 890	8
+37182	printer	ПРИНТЕР EPSON FX 890	109
+37183	printer	ПРИНТЕР EPSON FX 890	203
+37184	printer	Принтер Epson FX 2190	203
+37189	pc	Сист.блок №2 DUO Core 2.2/1G/320G	203
+37190	monitor	Монитор 17" TFT	105
+37191	monitor	Монитор 17" TFT	210
+37192	pc	сист.блок №1 Celeron 1.8GHz	135
+37193	pc	сист.блок №1 Celeron 1.8GHz	ОЧ
+37200	pc	Блок систем.нр 1	112
+37201	pc	Блок систем.нр 1	406
+37202	pc	Блок систем.нр 1	77
+37203	pc	Блок систем.нр 1	128
+37204	pc	Блок систем.нр 1	200
+37205	pc	Блок систем.нр 1	4
+37206	pc	Блок систем.нр 1	203
+37207	monitor	монитор ТЕТ LG 17 Flatron	9
+37208	monitor	монитор ТЕТ LG 17 Flatron	203
+37209	monitor	монитор ТЕТ LG 17 Flatron	130
+37210	monitor	монитор ТЕТ LG 17 Flatron	128
+37211	monitor	монитор ТЕТ LG 17 Flatron	ОЧ
+37212	monitor	монитор ТЕТ LG 17 Flatron	4
+37213	monitor	монитор ТЕТ LG 17 Flatron	203
+37214	printer	ПРИНТЕР EPSON FX 890	96
+37215	printer	ПРИНТЕР EPSON FX 890	77
+37216	printer	ПРИНТЕР EPSON FX 890	109
+37217	printer	ПРИНТЕР EPSON FX 890	131
+37218	printer	ПРИНТЕР EPSON FX 890	126
+37219	printer	ПРИНТЕР EPSON FX 890	128
+37220	printer	ПРИНТЕР EPSON FX 890	120
+37221	printer	Принтер OKI 6250 DN	410
+37222	printer	Принтер OKI 6250 DN	210
+37223	ups	ИБП APC SMART-UPS 1500 VA	4
+37224	ups	ИБП APC SMART-UPS 1500 VA	210
+37225	ups	ИБП APC SMART-UPS 1500 VA	210
+37226	ups	ИБП APC SMART-UPS 1500 VA	210
+37227	server	сервер комп.нр 1 корп.Tower Intel	210
+37228	server	сервер комп.нр 1 корп.Tower Intel	210
+37229	cisco	CISCO IP Phone 7911	207
+37242	pc	Компьютер Everest 656	200
+37243	pc	компьютер Celeron 1300	200
+37244	pc	компьютер Mistral Plus 4	8
+37245	pc	компьютер Celeron 1000A	112
+37246	pc	компьютер Celeron 1000A	96
+37247	cisco	маршрутизатор Cisco 871-k9	26
+37248	cisco	Маршрутизатор Сisco 851-k-9	125
+37250	cisco	Маршрутизатор Cisco 851 K9	банкомат
+37259	ups	ИБП APC Smart-UPS 100 VA	банкомат
+37260	cisco	Маршрутизатор Cisco 881	банкомат
+37266	printer	ПРИНТЕР EPSON FX 890	112
+37268	cisco	Маршрутизатор Cisco 881	58
+37274	printer	принтер Persona C30e	4
+37275	printer	ПРИНТЕР EPSON FX 890	128
+37276	printer	ПРИНТЕР EPSON FX 890	2 22121
+37277	printer	ПРИНТЕР EPSON FX 890	121
+37278	printer	ПРИНТЕР EPSON FX 890	133
+37279	printer	ПРИНТЕР EPSON FX 890	58
+37280	mfu	МФУ Canon LaserBase MF 4018	203
+37284	ups	ИБП АРС Smart-UPS 1500VA	банкомат
+37285	ups	ИБП АРС Smart-UPS 1500VA	203
+37286	cisco	Маршрутизатор Cisco 881-k9	банкомат
+37307	printer	ПРИНТЕР EPSON FX 890	77
+37308	pc	Компьютер Celeron 667	30
+37309	pc	Компьютер Pentium 667	30
+37310	pc	Компьютер Pentium 667	30
+37311	cardreader	Авомат.уст-во счит.инф.АРР-206-3	4
+37312	cisco	Маршрутизатор Cisco 881	76
+37313	cisco	Маршрутизатор Cisco 881	106
+37325	pc	Компьютер Сeleron 1200MHz/128Mb	30
+37326	pc	Компьютер Samsung	128
+37327	pc	Компьютер Pentium III-733/128Mb/30Gb	120
+37328	pc	Компьютер Pentium III-733/128Mb/30Gb	30
+37332	cisco	Маршрутизатор Cisco 881-k9	203
+37333	pc	Системный блок Celeron i915GL 2.67 512Mb 80Gb SATA	203
+37334	monitor	Монитор Samsung 797 Mb	135
+37342	cisco	Маршрутизатор CISCO 881 K-9	128
+37343	cisco	Маршрутизатор CISCO 881 K-9	126
+37370	monitor	Монитор TFT LG 17 Flatron L 1734 S Silver	97
+37371	monitor	Монитор TFT LG 17 Flatron L 1734 S Silver	1
+37372	monitor	Монитор 19 ЖК Benq G 900 AD	202
+37375	monitor	Монитор TFT LG 17 Flatron L 1734 S Silver	241
+37376	pc	Блок системный hp 1Intel Celeron E 3300	203
+37400	monitor	Монитор ЕПТ 17" Samsung 797MB	8
+37422	cisco	Маршрутизатор Cisco 881-k9	120
+37423	cisco	Маршрутизатор Cisco 881-k9	банкомат
+37424	cisco	Маршрутизатор Cisco 881-k9	банкомат
+37425	cisco	Маршрутизатор CISCO 881 K-9	банкомат
+37426	cisco	Маршрутизатор CISCO 881 K-9	130
+37427	cisco	Маршрутизатор CISCO 881 K-9	2 22121
+37428	pc	Компьютер Samsung	109
+37429	cisco	Маршрутизатор CISCO 881 K-9	54
+37430	cisco	Маршрутизатор CISCO 881 K-9	97
+37431	cisco	Маршрутизатор CISCO 881 K-9	105
+37432	cisco	Маршрутизатор CISCO 881 K-9	127
+37433	cisco	Маршрутизатор CISCO 881 K-9	132
+37434	cisco	Маршрутизатор CISCO 881 K-9	банкомат
+37435	pc	Системный блок №1	212
+37436	monitor	Монитор LG 19" W1943SS-PF	203
+37437	mfu	МФУ Canon LaserBase MF 4018	406
+37438	pc	ПК Pentium III 550\128\40.0Gb	112
+37439	pc	Блок системный нр1	125
+37440	printer	Принтер матричный А4 Epson FX-890	136
+37441	printer	Принтер матричный А4 Epson FX-890	135
+37442	printer	Принтер матричный А4 Epson FX-890	132
+37443	printer	Принтер матричный А4 Epson FX-890	135
+37444	pc	Компьютер CELERON-1300	30
+37445	cisco	Маршрутизатор CISCO 881 K-9	133
+37446	monitor	Монитор LG 19" W1943SS-PF	204
+37447	pc	Компьютер Pentium III-667	401
+37449	cisco	Маршрутизатор Cisco 881-k9	95
+37450	cisco	Маршрутизатор Cisco 881-k9	банкомат
+37456	cisco	Маршрутизатор Cisco 881-k9	136
+37458	mfu	Многофункц.уст-во тип 5:Canon I-SENSYS MF4410	403
+37459	mfu	Многофункц.уст-во тип 5:Canon I-SENSYS MF4410	213
+37460	mfu	Многофункц.уст-во тип 5:Canon I-SENSYS MF4410	407
+37461	mfu	Многофункц.уст-во тип 5:Canon I-SENSYS MF4410	95
+37462	mfu	Многофункц.уст-во тип 5:Canon I-SENSYS MF4410	133
+37463	mfu	Многофункц.уст-во тип 5:Canon I-SENSYS MF4410	214
+37464	mfu	Многофункц.уст-во тип 5:Canon I-SENSYS MF4410	ОЧ
+37465	mfu	Многофункц.уст-во тип 5:Canon I-SENSYS MF4410	408
+37466	mfu	Многофункц.уст-во тип 5:Canon I-SENSYS MF4410	4
+37467	mfu	Многофункц.уст-во тип 5:Canon I-SENSYS MF4410	97
+37468	mfu	Многофункц.уст-во тип 5:Canon I-SENSYS MF4410	410
+37469	mfu	Многофункц.уст-во тип 5:Canon I-SENSYS MF4410	412
+37470	mfu	Многофункц.уст-во тип 5:Canon I-SENSYS MF4410	112
+37471	mfu	Многофункц.уст-во тип 5:Canon I-SENSYS MF4410	127
+37472	ups	ИБП APC Smart 1500 NET USB	банкомат
+37473	ups	ИБП APC Smart 1500 NET USB	банкомат
+37474	ups	ИБП APC Smart 1500 NET USB	210
+37475	ups	ИБП APC Smart 1500 NET USB	210
+37476	printer	Принтер матричн.тип6:ОКI ML5720 eco	ОЧ
+37477	printer	Принтер матричн.тип6:ОКI ML5720 eco	301
+37478	printer	Принтер матричн.тип6:ОКI ML5720 eco	406
+37479	printer	Принтер матричн.тип6:ОКI ML5720 eco	203
+37480	printer	Принтер матричн.тип6:ОКI ML5720 eco	406
+37481	printer	Принтер матричн.тип6:ОКI ML5720 eco	401
+37482	printer	Принтер матричн.тип6:ОКI ML5720 eco	301
+37483	printer	Принтер матричн.тип6:ОКI ML5720 eco	406
+37484	printer	Принтер матричн.тип6:ОКI ML5720 eco	213
+37485	printer	Принтер матричн.тип6:ОКI ML5720 eco	301
+37486	printer	Принтер матричн.тип6:ОКI ML5720 eco	ОЧ
+37487	printer	Принтер матричн.тип6:ОКI ML5720 eco	301
+37488	printer	Принтер матричн.тип6:ОКI ML5720 eco	301
+37489	printer	Монохромн.лазерн.принтер тип 1:Canon i-SENSYS LBP6000	203
+37490	printer	Монохромн.лазерн.принтер тип 1:Canon i-SENSYS LBP6000	99
+37491	printer	Монохромн.лазерн.принтер тип 1:Canon i-SENSYS LBP6000	203
+37492	printer	Монохромн.лазерн.принтер тип 1:Canon i-SENSYS LBP6000	203
+37493	printer	Монохромн.лазерн.принтер тип2:Canon i-SENSYS LBP6000 с резервн.катр.	215
+37494	pc	Блок сист.№1:Impression CM 0311	1
+37495	pc	Блок сист.№1:Impression CM 0311	304
+37496	pc	Блок сист.№1:Impression CM 0311	301
+37497	pc	Блок сист.№1:Impression CM 0311	207
+37498	pc	Блок сист.№1:Impression CM 0311	77
+37499	pc	Блок сист.№1:Impression CM 0311	215
+37500	pc	Блок сист.№1:Impression CM 0311	124
+37501	pc	Блок сист.№1:Impression CM 0311	407
+37502	pc	Блок сист.№1:Impression CM 0311	1
+37503	pc	Блок сист.№1:Impression CM 0311	121
+37504	pc	Блок сист.№1:Impression CM 0311	301
+37505	pc	Блок сист.№1:Impression CM 0311	410
+37506	pc	Блок сист.№1:Impression CM 0311	203
+37507	pc	Блок сист.№1:Impression CM 0311	30
+37508	pc	Блок сист.№1:Impression CM 0311	406
+37509	pc	Блок сист.№1:Impression CM 0311	410
+37510	pc	Блок сист.№1:Impression CM 0311	241
+37511	pc	Блок сист.№1:Impression CM 0311	214
+37512	pc	Блок сист.№1:Impression CM 0311	26
+37513	pc	Блок сист.№1:Impression CM 0311	202
+37514	pc	Блок сист.№1:Impression CM 0311	213
+37515	pc	Блок сист.№1:Impression CM 0311	28
+37516	pc	Блок сист.№1:Impression CM 0311	203
+37517	pc	Блок сист.№1:Impression CM 0311	406
+37518	pc	Блок сист.№1:Impression CM 0311	410
+37519	pc	Блок сист.№1:Impression CM 0311	406
+37520	pc	Блок сист.№1:Impression CM 0311	408
+37521	pc	Блок сист.№1:Impression CM 0311	301
+37522	pc	Блок сист.№1:Impression CM 0311	407
+37523	pc	Блок сист.№1:Impression CM 0311	28
+37524	pc	Блок сист.№1:Impression CM 0311	203
+37525	pc	Блок сист.№1:Impression CM 0311	127
+37526	pc	Блок сист.№1:Impression CM 0311	214
+37527	pc	Блок сист.№1:Impression CM 0311	410
+37528	pc	Блок сист.№1:Impression CM 0311	203
+37529	pc	Блок сист.№1:Impression CM 0311	301
+37530	pc	Блок сист.№1:Impression CM 0311	203
+37531	pc	Блок сист.№1:Impression CM 0311	304
+37532	pc	Блок сист.№1:Impression CM 0311	214
+37533	pc	Блок сист.№1:Impression CM 0311	203
+37534	pc	Блок сист.№1:Impression CM 0311	403
+37535	pc	Блок сист.№1:Impression CM 0311	412
+37536	pc	Блок сист.№1:Impression CM 0311	77
+37537	pc	Блок сист.№1:Impression CM 0311	201
+37538	pc	Блок сист.№1:Impression CM 0311	28
+37539	pc	Блок сист.№1:Impression CM 0311	243
+37540	pc	Блок сист.№1:Impression CM 0311	2 22121
+37541	pc	Блок сист.№1:Impression CM 0311	301
+37542	pc	Блок сист.№1:Impression CM 0311	407
+37543	pc	Блок сист.№1:Impression CM 0311	215
+37544	pc	Блок сист.№1:Impression CM 0311	407
+37545	pc	Блок сист.№1:Impression CM 0311	8
+37546	pc	Блок сист.№1:Impression CM 0311	130
+37547	pc	Блок сист.№1:Impression CM 0311	109
+37548	pc	Блок сист.№1:Impression CM 0311	58
+37549	pc	Блок сист.№1:Impression CM 0311	213
+37550	pc	Блок сист.№1:Impression CM 0311	213
+37551	pc	Блок сист.№1:Impression CM 0311	203
+37552	pc	Блок сист.№1:Impression CM 0311	77
+37553	pc	Блок сист.№1:Impression CM 0311	212
+37554	pc	Блок сист.№1:Impression CM 0311	408
+37555	pc	Блок сист.№1:Impression CM 0311	97
+37556	pc	Блок сист.№1:Impression CM 0311	402
+37557	pc	Блок сист.№1:Impression CM 0311	301
+37558	pc	Блок сист.№1:Impression CM 0311	301
+37559	monitor	монитор TFT 18,5 " LG Flatron E1940S	301
+37560	monitor	монитор TFT 18,5 " LG Flatron E1940S	213
+37561	monitor	монитор TFT 18,5 " LG Flatron E1940S	402
+37562	monitor	монитор TFT 18,5 " LG Flatron E1940S	203
+37563	monitor	монитор TFT 18,5 " LG Flatron E1940S	214
+37564	monitor	монитор TFT 18,5 " LG Flatron E1940S	212
+37565	monitor	монитор TFT 18,5 " LG Flatron E1940S	212
+37566	monitor	монитор TFT 18,5 " LG Flatron E1940S	214
+37567	monitor	монитор TFT 18,5 " LG Flatron E1940S	213
+37568	monitor	монитор TFT 18,5 " LG Flatron E1940S	203
+37569	monitor	монитор TFT 18,5 " LG Flatron E1940S	204
+37570	monitor	монитор TFT 18,5 " LG Flatron E1940S	407
+37571	monitor	монитор TFT 18,5 " LG Flatron E1940S	201
+37572	monitor	монитор TFT 18,5 " LG Flatron E1940S	410
+37573	monitor	монитор TFT 18,5 " LG Flatron E1940S	203
+37574	monitor	монитор TFT 18,5 " LG Flatron E1940S	203
+37575	monitor	монитор TFT 18,5 " LG Flatron E1940S	304
+37576	monitor	монитор TFT 18,5 " LG Flatron E1940S	212
+37577	monitor	монитор TFT 18,5 " LG Flatron E1940S	127
+37578	monitor	монитор TFT 18,5 " LG Flatron E1940S	212
+37579	monitor	монитор TFT 18,5 " LG Flatron E1940S	407
+37580	monitor	монитор TFT 18,5 " LG Flatron E1940S	124
+37581	monitor	монитор TFT 18,5 " LG Flatron E1940S	301
+37582	monitor	монитор TFT 18,5 " LG Flatron E1940S	304
+37583	monitor	монитор TFT 18,5 " LG Flatron E1940S	301
+37584	monitor	монитор TFT 18,5 " LG Flatron E1940S	410
+37585	monitor	монитор TFT 18,5 " LG Flatron E1940S	407
+37586	monitor	монитор TFT 18,5 " LG Flatron E1940S	301
+37587	monitor	монитор TFT 18,5 " LG Flatron E1940S	304
+37588	monitor	монитор TFT 18,5 " LG Flatron E1940S	203
+37589	monitor	монитор TFT 18,5 " LG Flatron E1940S	410
+37590	monitor	монитор TFT 18,5 " LG Flatron E1940S	8
+37591	monitor	монитор TFT 18,5 " LG Flatron E1940S	128
+37592	monitor	монитор TFT 18,5 " LG Flatron E1940S	2 22121
+37593	monitor	монитор TFT 18,5 " LG Flatron E1940S	203
+37594	monitor	монитор TFT 18,5 " LG Flatron E1940S	135
+37595	monitor	монитор TFT 18,5 " LG Flatron E1940S	207
+37596	monitor	монитор TFT 18,5 " LG Flatron E1940S	408
+37597	monitor	монитор TFT 18,5 " LG Flatron E1940S	213
+37598	monitor	монитор TFT 18,5 " LG Flatron E1940S	406
+37599	monitor	монитор TFT 18,5 " LG Flatron E1940S	408
+37600	monitor	монитор TFT 18,5 " LG Flatron E1940S	406
+37601	monitor	монитор TFT 18,5 " LG Flatron E1940S	406
+37602	monitor	монитор TFT 18,5 " LG Flatron E1940S	304
+37603	monitor	монитор TFT 18,5 " LG Flatron E1940S	301
+37604	monitor	монитор TFT 18,5 " LG Flatron E1940S	410
+37605	monitor	монитор TFT 18,5 " LG Flatron E1940S	408
+37606	monitor	монитор TFT 18,5 " LG Flatron E1940S	215
+37607	monitor	монитор TFT 18,5 " LG Flatron E1940S	408
+37608	monitor	монитор TFT 18,5 " LG Flatron E1940S	215
+37609	monitor	монитор TFT 18,5 " LG Flatron E1940S	213
+37610	monitor	монитор TFT 18,5 " LG Flatron E1940S	203
+37611	monitor	монитор TFT 18,5 " LG Flatron E1940S	406
+37612	monitor	монитор TFT 18,5 " LG Flatron E1940S	203
+37613	monitor	монитор TFT 18,5 " LG Flatron E1940S	408
+37614	monitor	монитор TFT 18,5 " LG Flatron E1940S	407
+37615	monitor	монитор TFT 18,5 " LG Flatron E1940S	403
+37616	monitor	монитор TFT 18,5 " LG Flatron E1940S	1
+37617	monitor	монитор TFT 18,5 " LG Flatron E1940S	203
+37618	monitor	монитор TFT 18,5 " LG Flatron E1940S	214
+37619	monitor	монитор TFT 18,5 " LG Flatron E1940S	203
+37620	monitor	монитор TFT 18,5 " LG Flatron E1940S	215
+37621	monitor	монитор TFT 18,5 " LG Flatron E1940S	215
+37622	monitor	монитор TFT 18,5 " LG Flatron E1940S	412
+37623	monitor	монитор TFT 18,5 " LG Flatron E1940S	119
+37624	mfu	Многофункц.устр-во тип6:Саnon i-Sensys MF4410 с резервн.картр.	58
+37625	mfu	Многофункц.устр-во тип6:Саnon i-Sensys MF4410 с резервн.картр.	136
+37626	pc	Блок сист.№2:Impression P+0311	203
+37627	ups	Ист.беспереб.пит-я АРС Smart 1500NET USB	203
+37628	monitor	монитор TFT 18,5 " LG Flatron E1940S	203
+37629	printer	принтер Persona C30e	77
+37630	pc	Компьютер Samsung	105
+37631	pc	Компьютер Samsung	244
+37632	pc	Системный блок i915 GL Celeron 2.53 256Mb SATA	127
+37633	monitor	Монитор ЕПТ 17" Samsung 797MB	132
+37634	monitor	Монитор Samsung 793 DF	403
+37635	pc	Сист.блок №2:CPU Intel Celeron 2.53GHz 256Mb/HDD 40Gb	124
+37636	monitor	Монитор 17"Samsung 795DF	58
+37637	monitor	Монитор ЕПТ 17" Samsung 797MB	404
+37638	monitor	Монитор Samsung 795  DF	109
+37639	monitor	Монитор 17"Samsung 795DF	132
+37640	monitor	Монитор 17"Samsung 795DF	58
+37641	pc	Системный блок №1 P4 M800 PRO-M2/C3	122
+37642	pc	Системный блок РАР800-VLM Celeron 256Mb	95
+37664	cisco	Маршрутизатор Cisco 881-k9	банкомат
+37700	mfu	Многофункц.устр-во тип6:Саnon i-Sensys MF4410 с резервн.картр.	244
+37701	pc	Компьютер Samsung	127
+37702	pc	Компьютер Samsung	133
+37703	pc	Компьютер Samsung	95
+37704	pc	Системный блок Celeron i915GL 2.67 512Mb 80Gb SATA	401
+37705	pc	Системный блок №1 P4 M800 PRO-M2/C3	118
+37706	pc	Системный блок №1 P4 M800 PRO-M2/C3	118
+37707	pc	Системный блок №1 P4 M800 PRO-M2/C3	203
+37708	pc	Системный блок №1 P4 M800 PRO-M2/C3	122
+37709	monitor	Монитор ЕПТ 17" Samsung 797 DF	2 22121
+37710	monitor	Монитор Samsung 797 Mb	132
+37711	monitor	Монитор Samsung 793 DF	204
+37712	monitor	Монитор 17" Samsung 795 DF	2 22121
+37713	monitor	Монитор 17" Samsung 793D	118
+37714	pc	Компьютер Pentium III-667	135
+37715	pc	Компьютер Celeron 1100	133
+37733	cisco	Маршрутизатор CISCO 881 K-9	банкомат
+37740	cisco	Маршрутизатор CISCO 881 K-9	банкомат
+37754	phone	IP телефон Cisco IP Phone CP-7942G	202
+37755	zip	Автоматич.устр-во зап-счит. информ. 3МК	77
+37756	printer	Термопринтер : Fargo Persona C30	203
+37757	cisco	Маршрутизатор Cisco 881-k9	банкомат
+37758	printer	Принтер матричн.тип6:ОКI ML5720 eco	ОЧ
+37759	mfu	Многофункц.уст-во тип 5:Canon I-SENSYS MF4410	212
+37760	mfu	Многофункц.уст-во тип 5:Canon I-SENSYS MF4410	203
+37761	mfu	Многофункц.устр-во тип6:Саnon i-Sensys MF4410 с резервн.картр.	77
+37765	pc	Блок сист.№1:Impression CM 0311	135
+37772	pc	Блок сист.№1:Impression CM 0311	203
+37773	pc	Блок сист.№1:Impression CM 0311	132
+37774	pc	Блок сист.№1:Impression CM 0311	410
+37775	pc	Блок сист.№1:Impression CM 0311	126
+37776	pc	Блок сист.№1:Impression CM 0311	135
+37777	pc	Блок сист.№1:Impression CM 0311	200
+37778	pc	Блок сист.№1:Impression CM 0311	135
+37779	pc	Блок сист.№1:Impression CM 0311	203
+37780	pc	Блок сист.№1:Impression CM 0311	203
+37783	monitor	Монитор ЕПТ 17 Samsung 797 MB	121
+37784	monitor	Монитор ЕПТ 17" Samsung 797MB	126
+37785	monitor	Монитор ЕПТ 17" Samsung 797MB	130
+37786	monitor	Монитор ЕПТ 17" Samsung 797MB	121
+37788	monitor	Монитор ЕПТ 17" Samsung 797DF	203
+40698	pc	Системный блок	203
+40699	pc	Системный блок	203
+40700	pc	Системный блок	203
+40701	pc	Системный блок	203
+40702	pc	Системный блок	203
+40703	pc	Системный блок	203
+40704	pc	Системный блок	203
+40705	pc	Системный блок	203
+40706	pc	Системный блок	203
+40707	pc	Системный блок	203
+40716	ups	БП CP-PWR	203
+40718	phone	Cisco IP Phone CP-7911G	203
+40719	phone	Cisco IP Phone CP-7911G	203
+40720	printer	Принтер OKI L5720	ОЧ
+41105	monitor	Монитор	405
+41106	pc	Системный блок	405
+41107	mfu	МФУ	405
+41112	modem	модем Dynamix	96
+41113	cisco	маршрутизатор Cisco 881	96
+ghngjm	pc	ghkmg	11224
+ОН38019	scaner	Сканер	215
+ОН38053	modem	Модем "Accorp" V90k 56k	203
+ОН38054	modem	Модем "Accorp" V90k 56k	203
+ОН38182	cardreader	Картридер	203
+ОН38183	cardreader	Картридер	203
+ОН38184	cardreader	Картридер	203
+ОН38185	cardreader	Картридер	203
+ОН38189	pin	Пин-клавиатура	203
+ОН38190	pin	Пин-клавиатура	112
+ОН38191	pin	Пин-клавиатура	203
+ОН38197	modem	Модем ACCORN-V90K	210
+ОН38198	modem	Модем ACCORN-V90K	210
+ОН38252	audio	Динамики	203
+ОН38282	ups	UPS CS 500 VA APC Back	407
+ОН38284	ups	UPS CS 500 VA APC Back	203
+ОН38285	ups	UPS CS 500 VA APC Back	203
+ОН38392	modem	Модем GVS 56 KSF	4
+ОН38393	modem	Модем GVS 56 KSF	210
+ОН38473	ups	APC BACK-UPS CS 500-BK500-RS	58
+ОН38474	ups	APC BACK-UPS CS 500-BK500-RS	207
+ОН38475	ups	APC BACK-UPS CS 500-BK500-RS	407
+ОН38476	ups	APC BACK-UPS CS 500-BK500-RS	201
+ОН38477	ups	APC BACK-UPS CS 500-BK500-RS	301
+ОН38478	ups	APC BACK-UPS CS 500-BK500-RS	301
+ОН38479	ups	APC BACK-UPS CS 500-BK500-RS	58
+ОН38480	ups	APC BACK-UPS CS 500-BK500-RS	105
+ОН38481	ups	APC BACK-UPS CS 500-BK500-RS	403
+ОН38482	ups	APC BACK-UPS CS 500-BK500-RS	203
+ОН38707	ups	APC BACK-UPS ES 525VA (BE525-RS)	127
+ОН38708	ups	APC BACK-UPS ES 525VA (BE525-RS)	301
+ОН38709	ups	APC BACK-UPS ES 525VA (BE525-RS)	203
+ОН39103	video	Видеокамера	208
+ОН39104	ups	АРС Black-UPS ES 525	130
+ОН39105	ups	АРС Black-UPS ES 525	132
+ОН39149	ups	ИБП АРС Black-UPS ES 525	96
+ОН39150	ups	ИБП АРС Black-UPS ES 525	203
+ОН39151	ups	ИБП АРС Black-UPS ES 525	4
+ОН39152	ups	ИБП АРС Black-UPS ES 525	120
+ОН39153	ups	ИБП АРС Black-UPS ES 525	203
+ОН39154	ups	ИБП АРС Black-UPS ES 525	408
+ОН39155	ups	ИБП АРС Black-UPS ES 525	127
+ОН39182	ups	АРС Black UPS ES 525	ОЧ
+ОН39183	ups	АРС Black-UPS ES 525	118
+ОН39298	ups	ИБП АРС Black-UPS ES 525	406
+ОН39299	mfu	многофункц.уст-во Xerox WC3119	26
+ОН39300	mfu	многофункц.уст-во Xerox WC3119	130
+ОН39434	mfu	многофункц.устр-во Xerox WC3119	109
+ОН39436	ups	Блок беспереб.питания 500VA	122
+ОН39437	ups	Блок беспереб.питания 500VA	203
+ОН39438	modem	Модем ADSL	122
+ОН39500	pin	Пин-клавиатура для СБОН	244
+ОН39501	pin	Пин-клавиатура для СБОН	121
+ОН39502	pin	Пин-клавиатура для СБОН	118
+ОН39503	pin	Пин-клавиатура для СБОН	76
+ОН39504	pin	Пин-клавиатура для СБОН	203
+ОН39505	pin	Пин-клавиатура для СБОН	26
+ОН39506	pin	Пин-клавиатура для СБОН	58
+ОН39507	pin	Пин-клавиатура для СБОН	77
+ОН39508	pin	Пин-клавиатура для СБОН	106
+ОН39509	pin	Пин-клавиатура для СБОН	2 22121
+ОН39510	cardreader	Картридер для СБОН	121
+ОН39511	cardreader	Картридер для СБОН	76
+ОН39512	cardreader	Картридер для СБОН	112
+ОН39513	cardreader	Картридер для СБОН	77
+ОН39514	cardreader	Картридер для СБОН	130
+ОН39515	cardreader	Картридер для СБОН	2 22121
+ОН39516	cardreader	Картридер для СБОН	200
+ОН39517	cardreader	Картридер для СБОН	8
+ОН39518	cardreader	Картридер для СБОН	135
+ОН39519	cardreader	Картридер для СБОН	128
+ОН39528	modem	Модем ADSL	29
+ОН39562	printer	ПРИНТЕР EPSON LX 300+	126
+ОН39563	printer	ПРИНТЕР EPSON LX 300+	406
+ОН39564	printer	ПРИНТЕР EPSON LX 300+	244
+ОН39565	printer	ПРИНТЕР EPSON LX 300+	304
+ОН39566	printer	ПРИНТЕР EPSON LX 300+	213
+ОН39567	printer	ПРИНТЕР EPSON LX 300+	304
+ОН39568	printer	ПРИНТЕР EPSON LX 300+	109
+ОН39569	printer	ПРИНТЕР EPSON LX 300+	124
+ОН39570	printer	ПРИНТЕР EPSON LX 300+	26
+ОН39571	printer	ПРИНТЕР EPSON LX 300+	96
+ОН39572	printer	ПРИНТЕР EPSON LX 300+	109
+ОН39573	printer	ПРИНТЕР EPSON LX 300+	109
+ОН39574	printer	ПРИНТЕР EPSON LX 300+	200
+ОН39575	printer	ПРИНТЕР EPSON LX 300+	301
+ОН39576	printer	ПРИНТЕР EPSON LX 300+	125
+ОН39577	printer	ПРИНТЕР EPSON LX 300+	301
+ОН39578	printer	ПРИНТЕР EPSON LX 300+	213
+ОН39579	scaner	Сканер HP Scan Jet 2710	405
+ОН39580	ups	ИБП back-UPS ES 525VA(BE525-RS)	132
+ОН39581	ups	ИБП back-UPS ES 525VA(BE525-RS)	406
+ОН39582	ups	ИБП back-UPS ES 525VA(BE525-RS)	301
+ОН39583	ups	ИБП back-UPS ES 525VA(BE525-RS)	301
+ОН39584	ups	ИБП back-UPS ES 525VA(BE525-RS)	301
+ОН39585	ups	ИБП back-UPS ES 525VA(BE525-RS)	126
+ОН39586	ups	ИБП back-UPS ES 525VA(BE525-RS)	410
+ОН39587	ups	ИБП back-UPS ES 525VA(BE525-RS)	203
+ОН39588	ups	ИБП back-UPS ES 525VA(BE525-RS)	124
+ОН39589	ups	ИБП back-UPS ES 525VA(BE525-RS)	128
+ОН39590	ups	ИБП back-UPS ES 525VA(BE525-RS)	408
+ОН39591	ups	ИБП back-UPS ES 525VA(BE525-RS)	213
+ОН39592	ups	ИБП back-UPS ES 525VA(BE525-RS)	203
+ОН39593	ups	ИБП back-UPS ES 525VA(BE525-RS)	109
+ОН39594	ups	ИБП back-UPS ES 525VA(BE525-RS)	210
+ОН39595	ups	ИБП back-UPS ES 525VA(BE525-RS)	1
+ОН39596	ups	ИБП back-UPS ES 525VA(BE525-RS)	112
+ОН39597	ups	ИБП back-UPS ES 525VA(BE525-RS)	135
+ОН39598	ups	ИБП back-UPS ES 525VA(BE525-RS)	203
+ОН39599	ups	ИБП back-UPS ES 525VA(BE525-RS)	304
+ОН39600	ups	ИБП back-UPS ES 525VA(BE525-RS)	109
+ОН39601	ups	ИБП back-UPS ES 525VA(BE525-RS)	203
+ОН39602	ups	ИБП back-UPS ES 525VA(BE525-RS)	213
+ОН39603	ups	ИБП back-UPS ES 525VA(BE525-RS)	127
+ОН39604	ups	ИБП back-UPS ES 525VA(BE525-RS)	77
+ОН39684	modem	Модем Роуtеr D-Linc	60
+ОН39713	modem	Модем Dynamix UM-S	210
+ОН39714	modem	Модем Dynamix UM-S	210
+ОН39715	modem	Модем Dynamix UM-S	банкомат
+ОН39716	modem	Модем Dynamix UM-S	203
+ОН39717	cardreader	уст-во введ.перс.кода УВПК-06	109
+ОН39718	cardreader	уст-во введ.перс.кода УВПК-06	124
+ОН39719	cardreader	уст-во введ.перс.кода УВПК-06	77
+ОН39720	cardreader	уст-во введ.перс.кода УВПК-06	132
+ОН39721	cardreader	уст-во введ.перс.кода УВПК-06	203
+ОН39722	cardreader	уст-во ручн.счит.инф.КР-204-33	203
+ОН39723	cardreader	уст-во ручн.счит.инф.КР-204-33	97
+ОН39724	cardreader	уст-во ручн.счит.инф.КР-204-33	ОЧ
+ОН39725	cardreader	уст-во ручн.счит.инф.КР-204-33	124
+ОН39726	modem	Модем(маршрут)D-link DSL-2500U	124
+ОН39729	cardreader	УСТР-ВО РУЧН.СЧИТ.ИНФ-ЦИИ	118
+ОН39730	cardreader	УСТР-ВО РУЧН.СЧИТ.ИНФ-ЦИИ	58
+ОН39731	cardreader	УСТР-ВО РУЧН.СЧИТ.ИНФ-ЦИИ	126
+ОН39732	cardreader	УСТР-ВО РУЧН.СЧИТ.ИНФ-ЦИИ	135
+ОН39733	pin	УСТР-ВО ВВЕД.ПЕРС.КОДА	203
+ОН39734	pin	УСТР-ВО ВВЕД.ПЕРС.КОДА	77
+ОН39735	pin	УСТР-ВО ВВЕД.ПЕРС.КОДА	126
+ОН39736	pin	УСТР-ВО ВВЕД.ПЕРС.КОДА	96
+ОН39737	pin	УСТР-ВО ВВЕД.ПЕРС.КОДА	203
+ОН39822	printer	ПРИНТЕР EPSON LX 300+	128
+ОН39823	convertor	Медиаконвектор МС WDM 1300	125
+ОН39824	convertor	Медиаконвектор МС WDM 1500	125
+ОН39825	ups	ИБП АРС BACK-UPS ES 525VA	121
+ОН39826	flash	флеш-драйв USB KGST Flash 2Gb	203
+ОН39827	flash	флеш-драйв USB KGST Flash 2Gb	412
+ОН39828	modem	Модем D-Link DSL-2500	210
+ОН39829	modem	Модем ADSL+CPE(H-Z6211)	97
+ОН39830	phone	БЛОК ПИТАНИЯ IP PHONE power	207
+ОН39831	audio	Система акустич.EDIFIER R	203
+ОН39832	microfon	Микрофон Sven MK 420	202
+ОН39841	modem	Модем ADSL	26
+ОН39848	modem	Модем ADSL Zyxel 6600RT	банкомат
+ОН39856	modem	Модем ADSL Zyxel 660 RT	210
+ОН39858	ups	ИБП АРС BACK-UPS ES525VA	410
+ОН39859	ups	ИБП АРС BACK-UPS ES525VA	26
+ОН39860	ups	ИБП АРС BACK-UPS ES525VA	203
+ОН39861	ups	ИБП АРС BACK-UPS ES525VA	128
+ОН39862	ups	ИБП АРС BACK-UPS ES525VA	97
+ОН39863	ups	ИБП АРС BACK-UPS ES525VA	58
+ОН39864	ups	ИБП АРС BACK-UPS ES525VA	133
+ОН39865	ups	ИБП АРС BACK-UPS ES525VA	106
+ОН39866	ups	ИБП АРС BACK-UPS ES525VA	109
+ОН39867	ups	ИБП АРС BACK-UPS ES525VA	301
+ОН39868	ups	ИБП АРС BACK-UPS ES525VA	301
+ОН39869	ups	ИБП АРС BACK-UPS ES525VA	109
+ОН39870	ups	ИБП АРС BACK-UPS ES525VA	200
+ОН39871	ups	ИБП АРС BACK-UPS ES525VA	132
+ОН39908	modem	Модем-маршрутизатор G.SHDSL	210
+ОН39909	modem	Модем-маршрутизатор G.SHDSL	210
+ОН39910	modem	Блок питания к модему-маршрут.G.SHDSL	210
+ОН39911	modem	Блок питания к модему-маршрут.G.SHDSL	210
+ОН39912	modem	Модем ADSL Zyxel 660RT	банкомат
+ОН39917	pin	Pin-клавиатура УВПК-06 USB	127
+ОН39918	pin	Pin-клавиатура УВПК-06 USB	122
+ОН39919	pin	Pin-клавиатура УВПК-06 USB	109
+ОН39920	pin	Pin-клавиатура УВПК-06 USB	8
+ОН39921	pin	Pin-клавиатура УВПК-06 USB	200
+ОН39922	pin	Pin-клавиатура УВПК-06 USB	128
+ОН39923	pin	Pin-клавиатура УВПК-06 USB	9
+ОН39924	pin	Pin-клавиатура УВПК-06 USB	ОЧ
+ОН39925	pin	Pin-клавиатура УВПК-06 USB	97
+ОН39926	pin	Pin-клавиатура УВПК-06 USB	125
+ОН39927	pin	Pin-клавиатура УВПК-06 USB	4
+ОН39928	pin	Pin-клавиатура УВПК-06 USB	96
+ОН39929	pin	Pin-клавиатура УВПК-06 USB	130
+ОН39930	modem	Модем ADSL Zyxel 660RT	76
+ОН39931	modem	Модем ADSL Zyxel 660RT	106
+ОН39965	camera	Камера цифровая Olimpus T-100	4
+ОН39966	camera	Штатив НАМА 4105 в к-те с сумкой	203
+ОН39968	modem	Модем ADSL Zyxel 660 RT	58
+ОН39969	cardreader	Устройство считывания информации	135
+ОН39973	cardreader	Устройство считывания информации	127
+ОН39974	cardreader	Устройство считывания информации	109
+ОН39975	cardreader	Устройство считывания информации	9
+ОН39976	cardreader	Устройство считывания информации	96
+ОН39977	cardreader	Устройство считывания информации	26
+ОН39978	cardreader	Устройство считывания информации	ОЧ
+ОН39979	cardreader	Устройство считывания информации	60
+ОН39980	cardreader	Устройство считывания информации	122
+ОН39981	cardreader	Устройство считывания информации	125
+ОН39982	modem	Модем ADSL Zyxel 660RT	77
+ОН39985	ups	ИБП APC BACK -UPS ES525VA (BE525 - RS)	132
+ОН39986	ups	ИБП APC BACK -UPS ES525VA (BE525 - RS)	122
+ОН39987	modem	Модем ADSL Zyxel 660RT(Prestige 660RU EE)	банкомат
+ОН39988	modem	Модем ADSL Zyxel 660RT(Prestige 660RU EE)	128
+ОН39989	modem	Модем ADSL Zyxel 660RT(Prestige 660RU EE)	210
+ОН39990	printer	Принтер матричный Epson LX - 300+	301
+ОН39991	printer	Принтер матричный Epson LX - 300+	304
+ОН40031	modem	Модем ADSL Zyxel 660RT	105
+ОН40032	modem	Модем ADSL Zyxel 660RT	131
+ОН40033	modem	Модем ADSL Zyxel 660RT	130
+ОН40034	modem	Модем ADSL Zyxel 660RT	54
+ОН40035	modem	Модем ADSL Zyxel 660RT	126
+ОН40047	modem	Модем ADSL Zyxel 660RT	132
+ОН40048	modem	Модем ADSL Zyxel 660RT	2 22121
+ОН40049	modem	Модем ADSL Zyxel 660RT	95
+ОН40050	modem	Модем ADSL Zyxel 660RT	112
+ОН40051	modem	Модем ADSL Zyxel 660RT	8
+ОН40059	modem	Модем ADSL Zyxel 660 RT	9
+ОН40060	modem	Модем ADSL Zyxel 660 RT	121
+ОН40061	modem	Модем ADSL+CPE(H-Z6211)	банкомат
+ОН40062	modem	Модем ADSL Zyxel 660RT(Prestige 660RU EE)	120
+ОН40063	modem	Модем ADSL Zyxel 660RT(Prestige 660RU EE)	банкомат
+ОН40084	modem	Модем ADSL2+ZHONE CPE	банкомат
+ОН40089	pin	Устройство ввода персонального кода с защитным боксом	203
+ОН40090	pin	Устройство ввода персонального кода с защитным боксом	58
+ОН40091	pin	Устройство ввода персонального кода с защитным боксом	77
+ОН40092	pin	Устройство ввода персонального кода с защитным боксом	135
+ОН40093	pin	Устройство ввода персонального кода с защитным боксом	136
+ОН40094	pin	Устройство ввода персонального кода с защитным боксом	ОЧ
+ОН40095	pin	Устройство ввода персонального кода с защитным боксом	105
+ОН40096	pin	Устройство ввода персонального кода с защитным боксом	133
+ОН40097	cardreader	Устр-во ручн.считывания инф-ции КР-204-33	133
+ОН40098	cardreader	Устр-во ручн.считывания инф-ции КР-204-33	105
+ОН40099	cardreader	Устр-во ручн.считывания инф-ции КР-204-33	106
+ОН40100	cardreader	Устр-во ручн.считывания инф-ции КР-204-33	58
+ОН40101	cardreader	Устр-во ручн.считывания инф-ции КР-204-33	77
+ОН40102	cardreader	Устр-во ручн.считывания инф-ции КР-204-33	109
+ОН40103	cardreader	Устр-во ручн.считывания инф-ции КР-204-33	77
+ОН40104	cardreader	Устр-во ручн.считывания инф-ции КР-204-33	136
+ОН40105	modem	Модем ADSL2+CPE BRIDGE/ROUTER W/USB	136
+ОН40110	ups	APS BACK-UPS ES 525V (BE525-RS)	60
+ОН40111	ups	APS BACK-UPS ES 525V (BE525-RS)	121
+ОН40112	ups	APS BACK-UPS ES 525V (BE525-RS)	8
+ОН40113	ups	APS BACK-UPS ES 525V (BE525-RS)	54
+ОН40114	ups	APS BACK-UPS ES 525V (BE525-RS)	77
+ОН40115	ups	APS BACK-UPS ES 525V (BE525-RS)	26
+ОН40116	ups	APS BACK-UPS ES 525V (BE525-RS)	410
+ОН40117	ups	APS BACK-UPS ES 525V (BE525-RS)	119
+ОН40118	ups	APS BACK-UPS ES 525V (BE525-RS)	200
+ОН40119	ups	APS BACK-UPS ES 525V (BE525-RS)	95
+ОН40120	ups	APS BACK-UPS ES 525V (BE525-RS)	28
+ОН40121	ups	APS BACK-UPS ES 525V (BE525-RS)	136
+ОН40122	ups	APS BACK-UPS ES 525V (BE525-RS)	118
+ОН40123	ups	APS BACK-UPS ES 525V (BE525-RS)	58
+ОН40124	ups	APS BACK-UPS ES 525V (BE525-RS)	126
+ОН40125	ups	APS BACK-UPS ES 525V (BE525-RS)	412
+ОН40126	ups	APS BACK-UPS ES 525V (BE525-RS)	135
+ОН40127	ups	APS BACK-UPS ES 525V (BE525-RS)	408
+ОН40128	ups	APS BACK-UPS ES 525V (BE525-RS)	412
+ОН40129	ups	APS BACK-UPS ES 525V (BE525-RS)	207
+ОН40130	ups	APS BACK-UPS ES 525V (BE525-RS)	28
+ОН40131	ups	APS BACK-UPS ES 525V (BE525-RS)	28
+ОН40132	ups	APS BACK-UPS ES 525V (BE525-RS)	ОЧ
+ОН40133	ups	APS BACK-UPS ES 525V (BE525-RS)	410
+ОН40134	ups	APS BACK-UPS ES 525V (BE525-RS)	410
+ОН40135	ups	APS BACK-UPS ES 525V (BE525-RS)	60
+ОН40136	ups	APS BACK-UPS ES 525V (BE525-RS)	212
+ОН40137	ups	APS BACK-UPS ES 525V (BE525-RS)	76
+ОН40138	ups	APS BACK-UPS ES 525V (BE525-RS)	212
+ОН40139	ups	APS BACK-UPS ES 525V (BE525-RS)	405
+ОН40140	ups	APS BACK-UPS ES 525V (BE525-RS)	241
+ОН40141	ups	APS BACK-UPS ES 525V (BE525-RS)	412
+ОН40142	ups	APS BACK-UPS ES 525V (BE525-RS)	408
+ОН40143	ups	APS BACK-UPS ES 525V (BE525-RS)	214
+ОН40144	ups	APS BACK-UPS ES 525V (BE525-RS)	214
+ОН40145	ups	APS BACK-UPS ES 525V (BE525-RS)	214
+ОН40146	ups	APS BACK-UPS ES 525V (BE525-RS)	408
+ОН40147	ups	APS BACK-UPS ES 525V (BE525-RS)	412
+ОН40148	ups	APS BACK-UPS ES 525V (BE525-RS)	8
+ОН40149	ups	APS BACK-UPS ES 525V (BE525-RS)	95
+ОН40150	ups	APS BACK-UPS ES 525V (BE525-RS)	97
+ОН40151	ups	APS BACK-UPS ES 525V (BE525-RS)	60
+ОН40152	ups	APS BACK-UPS ES 525V (BE525-RS)	60
+ОН40153	ups	APS BACK-UPS ES 525V (BE525-RS)	76
+ОН40154	flash	Накопитель USB Transcend JetFlash 300 4GB	203
+ОН40155	flash	Накопитель USB Transcend JetFlash 300 4GB	203
+ОН40156	flash	Накопитель USB Transcend JetFlash 300 4GB	203
+ОН40157	flash	Накопитель USB Transcend JetFlash 300 4GB	203
+ОН40158	flash	Накопитель USB Transcend JetFlash 300 4GB	203
+ОН40159	flash	Накопитель USB Transcend JetFlash 300 4GB	203
+ОН40160	flash	Накопитель USB Transcend JetFlash 300 4GB	203
+ОН40161	flash	Накопитель USB Transcend JetFlash 300 4GB	203
+ОН40162	flash	Накопитель USB Transcend JetFlash 300 4GB	203
+ОН40163	flash	Накопитель USB Transcend JetFlash 300 4GB	203
+ОН40164	flash	Накопитель USB Transcend JetFlash 300 4GB	203
+ОН40165	flash	Накопитель USB Transcend JetFlash 300 4GB	203
+ОН40166	flash	Накопитель USB Transcend JetFlash 300 4GB	203
+ОН40167	flash	Накопитель USB Transcend JetFlash 300 4GB	203
+ОН40168	flash	Накопитель USB Transcend JetFlash 300 4GB	203
+ОН40169	flash	Накопитель USB Transcend JetFlash 300 4GB	203
+ОН40170	flash	Накопитель USB Transcend JetFlash 300 4GB	203
+ОН40171	flash	Накопитель USB Transcend JetFlash 300 4GB	203
+ОН40172	flash	Накопитель USB Transcend JetFlash 300 4GB	203
+ОН40173	flash	Накопитель USB Transcend JetFlash 300 4GB	203
+ОН40174	flash	Накопитель USB Transcend JetFlash 300 4GB	203
+ОН40175	flash	Накопитель USB Transcend JetFlash 300 4GB	203
+ОН40176	flash	Накопитель USB Transcend JetFlash 300 4GB	203
+ОН40177	flash	Накопитель USB Transcend JetFlash 300 4GB	203
+ОН40178	flash	Накопитель USB Transcend JetFlash 300 4GB	203
+ОН40179	flash	Накопитель USB Transcend JetFlash 300 4GB	203
+ОН40180	flash	Накопитель USB Transcend JetFlash 300 4GB	203
+ОН40181	flash	Накопитель USB Transcend JetFlash 300 4GB	203
+ОН40182	flash	Накопитель USB Transcend JetFlash 300 4GB	203
+ОН40183	flash	Накопитель USB Transcend JetFlash 300 4GB	203
+ОН40184	flash	Накопитель USB Transcend JetFlash 300 4GB	203
+ОН40185	flash	Накопитель USB Transcend JetFlash 300 4GB	203
+ОН40186	flash	Накопитель USB Transcend JetFlash 300 4GB	203
+ОН40187	flash	Накопитель USB Transcend JetFlash 300 4GB	203
+ОН40188	flash	Накопитель USB Transcend JetFlash 300 4GB	203
+ОН40193	modem	Модем ADSL Zyxel 660 RT	127
+ОН40196	modem	Модем ADSL Zyxel 660 RT	банкомат
+ОН40197	modem	Модем ADSL2+CPE BRIDGE/ROUTER W/USB	203
+ОН40199	modem	Модем ADSL2+CPE BRIDGE/ROUTER W/USB	банкомат
+ОН40282	modem	Модем ADSL Zyxel 660RT(Prestige 660RU EE)	банкомат
+ОН4028210	network	Локальная сеть	203
+ОН40302	ups	блок питания CP-PWR-CUBE-3	
+ОН40303	pin	Устройство ввода персонального кода с защитным боксом	203
+ОН40304	pin	Устройство ввода персонального кода с защитным боксом	203
+ОН40305	pin	Устройство ввода персонального кода с защитным боксом	203
+ОН40306	pin	Устройство ввода персонального кода с защитным боксом	135
+ОН40307	pin	Устройство ввода персонального кода с защитным боксом	203
+ОН40308	cardreader	уст-во ручн.счит.инф.КР-204-33	203
+ОН40309	cardreader	уст-во ручн.счит.инф.КР-204-33	132
+ОН40310	cardreader	уст-во ручн.счит.инф.КР-204-33	203
+ОН40311	cardreader	уст-во ручн.счит.инф.КР-204-33	203
+ОН40312	cardreader	уст-во ручн.счит.инф.КР-204-33	203
+ОН40315	modem	Модем ADSL Zyxel 660RT(Prestige 660RU EE)	банкомат
+ОН40316	telefon	IP телефон  Cisco IP Phone CP-7911G	203
+ОН40317	ups	блок живлення CP-PWR-CUBE-3	203
+ОН40319	monitor	монитор TFT 18,5 " LG Flatron E1940S	126
+ОН40320	monitor	монитор TFT 18,5 " LG Flatron E1940S	77
+ОН40321	monitor	монитор TFT 18,5 " LG Flatron E1940S	77
+ОН40322	monitor	монитор TFT 18,5 " LG Flatron E1940S	77
+ОН40323	monitor	монитор TFT 18,5 " LG Flatron E1940S	77
+ОН40324	monitor	монитор TFT 18,5 " LG Flatron E1940S	203
+ОН40325	monitor	монитор TFT 18,5 " LG Flatron E1940S	203
+ОН40326	monitor	монитор TFT 18,5 " LG Flatron E1940S	97
+ОН40327	monitor	монитор TFT 18,5 " LG Flatron E1940S	60
+ОН40328	monitor	монитор TFT 18,5 " LG Flatron E1940S	203
+ОН40332	ups	ИБП АРС BlFack-UPS ES 525	304
+ОН40688	monitor	Монитор LG 1940S	203
+ОН40689	monitor	Монитор LG 1940S	203
+ОН40690	monitor	Монитор LG 1940S	203
+ОН40691	monitor	Монитор LG 1940S	203
+ОН40692	monitor	Монитор LG 1940S	203
+ОН40693	monitor	Монитор LG 1940S	203
+ОН40694	monitor	Монитор LG 1940S	203
+ОН40695	monitor	Монитор LG 1940S	203
+ОН40697	monitor	Монитор LG 1940S	203
+ОН41364	fax	Panasonic KX-FT984	201
+ОН41365	fax	Panasonic KX-FT984	408

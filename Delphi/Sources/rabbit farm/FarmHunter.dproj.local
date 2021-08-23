@@ -1,0 +1,51 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<BorlandProject>
+	<Transactions>
+    <Transaction>1899.12.30 00:00:00.000.001,=C:\Users\Diano4ka\Documents\Embarcadero\Studio\Projects\Unit2.pas</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.737,E:\Work\DelphiXE projects\rabbit farm\Data\uData.pas=E:\Work\DelphiXE projects\rabbit farm\Unit1.pas</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.732,E:\Work\DelphiXE projects\rabbit farm\Data\uAnimals.pas=E:\Work\DelphiXE projects\rabbit farm\Unit3.pas</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.432,E:\Work\DelphiXE projects\rabbit farm\Unit3.pas=E:\Work\DelphiXE projects\rabbit farm\Data\uVegetable.pas</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.737,E:\Work\DelphiXE projects\rabbit farm\Data\uData.dfm=E:\Work\DelphiXE projects\rabbit farm\Unit1.dfm</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.926,E:\Work\DelphiXE projects\rabbit farm\Forms\uScaleForm.fmx=E:\Work\DelphiXE projects\rabbit farm\Unit3.fmx</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.081,E:\Work\DelphiXE projects\rabbit farm\Unit2.pas=C:\Users\Diano4ka\Documents\Embarcadero\Studio\Projects\Unit2.pas</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.179,=E:\Work\DelphiXE projects\rabbit farm\Unit1.pas</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.926,E:\Work\DelphiXE projects\rabbit farm\Forms\uScaleForm.pas=E:\Work\DelphiXE projects\rabbit farm\Unit3.pas</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.125,E:\Work\DelphiXE projects\rabbit farm\Data\uAnimals.pas=E:\Work\DelphiXE projects\rabbit farm\Data\uAnimal.pas</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.337,E:\Work\DelphiXE projects\rabbit farm\Forms\uGameForm.fmx=E:\Work\DelphiXE projects\rabbit farm\Unit3.fmx</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.308,E:\Work\DelphiXE projects\rabbit farm\Forms\uGameForm.fmx=E:\Work\DelphiXE projects\rabbit farm\Unit2.fmx</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.337,E:\Work\DelphiXE projects\rabbit farm\Forms\uGameForm.pas=E:\Work\DelphiXE projects\rabbit farm\Unit3.pas</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.961,E:\Work\DelphiXE projects\rabbit farm\Project2.dproj=C:\Users\Diano4ka\Documents\Embarcadero\Studio\Projects\Project2.dproj</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.571,E:\Work\DelphiXE projects\rabbit farm\Project2.dproj=E:\Work\DelphiXE projects\rabbit farm\FarmHunter.dproj</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.081,E:\Work\DelphiXE projects\rabbit farm\Unit2.fmx=C:\Users\Diano4ka\Documents\Embarcadero\Studio\Projects\Unit2.fmx</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.308,E:\Work\DelphiXE projects\rabbit farm\Forms\uGameForm.pas=E:\Work\DelphiXE projects\rabbit farm\Unit2.pas</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.932,E:\Work\DelphiXE projects\rabbit farm\Forms\uGameForm.pas=</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.047,=E:\Work\DelphiXE projects\rabbit farm\Unit3.pas</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.943,=E:\Work\DelphiXE projects\rabbit farm\Unit3.pas</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.903,=E:\Work\DelphiXE projects\rabbit farm\Unit3.pas</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.805,E:\Work\DelphiXE projects\rabbit farm\Unit3.pas=E:\Work\DelphiXE projects\rabbit farm\Data\uUtils.pas</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.202,=E:\Work\DelphiXE projects\rabbit farm\Unit3.pas</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.425,=E:\Work\DelphiXE projects\rabbit farm\Unit3.pas</Transaction>
+  </Transactions>
+	<MobileDevice>0123456789ABCDEF-Android</MobileDevice>
+	<ProjectSortOrder AutoSort="0" SortType="0">
+    <File Path="android-support-v4.dex.jar"/>
+    <File Path="apk-expansion.dex.jar"/>
+    <File Path="cloud-messaging.dex.jar"/>
+    <File Path="fmx.dex.jar"/>
+    <File Path="google-analytics-v2.dex.jar"/>
+    <File Path="google-play-billing.dex.jar"/>
+    <File Path="google-play-licensing.dex.jar"/>
+    <File Path="google-play-services.dex.jar"/>
+    <File Path="Data"/>
+    <File Path="Data\uAnimal.pas"/>
+    <File Path="Data\uData.pas"/>
+    <File Path="Data\uData.dfm"/>
+    <File Path="Data\uUtils.pas"/>
+    <File Path="Data\uVegetable.pas"/>
+    <File Path="Forms"/>
+    <File Path="Forms\uGameForm.pas"/>
+    <File Path="Forms\uGameForm.fmx"/>
+    <File Path="Forms\uScaleForm.pas"/>
+    <File Path="Forms\uScaleForm.fmx"/>
+  </ProjectSortOrder>
+</BorlandProject>

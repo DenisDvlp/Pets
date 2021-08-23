@@ -1,0 +1,10 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<BorlandProject>
+	<Transactions>
+    <Transaction>1899.12.30 00:00:00.000.495,=C:\Users\Diano4ka\Documents\Embarcadero\Studio\Projects\Unit1.pas</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.822,C:\Users\Diano4ka\Documents\Embarcadero\Studio\Projects\Unit1.pas=E:\Work\DelphiXE projects\hamster\Unit1.pas</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.822,C:\Users\Diano4ka\Documents\Embarcadero\Studio\Projects\Unit1.fmx=E:\Work\DelphiXE projects\hamster\Unit1.fmx</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.277,C:\Users\Diano4ka\Documents\Embarcadero\Studio\Projects\Project1.dproj=E:\Work\DelphiXE projects\hamster\Project1.dproj</Transaction>
+  </Transactions>
+	<MobileDevice>R220141011000968-Android</MobileDevice>
+</BorlandProject>

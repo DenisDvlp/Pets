@@ -1,0 +1,6 @@
+&Сис. блоки{pc,server}
+&Мониторы{monitor}
+&Сетевые уст-ва{switch,cisco,modem}
+&UPS{ups}
+&Периферия{audio,camera,cardreader,cd-rw,convertor,fax,flash,kvm,mfu,microfon,network,phone,pin,printer,scaner,video,xerox,zip}
+&МФУ{video}

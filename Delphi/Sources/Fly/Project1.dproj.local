@@ -1,0 +1,10 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<BorlandProject>
+  <Transactions>
+    <Transaction>2016.07.09 21:04:20.933,=C:\Users\Дечи\Documents\Embarcadero\Studio\Projects\Unit1.pas</Transaction>
+    <Transaction>2016.07.09 21:05:23.837,=D:\Work\DelphiXE projects\Fly\GameForm.pas</Transaction>
+    <Transaction>2016.07.09 21:05:31.632,D:\Work\DelphiXE projects\Fly\Project1.dproj=C:\Users\Дечи\Documents\Embarcadero\Studio\Projects\Project1.dproj</Transaction>
+  </Transactions>
+  <ActiveMobileDevice>   <NoProfile iOSSimulator="iPhone5" Android="AQJ779BILVEAJVIJ"/>
+  </ActiveMobileDevice>
+</BorlandProject>

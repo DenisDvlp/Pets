@@ -1,0 +1,18 @@
+object ScaleForm: TScaleForm
+  Left = 0
+  Top = 0
+  Caption = 'Form3'
+  ClientHeight = 512
+  ClientWidth = 360
+  FormFactor.Width = 320
+  FormFactor.Height = 480
+  FormFactor.Devices = [Desktop]
+  OnCreate = FormCreate
+  DesignerMasterStyle = 0
+  object MainLayout: TLayout
+    Size.Width = 360.000000000000000000
+    Size.Height = 512.000000000000000000
+    Size.PlatformDefault = False
+    TabOrder = 0
+  end
+end
