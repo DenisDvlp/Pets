@@ -66,26 +66,28 @@ void drawPicture(Picture pic, Buffer& buf, Position pos)
   adjustSize(pic.x, pic.width, pos.x, buf.width);
   adjustSize(pic.y, pic.height, pos.y, buf.height);
 
-  constexpr uint8_t BITS_IN_BYTE = 8;
-  int picStartBits = pic.x % BITS_IN_BYTE;
-  int picEndBits = (pic.x + pic.width) % BITS_IN_BYTE;
-  int picWholeBytes = (pic.width - picStartBits - picEndBits) / BITS_IN_BYTE;
-  int picBytes = picWholeBytes + bool(picStartBits) + bool(picEndBits);
-  int bmpWidth = pic.bmp->width / BITS_IN_BYTE;
+  static constexpr uint8_t BITS_IN_BYTE = 8;
+  const int picStartBits = pic.x % BITS_IN_BYTE;
+  const int picEndBits = (pic.x + pic.width) % BITS_IN_BYTE;
+  const int picWholeBytes = (pic.width - picStartBits - picEndBits) / BITS_IN_BYTE;
+  const int picBytes = bool(picStartBits) + picWholeBytes + bool(picEndBits);
+  const int bmpWidth = pic.bmp->width / BITS_IN_BYTE;
+  const int deltaWidth = bmpWidth - picBytes;
   const uint8_t* bmp = pic.bmp->data + pic.x / BITS_IN_BYTE + pic.y * bmpWidth;
-  int deltaWidth = bmpWidth - picBytes;
-  int toBit = (picWholeBytes + bool(picEndBits)) * BITS_IN_BYTE + picEndBits;
 
   for (int y = pos.y, endRaw = pic.height + pos.y; y < endRaw; ++y)
   {
-    int _toBit = toBit;
-    drawByte(*bmp++, picStartBits, BITS_IN_BYTE, buf, { pos.x, y });
-    _toBit -= BITS_IN_BYTE;
-    for (int i = 1, x = pos.x + BITS_IN_BYTE; i < picBytes; ++i) {
-      drawByte(*bmp++, 0, _toBit % BITS_IN_BYTE, buf, { x, y });
-      x += BITS_IN_BYTE;
-      _toBit -= BITS_IN_BYTE;
+    int _x = pos.x;
+    if (picStartBits) {
+      drawByte(*bmp++, picStartBits, BITS_IN_BYTE, buf, { _x, y });
+      _x += BITS_IN_BYTE - picStartBits;
     }
+    for (int i = bool(picStartBits); i < picBytes - bool(picEndBits); ++i) {
+      drawByte(*bmp++, 0, BITS_IN_BYTE, buf, { _x, y });
+      _x += BITS_IN_BYTE;
+    }
+    if(picEndBits)
+      drawByte(*bmp++, 0, picEndBits, buf, { _x, y });
     bmp += deltaWidth;
   }
 }
@@ -165,12 +167,12 @@ void drawPicture(const Picture& pic, const Buffer& buf, const Position& pos)
   SH1106_picture(pic.bmp->data, pic.bmp->width, pic.bmp->height, pic.x, pic.y, pic.width, pic.height, buf.data, pos.x, pos.y, buf.width, buf.height);
 }
 
-Picture eggsPic(&bmp_eggs, 0, 0, 32, 8);
 Buffer buffer(buf, W, H);
+Picture pic_2(&bmp_1, 0, 0, 9, 4);
 
 void main()
 {
   Position pos(0, 0);
-  drawPicture(eggsPic, buffer, pos);
+  drawPicture(pic_1, buffer, pos);
 	display();
 }
