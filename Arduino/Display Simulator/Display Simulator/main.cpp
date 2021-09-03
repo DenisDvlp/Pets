@@ -168,7 +168,7 @@ void drawPicture(const Picture& pic, const Buffer& buf, const Position& pos)
 }
 
 Buffer buffer(buf, W, H);
-Picture pic_2(&bmp_1, 0, 0, 9, 4);
+Picture pic_2(&bmp_1, 1, 0, 15, 4);
 
 void main()
 {
