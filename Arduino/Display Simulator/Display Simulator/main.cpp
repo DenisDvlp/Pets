@@ -77,17 +77,15 @@ void drawPicture(Picture pic, Buffer& buf, Position pos)
 
   for (int y = pos.y, endRaw = pic.height + pos.y; y < endRaw; ++y)
   {
-    int _x = pos.x;
-    if (picStartBits) {
-      drawByte(*bmp++, picStartBits, BITS_IN_BYTE, buf, { _x, y });
-      _x += BITS_IN_BYTE - picStartBits;
+    for (int i = 0, x = pos.x, picWidthBits = pic.width, fromBit = picStartBits; i < picBytes; ++i) {
+      const bool isEnoughBits = picWidthBits / BITS_IN_BYTE;
+      const int toBit = isEnoughBits * BITS_IN_BYTE + !isEnoughBits * (picWidthBits % BITS_IN_BYTE);
+      drawByte(*bmp++, fromBit, toBit, buf, { x, y });
+      const int readBits = toBit - fromBit;
+      fromBit = 0;
+      x += readBits;
+      picWidthBits -= readBits;
     }
-    for (int i = bool(picStartBits); i < picBytes - bool(picEndBits); ++i) {
-      drawByte(*bmp++, 0, BITS_IN_BYTE, buf, { _x, y });
-      _x += BITS_IN_BYTE;
-    }
-    if(picEndBits)
-      drawByte(*bmp++, 0, picEndBits, buf, { _x, y });
     bmp += deltaWidth;
   }
 }
@@ -168,11 +166,11 @@ void drawPicture(const Picture& pic, const Buffer& buf, const Position& pos)
 }
 
 Buffer buffer(buf, W, H);
-Picture pic_2(&bmp_1, 1, 0, 15, 4);
+Picture pic_2(&bmp_1, 1, 0, 14, 7);
 
 void main()
 {
   Position pos(0, 0);
-  drawPicture(pic_1, buffer, pos);
+  drawPicture(pic_2, buffer, pos);
 	display();
 }
