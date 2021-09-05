@@ -33,9 +33,10 @@ void SH1106_setPixel(int& picI, int& picSize, int& bufI, int& bufSize) {
   }
 }
 
+static constexpr uint8_t BITS_IN_BYTE = 8;
+
 void drawByte(uint8_t byte, uint8_t fromBit, uint8_t toBit, Buffer& buffer, const Position& pos)
 {
-  constexpr uint8_t BITS_IN_BYTE = 8;
   uint8_t* buf = buffer.data + pos.x + pos.y / BITS_IN_BYTE * buffer.width + toBit - fromBit;
   const uint8_t bufBitShift = pos.y % BITS_IN_BYTE;
   const uint8_t mask = ~(1 << bufBitShift);
@@ -66,7 +67,6 @@ void drawPicture(Picture pic, Buffer& buf, Position pos)
   adjustSize(pic.x, pic.width, pos.x, buf.width);
   adjustSize(pic.y, pic.height, pos.y, buf.height);
 
-  static constexpr uint8_t BITS_IN_BYTE = 8;
   const int picStartBits = pic.x % BITS_IN_BYTE;
   const int picEndBits = (pic.x + pic.width) % BITS_IN_BYTE;
   const int picWholeBytes = (pic.width - picStartBits - picEndBits) / BITS_IN_BYTE;
@@ -87,6 +87,15 @@ void drawPicture(Picture pic, Buffer& buf, Position pos)
       picWidthBits -= readBits;
     }
     bmp += deltaWidth;
+  }
+}
+
+void drawPictureOneByte(Picture pic, Buffer& buf, Position pos, const uint8_t* bmp, int height, int fromBit, int toBit, int deltaBmpWidth)
+{
+  for (; pos.y < height; ++pos.y)
+  {
+    drawByte(*bmp, fromBit, toBit, buf, { pos.x, pos.y });
+    bmp += deltaBmpWidth;
   }
 }
 
@@ -166,7 +175,7 @@ void drawPicture(const Picture& pic, const Buffer& buf, const Position& pos)
 }
 
 Buffer buffer(buf, W, H);
-Picture pic_2(&bmp_1, 1, 0, 14, 7);
+Picture pic_2(&bmp_1, 1, 0, 5, 7);
 
 void main()
 {

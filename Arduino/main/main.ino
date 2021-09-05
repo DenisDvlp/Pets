@@ -12,7 +12,7 @@
 *
 *****************************************************************************/
 #include "sh1106.h"
-#include "images.h"
+#include "Picture.h"
 
 uint8_t oled_buf[WIDTH * HEIGHT / 8];
 
@@ -73,4 +73,3 @@ void setup() {
 void loop() {
 
 }
-
