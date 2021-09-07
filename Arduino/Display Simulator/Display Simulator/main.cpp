@@ -21,18 +21,6 @@ void display() {
 	}
 }
 
-void SH1106_setPixel(int& picI, int& picSize, int& bufI, int& bufSize) {
-  if (bufI < 0) {
-    picI -= bufI;
-    picSize += bufI;
-    bufI = 0;
-  }
-  int delta = bufSize - bufI - picSize;
-  if (delta < 0) {
-    picSize += delta;
-  }
-}
-
 static constexpr uint8_t BITS_IN_BYTE = 8;
 
 void drawByte(uint8_t byte, uint8_t fromBit, uint8_t toBit, Buffer& buffer, const Position& pos)
@@ -49,6 +37,46 @@ void drawByte(uint8_t byte, uint8_t fromBit, uint8_t toBit, Buffer& buffer, cons
   }
 }
 
+void drawBytes(const uint8_t*& bytes, int byteCount, uint8_t* &buf, uint8_t mask, uint8_t bufBitShift)
+{
+  uint8_t byte = *bytes;
+  for (int i = 0; i < byteCount; ++i) {
+    for (int j = BITS_IN_BYTE; j; --j) {
+      *buf = *buf & mask | ((byte & 0x80) >> bufBitShift);
+      byte <<= 1;
+      ++buf;
+    }
+    ++bytes;
+    byte = *bytes;
+  }
+}
+
+void drawBits(uint8_t byte, uint8_t bitCount, uint8_t* &buf, uint8_t mask, uint8_t bufBitShift)
+{
+  do
+  {
+    *buf = *buf & mask | ((byte & 0x80) >> bufBitShift);
+    byte <<= 1;
+    ++buf;
+    --bitCount;
+  } while (bitCount);
+}
+
+void drawLine(const uint8_t* bytes, int preBits, int wholeBytes, int postBits, uint8_t* buf, int y)
+{
+  const uint8_t bufBitShift = 7 - y % BITS_IN_BYTE;
+  const uint8_t mask = ~(0x80 >> bufBitShift);
+  if (preBits) {
+    const uint8_t byte = *bytes << (BITS_IN_BYTE - preBits);
+    drawBits(byte, preBits, buf, mask, bufBitShift);
+    ++bytes;
+  }
+  drawBytes(bytes, wholeBytes, buf, mask, bufBitShift);
+  if (postBits) {
+    drawBits(*bytes, postBits, buf, mask, bufBitShift);
+  }
+}
+
 void adjustSize(int& picI, int& picSize, int& bufI, int& bufSize)
 {
   if (bufI < 0) {
@@ -62,7 +90,7 @@ void adjustSize(int& picI, int& picSize, int& bufI, int& bufSize)
   }
 };
 
-void drawPicture(Picture pic, Buffer& buf, Position pos)
+void drawPicture2(Picture pic, Buffer& buf, Position pos)
 {
   adjustSize(pic.x, pic.width, pos.x, buf.width);
   adjustSize(pic.y, pic.height, pos.y, buf.height);
@@ -90,12 +118,24 @@ void drawPicture(Picture pic, Buffer& buf, Position pos)
   }
 }
 
-void drawPictureOneByte(Picture pic, Buffer& buf, Position pos, const uint8_t* bmp, int height, int fromBit, int toBit, int deltaBmpWidth)
+void drawPicture(Picture pic, Buffer& buf, Position pos)
 {
-  for (; pos.y < height; ++pos.y)
+  adjustSize(pic.x, pic.width, pos.x, buf.width);
+  adjustSize(pic.y, pic.height, pos.y, buf.height);
+
+  const int picPreBits = pic.x % BITS_IN_BYTE;
+  const int picPostBits = (pic.x + pic.width) % BITS_IN_BYTE;
+  const int picWholeBytes = (pic.width - picPreBits - picPostBits) / BITS_IN_BYTE;
+  const int bmpWidth = pic.bmp->width / BITS_IN_BYTE;
+  const uint8_t* bmp = pic.bmp->data + pic.x / BITS_IN_BYTE + pic.y * bmpWidth;
+  const int endRaw = pic.height + pos.y;
+  uint8_t* buffer = buf.data + pos.x + pos.y / BITS_IN_BYTE * buf.width;
+  // сделать для буфера каждые восемь линий сдвиг
+  for (int y = pos.y; y < endRaw; ++y)
   {
-    drawByte(*bmp, fromBit, toBit, buf, { pos.x, pos.y });
-    bmp += deltaBmpWidth;
+    drawLine(bmp, picPreBits, picWholeBytes, picPostBits, buffer, y);
+    buffer += bool(y % BITS_IN_BYTE == 7) * buf.width;
+    bmp += bmpWidth;
   }
 }
 
@@ -175,11 +215,12 @@ void drawPicture(const Picture& pic, const Buffer& buf, const Position& pos)
 }
 
 Buffer buffer(buf, W, H);
-Picture pic_2(&bmp_1, 1, 0, 5, 7);
+Picture pic_2(&bmp_1, 0, 0, 15, 8);
 
 void main()
 {
-  Position pos(0, 0);
+  Position pos(4, 4);
+  //drawBits(0x7f, 7, buffer.data, 0xfe, 7);
   drawPicture(pic_2, buffer, pos);
 	display();
 }
