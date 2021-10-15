@@ -1138,6 +1138,11 @@ int **p;
 
 x[1][1] не то же самое что p[1][1]
 
+----------------------------------
+
+int x[2];
+int *p1 = x; // UB
+int *p2 = &x[0]; //OK
 
 ----------------------------------
 const int bufferSize = 32;
@@ -1168,3 +1173,15 @@ https://en.cppreference.com/w/cpp/language/attributes/no_unique_address
 
 https://stackoverflow.com/questions/38780596/how-to-handle-constructors-that-must-acquire-multiple-resources-in-an-exception
 delegating constructors 
+
+
+----------------------------------
+    using ptr = int*;
+    const ptr p = 0; // int * const, а не const int*
+	
+----------------------------------
+
+The values of the floating-point operands and the results of floating-point expressions may be represented in greater precision and range than that required by the type; the types are not changed thereby
+
+float x = 0.1;
+for(int i = 0; i < 10000; ++i, x += 0.1); // infinite loop
