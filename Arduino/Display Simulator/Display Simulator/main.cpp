@@ -24,24 +24,7 @@ void display() {
 
 static constexpr uint8_t BITS_IN_BYTE = 8;
 
-void drawBytes(const uint8_t*& bytes, int byteCount, uint8_t* &buf, uint8_t mask, uint8_t bufBitShift)
-{
-  uint8_t byte = *bytes;
-  while (byteCount--)
-  {
-    uint8_t* bufEnd = buf + BITS_IN_BYTE;
-    while (buf != bufEnd)
-    {
-      *buf = *buf & mask | ((byte & 0x80) >> bufBitShift);
-      byte <<= 1;
-      ++buf;
-    }
-    ++bytes;
-    byte = *bytes;
-  }
-}
-
-void drawBits(uint8_t byte, uint8_t bitCount, uint8_t* &buf, uint8_t mask, uint8_t bufBitShift)
+void drawBits(uint8_t byte, uint8_t bitCount, uint8_t*& buf, uint8_t mask, uint8_t bufBitShift)
 {
   while (bitCount--)
   {
@@ -56,10 +39,14 @@ void drawLine(const uint8_t* bytes, int preBits, int wholeBytes, int postBits, u
   const uint8_t bufBitShift = 7 - y % BITS_IN_BYTE;
   const uint8_t mask = ~(0x80 >> bufBitShift);  
   // preBits always > 0
-  const uint8_t byte = *bytes << (BITS_IN_BYTE - preBits);
+  uint8_t byte = *bytes << (BITS_IN_BYTE - preBits);
   drawBits(byte, preBits, buf, mask, bufBitShift);
-  ++bytes;
-  drawBytes(bytes, wholeBytes, buf, mask, bufBitShift);
+  ++bytes; 
+  while (wholeBytes--)
+  {
+    drawBits(*bytes, BITS_IN_BYTE, buf, mask, bufBitShift);
+    ++bytes;
+  }
   drawBits(*bytes, postBits, buf, mask, bufBitShift);
 }
 
