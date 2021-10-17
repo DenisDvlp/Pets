@@ -24,23 +24,31 @@ void display() {
 
 static constexpr uint8_t BITS_IN_BYTE = 8;
 
-void adjustSize(int& picI, int& picSize, int& bufI, int& bufSize)
+// return `false` if it is no sense to draw, because the picture is out of screen bound,
+// return `true` otherwise.
+bool adjustSize(int& picI, int& picSize, int& bufI, int& bufSize)
 {
+  int sizeI = bufI + picSize;
   if (bufI < 0)
   {
     picI -= bufI;
-    picSize += bufI;
     bufI = 0;
   }
-  const int delta = bufSize - bufI - picSize;
-  if (delta < 0)
+  else if (bufI >= bufSize)
   {
-    picSize += delta;
+    return false;
   }
-  if (picSize < 0)
+
+  if (sizeI > bufSize)
   {
-    picSize = 0;
+    sizeI = bufSize;
   }
+  if (sizeI <= 0)
+  {
+    return false;
+  }
+  picSize = sizeI - bufI;
+  return true;
 };
 
 void drawBits(uint8_t byte, uint8_t bitCount, uint8_t*& buf, uint8_t mask, uint8_t bufBitShift)
@@ -79,8 +87,11 @@ void drawLines(const uint8_t* &bytes, int bmpWidth, int lineCount, int picPreBit
 
 void drawPicture(Picture pic, Buffer& buf, Position pos)
 {
-  adjustSize(pic.x, pic.width, pos.x, buf.width);
-  adjustSize(pic.y, pic.height, pos.y, buf.height);
+  // if the picture is out of visible area, then do not draw.
+  if (!adjustSize(pic.x, pic.width, pos.x, buf.width) ||
+    !adjustSize(pic.y, pic.height, pos.y, buf.height))
+    return;
+
   // preparatory calculations
   int picPreBits = BITS_IN_BYTE - pic.x % BITS_IN_BYTE;
   int picPostBits = (pic.x + pic.width) % BITS_IN_BYTE;
@@ -121,18 +132,19 @@ void drawPicture(Picture pic, Buffer& buf, Position pos)
 }
 
 Buffer buffer(buf, W, H);
-Picture pic_2(&bmp_1, 9, 1, 7, 7);
+Picture pic_2(&bmp_1, 0, 0, 7, 8);
 
 void main()
 {
   Position pos(10, 9);
-  srand(0);
-  for (size_t i = 0; i < 100; i++)
+  srand(02);
+  /*for (size_t i = 0; i < 100; i++)
   {
     pos.x = rand() % 50;
     pos.y = rand() % 40;
     drawPicture(pic_2, buffer, pos);
 
-  }
+  }*/
+  drawPicture(pic_2, buffer, pos);
 	display();
 }
