@@ -3,21 +3,9 @@
 
 static constexpr uint8_t BITS_IN_BYTE = 8;
 
-void Graphics::clearBuffer()
+void Graphics::clear()
 {
-  //memset(buf.data, 0, (buf.width * buf.height / BITS_IN_BYTE));
-  uint8_t* data = buf.data;
-  uint8_t* end = buf.data + (buf.width * buf.height / BITS_IN_BYTE);
-  while (data != end) {
-    *(data++) = 0; // 1
-    *(data++) = 1; // 2
-    *(data++) = 0; // 3
-    *(data++) = 1; // 4
-    *(data++) = 0; // 5
-    *(data++) = 1; // 6
-    *(data++) = 0; // 7
-    *(data++) = 1; // 8
-  }
+  memset(buf.data, 0, (buf.width * buf.height / BITS_IN_BYTE));
 }
 
 void Graphics::drawBits(uint8_t byte, uint8_t bitCount, uint8_t* buf, uint8_t mask, uint8_t bufBitShift)

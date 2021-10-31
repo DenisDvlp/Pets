@@ -37,7 +37,7 @@ void setup() {
   Serial.begin(9600);
   Serial.print("OLED Example\n");
 
-  graphics.clearBuffer();
+  graphics.clear();
   display.update();
 }
 
@@ -60,8 +60,15 @@ void checkButton(bool &flag, uint8_t button, void(*pressDown)(), void(*pressUp)(
 
 void pressDown() {
   Serial.print("pressDown\n");
-  graphics.clearBuffer();
-  graphics.drawPicture(pic_eggs, {0,0});
+  graphics.clear();
+  if(x)
+   graphics.drawPicture(pic_nupogodi, {0,0});
+  if(y)
+   graphics.drawPicture(pic_nupogodi2, {0,0});
+  if(a)
+   graphics.drawPicture(pic_nupogodi11, {0,0});
+  if(b)
+   graphics.drawPicture(pic_nupogodi12, {0,0});
   display.update();
 }
 

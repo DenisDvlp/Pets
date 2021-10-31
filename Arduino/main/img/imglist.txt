@@ -1,2 +1,4 @@
-eggs.png
-digits.png
+nupogodi.png
+nupogodi2.png
+nupogodi11.png
+nupogodi12.png
