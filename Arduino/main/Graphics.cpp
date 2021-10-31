@@ -5,18 +5,19 @@ static constexpr uint8_t BITS_IN_BYTE = 8;
 
 void Graphics::clearBuffer()
 {
-  memset(buf.data, 0, (buf.width * buf.height / BITS_IN_BYTE));
-  /*uint8_t* end = buf + (buf.width * buf.height / BITS_IN_BYTE);
-  while (buf != end) {
-    *(buf++) = 0; // 1
-    *(buf++) = 0; // 2
-    *(buf++) = 0; // 3
-    *(buf++) = 0; // 4
-    *(buf++) = 0; // 5
-    *(buf++) = 0; // 6
-    *(buf++) = 0; // 7
-    *(buf++) = 0; // 8
-  }*/
+  //memset(buf.data, 0, (buf.width * buf.height / BITS_IN_BYTE));
+  uint8_t* data = buf.data;
+  uint8_t* end = buf.data + (buf.width * buf.height / BITS_IN_BYTE);
+  while (data != end) {
+    *(data++) = 0; // 1
+    *(data++) = 1; // 2
+    *(data++) = 0; // 3
+    *(data++) = 1; // 4
+    *(data++) = 0; // 5
+    *(data++) = 1; // 6
+    *(data++) = 0; // 7
+    *(data++) = 1; // 8
+  }
 }
 
 void Graphics::drawBits(uint8_t byte, uint8_t bitCount, uint8_t* buf, uint8_t mask, uint8_t bufBitShift)
@@ -82,7 +83,7 @@ bool Graphics::adjustSize(int& picI, int& picSize, int& bufI, int& bufSize)
   return true;
 }
 
-void Graphics::drawPicture(Picture pic, Buffer& buf, Position pos)
+void Graphics::drawPicture(Picture pic, Position pos)
 {
   // if the picture is out of visible area, then do not draw.
   if (!adjustSize(pic.x, pic.width, pos.x, buf.width) ||

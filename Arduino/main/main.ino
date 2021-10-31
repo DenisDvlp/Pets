@@ -1,40 +1,44 @@
-﻿/*****************************************************************************
-*
-* File                : oled.ino
-* Hardware Environment: Arduino UNO
-* Build Environment   : Arduino
-* Version             : V1.0.7
-*
-*                 (c) Copyright 2005-2017, WaveShare
-*                      http://www.waveshare.com
-*                      http://www.waveshare.net
-*                         All Rights Reserved
-*
-*****************************************************************************/
-
+﻿#include <SPI.h>
 #include "Graphics.h"
 #include "Picture.h"
+#include "Display.h"
 
 constexpr byte BUTTON_X = 4;
 constexpr byte BUTTON_Y = 5;
 constexpr byte BUTTON_A = 6;
 constexpr byte BUTTON_B = 7;
 
-void setup() {
+Display display;
+Graphics graphics(display.getBuffer());
+
+void turnOffOledOnBoard() {
   // Turn off LEDs on the board.
   delay(500);
   digitalWrite(LED_BUILTIN_RX, HIGH);
   digitalWrite(LED_BUILTIN_TX, HIGH);
+}
+
+void initButton(uint8_t button) {
+  digitalWrite(button, INPUT_PULLUP);
+}
+
+void setup() {
+  display.init();
+
+  turnOffOledOnBoard();
+
   // Set Buttons.
-  digitalWrite(BUTTON_X, INPUT_PULLUP);
-  digitalWrite(BUTTON_Y, INPUT_PULLUP);
-  digitalWrite(BUTTON_A, INPUT_PULLUP);
-  digitalWrite(BUTTON_B, INPUT_PULLUP);
+  initButton(BUTTON_X);
+  initButton(BUTTON_Y);
+  initButton(BUTTON_A);
+  initButton(BUTTON_B);
+
 
   Serial.begin(9600);
   Serial.print("OLED Example\n");
 
-  delay(2000);
+  graphics.clearBuffer();
+  display.update();
 }
 
 bool x = false;
@@ -56,6 +60,9 @@ void checkButton(bool &flag, uint8_t button, void(*pressDown)(), void(*pressUp)(
 
 void pressDown() {
   Serial.print("pressDown\n");
+  graphics.clearBuffer();
+  graphics.drawPicture(pic_eggs, {0,0});
+  display.update();
 }
 
 void pressUp() {
@@ -68,6 +75,7 @@ void loop() {
   checkButton(y, BUTTON_Y, pressDown, pressUp);
   checkButton(a, BUTTON_A, pressDown, pressUp);
   checkButton(b, BUTTON_B, pressDown, pressUp);
+
 
   delay(10);
 }
