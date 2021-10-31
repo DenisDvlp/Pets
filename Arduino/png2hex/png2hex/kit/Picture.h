@@ -1,6 +1,5 @@
 #pragma once
-
-using uint8_t = int;
+#include <stdint.h>
 
 struct Position {
   int x = 0;
@@ -25,10 +24,10 @@ struct Bitmap : Size {
 };
 
 struct Picture : Position, Size {
-  Bitmap* bmp;
-  Picture(Bitmap& bmp)
+  const Bitmap* bmp;
+  Picture(const Bitmap& bmp)
     : bmp(&bmp), Position(0, 0), Size(bmp) {}
-  Picture(Bitmap& bmp, int x, int y, int w, int h)
+  Picture(const Bitmap& bmp, int x, int y, int w, int h)
     : bmp(&bmp), Position(x, y), Size(w, h) {}
 };
 
@@ -38,4 +37,4 @@ struct Buffer : Size {
     : data(data), Size(w, h) {}
 };
 
-#include "images.gen"
+#include "images.h" // Change this filename according to yours.

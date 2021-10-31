@@ -64,7 +64,7 @@ string getStringArray(const DBiArray<unsigned char>& output, string name) {
   ss << "\n};\n"
     "static const Bitmap " << bmpName << "(" << pngName << ", "
     << (output.size().width() * 8) << ", " << output.size().height() << ");\n"
-    "static const Picture " << picName << "(&" << bmpName << ");\n\n";
+    "static const Picture " << picName << "(" << bmpName << ");\n\n";
 
   return ss.str();
 }
@@ -124,6 +124,10 @@ int main(int count, const char** args)
 
   DString headerName = args[1];
   filesystem::remove(headerName.data());
+
+  string includes = "#include <avr/pgmspace.h>\n\n";
+  appendToFile(headerName.data(), includes);
+
   for (auto& name : list)
   {
     DImage img;
