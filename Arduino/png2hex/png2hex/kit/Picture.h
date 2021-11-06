@@ -1,30 +1,34 @@
 #pragma once
+#ifdef ARDUINO
 #include <stdint.h>
+#else
+#include <cstdint>
+#endif
 
 struct Position {
   int x = 0;
   int y = 0;
-  Position() = default;
-  Position(int x, int y)
+  constexpr Position() = default;
+  constexpr Position(int x, int y)
     : x(x), y(y) {}
 };
 
 struct Size {
-  int width;
-  int height;
-  Size() = default;
-  Size(int w, int h)
+  int width = 0;
+  int height = 0;
+  constexpr Size() = default;
+  constexpr Size(int w, int h)
     : width(w), height(h) {}
 };
 
 struct Bitmap : Size {
-  const uint8_t* data;
+  const uint8_t* data = nullptr;
   Bitmap(const uint8_t* data, int w, int h)
     : data(data), Size(w, h) {}
 };
 
 struct Picture : Position, Size {
-  const Bitmap* bmp;
+  const Bitmap* bmp = nullptr;
   Picture(const Bitmap& bmp)
     : bmp(&bmp), Position(0, 0), Size(bmp) {}
   Picture(const Bitmap& bmp, int x, int y, int w, int h)
@@ -32,9 +36,8 @@ struct Picture : Position, Size {
 };
 
 struct Buffer : Size {
-  uint8_t* data;
+  uint8_t* data = nullptr;
+  Buffer() = default;
   Buffer(uint8_t* data, int w, int h)
     : data(data), Size(w, h) {}
 };
-
-#include "images.h" // Change this filename according to yours.
