@@ -1,44 +1,57 @@
 #include "Display.h"
 #include <avr/pgmspace.h>
+#include <SPI.h>
 
 // Pin configuration.
 static constexpr uint8_t PIN_RESET = 14;
 static constexpr uint8_t PIN_DC = 18;
 static constexpr uint8_t PIN_CS = 10;
-static constexpr uint8_t SPI_PIN_MOSI = 11; /* connect to the DIN pin of OLED */
-static constexpr uint8_t SPI_PIN_SCK = 13; /* connect to the CLK pin of OLED */
-//#define SPI_MOSI 11     /* connect to the DIN pin of OLED */
-//#define SPI_SCK  13     /* connect to the CLK pin of OLED */
+static constexpr uint8_t SPI_PIN_MOSI = 11; // connect to the DIN pin of OLED
+static constexpr uint8_t SPI_PIN_SCK = 13; // connect to the CLK pin of OLED
 
-Display::Display() :
-  // первый параметр влияет на скорость передачи данных на дисплей
-  // это заметно по тому как заполняются страницы
-  Settings(/*Speed up to 16M Hz*/8000000, MSBFIRST, SPI_MODE0)
-{
-}
+// Display dimentions.
+static constexpr int DISPLAY_WIDTH = 128;
+static constexpr int DISPLAY_HEIGHT = 64;
+static constexpr int DISPLAY_NUM_PAGE = 8;
 
-void Display::fillPage(uint8_t pageNum, const uint8_t* buffer) const
-{
-  command(0xB0 + pageNum); // set page address
-  command(0x02, 0x10);     // set LOW and HIGH column address
-  digitalWrite(PIN_DC, HIGH);
-  SPI.beginTransaction(Settings);
-  SPI.transfer(buffer, DISPLAY_WIDTH);
-  SPI.endTransaction();
-}
+// Other constants
+static constexpr int BITS_IN_BYTE = 8;
+static constexpr int BUF_SIZE = DISPLAY_WIDTH * DISPLAY_HEIGHT / BITS_IN_BYTE;
 
-void Display::command(uint8_t cmd) const {
-  digitalWrite(PIN_DC, LOW);
+// Instances
+static uint8_t buffer[BUF_SIZE];
+// первый параметр влияет на скорость передачи данных на дисплей
+// это заметно по тому как заполняются страницы
+static SPISettings Settings(/*Speed up to 16M Hz*/8000000, MSBFIRST, SPI_MODE0);
+
+// TODO переписать transfer данных, чтоб не очищал буфер
+
+void command(uint8_t cmd) {
+  digitalWrite(PIN_DC, LOW); // set command flag
   SPI.beginTransaction(Settings);
   SPI.transfer(cmd);
   SPI.endTransaction();
 }
 
-void Display::command(uint8_t cmd, uint8_t data) const {
-  digitalWrite(PIN_DC, LOW);
+void command(uint8_t cmd, uint8_t data) {
+  digitalWrite(PIN_DC, LOW); // set command flag
   SPI.beginTransaction(Settings);
   SPI.transfer(cmd);
   SPI.transfer(data);
+  SPI.endTransaction();
+}
+
+void fillPage(uint8_t pageNum, const uint8_t* buf)
+{
+  // SPI Transfer erases buffer by SPI library, so copy the buffer into temporary array before sending.
+  static uint8_t transferBuffer[DISPLAY_WIDTH];
+  memcpy(transferBuffer, buf, DISPLAY_WIDTH);
+
+  command(0xB0 + pageNum); // set page address
+  command(0x02, 0x10);     // set LOW and HIGH column address
+  digitalWrite(PIN_DC, HIGH); // set data flag
+  SPI.beginTransaction(Settings);
+  SPI.transfer((void*)transferBuffer, DISPLAY_WIDTH);
   SPI.endTransaction();
 }
 
@@ -228,22 +241,29 @@ void Display::init()
   delay(100);
 }
 
-void Display::update() const
+void Display::refresh()
 {
-  Serial.print("Display::update");
   uint8_t page = 0;
   const uint8_t* buf = buffer;
   const uint8_t* end = buffer + DISPLAY_WIDTH * DISPLAY_NUM_PAGE;
   while (buf != end)
   {
-    Serial.print(page);
     fillPage(page++, buf);
     buf += DISPLAY_WIDTH;
   }
 }
 
-Buffer Display::getBuffer()
+int Display::getWidth()
 {
-  static Buffer buf(buffer, DISPLAY_WIDTH, DISPLAY_HEIGHT);
-  return buf;
+  return DISPLAY_WIDTH;
+}
+
+int Display::getHeight()
+{
+  return DISPLAY_HEIGHT;
+}
+
+uint8_t* Display::getBuffer()
+{
+  return buffer;
 }

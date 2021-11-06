@@ -1,3 +1,3 @@
 cd img
-png2hex ../images.h
+png2hex ../Images
 pause

@@ -1,7 +1,13 @@
 #include "Graphics.h"
 #include <string.h>
+#include <avr/pgmspace.h>
 
 static constexpr uint8_t BITS_IN_BYTE = 8;
+
+void Graphics::init(Buffer buffer)
+{
+  buf = buffer;
+}
 
 void Graphics::clear()
 {
