@@ -1,10 +1,11 @@
 #include "Picture.h"
+#include "Images.h"
 #include <iostream>
 
 using namespace std;
 
-constexpr int W = 64;
-constexpr int H = 16;
+constexpr int W = 128;
+constexpr int H = 64;
 uint8_t buf[W * H / 8] = { 0 };
 
 void display() {
@@ -107,11 +108,10 @@ void drawPicture(Picture pic, Buffer& buf, Position pos)
   const int picWholeBytes = (pic.width - picPreBits - picPostBits) / BITS_IN_BYTE;
   const int bmpWidth = pic.bmp->width / BITS_IN_BYTE;
   const uint8_t* bmpPos = pic.bmp->data + pic.x / BITS_IN_BYTE + pic.y * bmpWidth;
-  const int endRaw = pic.height + pos.y;
   uint8_t* bufPos = buf.data + pos.x + pos.y / BITS_IN_BYTE * buf.width;
   int y = pos.y;
-  int picPreRows = BITS_IN_BYTE - pic.y % BITS_IN_BYTE;
-  int picPostRows = (pic.y + pic.height) % BITS_IN_BYTE;
+  int picPreRows = BITS_IN_BYTE - pos.y % BITS_IN_BYTE;
+  int picPostRows = (pos.y + pic.height) % BITS_IN_BYTE;
   if (picPreRows > pic.height)
   {
     picPreRows = pic.height;
@@ -136,19 +136,11 @@ void drawPicture(Picture pic, Buffer& buf, Position pos)
 }
 
 Buffer buffer(buf, W, H);
-Picture pic_2(&bmp_1, 2, 2, 5, 5);
 
 void main()
 {
   Position pos(0, 0);
   srand(time(0));
-  for (size_t i = 0; i < 100; i++)
-  {
-    pos.x = rand() % 80;
-    pos.y = rand() % 40;
-    drawPicture(pic_2, buffer, pos);
-
-  }
-  drawPicture(pic_2, buffer, pos);
+  drawPicture(pic_nupogodi, buffer, {0,20});
 	display();
 }
