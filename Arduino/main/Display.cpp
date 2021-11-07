@@ -1,6 +1,5 @@
 #include "Display.h"
 #include <avr/pgmspace.h>
-#include <SPI.h>
 
 // Pin configuration.
 static constexpr uint8_t PIN_RESET = 14;
@@ -18,42 +17,11 @@ static constexpr int DISPLAY_NUM_PAGE = 8;
 static constexpr int BITS_IN_BYTE = 8;
 static constexpr int BUF_SIZE = DISPLAY_WIDTH * DISPLAY_HEIGHT / BITS_IN_BYTE;
 
-// Instances
-static uint8_t buffer[BUF_SIZE];
-// первый параметр влияет на скорость передачи данных на дисплей
-// это заметно по тому как заполняются страницы
-static SPISettings Settings(/*Speed up to 16M Hz*/8000000, MSBFIRST, SPI_MODE0);
-
-// TODO переписать transfer данных, чтоб не очищал буфер
-
-void command(uint8_t cmd) {
-  digitalWrite(PIN_DC, LOW); // set command flag
-  SPI.beginTransaction(Settings);
-  SPI.transfer(cmd);
-  SPI.endTransaction();
-}
-
-void command(uint8_t cmd, uint8_t data) {
-  digitalWrite(PIN_DC, LOW); // set command flag
-  SPI.beginTransaction(Settings);
-  SPI.transfer(cmd);
-  SPI.transfer(data);
-  SPI.endTransaction();
-}
-
-void fillPage(uint8_t pageNum, const uint8_t* buf)
-{
-  // SPI Transfer erases buffer by SPI library, so copy the buffer into temporary array before sending.
-  static uint8_t transferBuffer[DISPLAY_WIDTH];
-  memcpy(transferBuffer, buf, DISPLAY_WIDTH);
-
-  command(0xB0 + pageNum); // set page address
-  command(0x02, 0x10);     // set LOW and HIGH column address
-  digitalWrite(PIN_DC, HIGH); // set data flag
-  SPI.beginTransaction(Settings);
-  SPI.transfer((void*)transferBuffer, DISPLAY_WIDTH);
-  SPI.endTransaction();
-}
+Display::Display() :
+  // первый параметр влияет на скорость передачи данных на дисплей
+  // это заметно по тому как заполняются страницы
+  Settings(/*Speed up to 16M Hz*/8000000, MSBFIRST, SPI_MODE0)
+{}
 
 void Display::init()
 {
@@ -90,6 +58,15 @@ void Display::init()
   digitalWrite(PIN_RESET, LOW);
   delay(10);
   digitalWrite(PIN_RESET, HIGH);
+
+
+  // Разрещить передачу данных/команд на дисплей. Делаем это один раз в начале, потому что планируется,
+  // что больше нет устройств работающих через протокол SPI,
+  // иначе нужно завершать передачу после каждой отсылки данных/команд.
+  SPI.beginTransaction(Settings);
+
+  // set command flag for the following commands
+  digitalWrite(PIN_DC, LOW);
 
   // Выключить экран
   command(0xAE);//--turn off oled panel
@@ -243,6 +220,7 @@ void Display::init()
 
 void Display::refresh()
 {
+
   uint8_t page = 0;
   const uint8_t* buf = buffer;
   const uint8_t* end = buffer + DISPLAY_WIDTH * DISPLAY_NUM_PAGE;
@@ -253,17 +231,39 @@ void Display::refresh()
   }
 }
 
-int Display::getWidth()
+Buffer Display::getBuffer()
 {
-  return DISPLAY_WIDTH;
+  return { buffer, DISPLAY_WIDTH, DISPLAY_HEIGHT };
 }
 
-int Display::getHeight()
-{
-  return DISPLAY_HEIGHT;
+// This function is an improved version of `SPIClass::transfer` function. See all details in it. This version doesn't erase the data. of the given buffer.
+void Display::transfer(const uint8_t* buf, size_t count) {
+  while (count--) {
+    SPDR = *(buf++);
+    while (!(SPSR & _BV(SPIF)));
+  }
 }
 
-uint8_t* Display::getBuffer()
+// This function is an improved version of `SPIClass::transfer` function. See all details in it. This version returns `void`.
+// NOTE: This function is designed to be invoked from `init` function only.
+// To use it from other places you should set command flag explicitly: digitalWrite(PIN_DC, LOW);
+void Display::command(uint8_t cmd) {
+  SPDR = cmd;
+  asm volatile("nop");
+  while (!(SPSR & _BV(SPIF)));
+}
+
+// See function above.
+void Display::command(uint8_t cmd, uint8_t data) {
+  command(cmd);
+  command(data);
+}
+
+void Display::fillPage(uint8_t pageNum, const uint8_t* buf)
 {
-  return buffer;
+  digitalWrite(PIN_DC, LOW); // set command flag
+  command(0xB0 + pageNum); // set page address
+  command(0x02, 0x10);     // set LOW and HIGH column address
+  digitalWrite(PIN_DC, HIGH); // set data flag
+  transfer(buf, DISPLAY_WIDTH);
 }

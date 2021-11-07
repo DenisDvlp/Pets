@@ -16,13 +16,11 @@ void Button::update()
     pressed = triggered;
     if (triggered)
     {
-      if (onPressDownCallback)
-        return onPressDownCallback(id);
+        onPressDownCallback(id);
     }
     else
     {
-      if (onPressUpCallback)
-        return onPressUpCallback(id);
+        onPressUpCallback(id);
     }
   }
 }

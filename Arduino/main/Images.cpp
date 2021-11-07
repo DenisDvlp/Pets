@@ -90,7 +90,7 @@ static const uint8_t png_nupogodi[1024] PROGMEM = {
   0x00, 0x00, 0x00, 0x00, 
 };
 static const Bitmap bmp_nupogodi(png_nupogodi, 128, 64);
-static const Picture pic_nupogodi(bmp_nupogodi);
+static const Picture pic_nupogodi(bmp_nupogodi, 3, 4, 121, 53);
 
 static const uint8_t png_nupogodi2[1024] PROGMEM = {
   0x01, 0x80, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 
@@ -181,7 +181,7 @@ static const uint8_t png_nupogodi2[1024] PROGMEM = {
   0x00, 0x00, 0x00, 0x00, 
 };
 static const Bitmap bmp_nupogodi2(png_nupogodi2, 128, 64);
-static const Picture pic_nupogodi2(bmp_nupogodi2);
+static const Picture pic_nupogodi2(bmp_nupogodi2, 3, 4, 121, 53);
 
 static const uint8_t png_nupogodi11[1024] PROGMEM = {
   0x01, 0x80, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 
@@ -272,7 +272,7 @@ static const uint8_t png_nupogodi11[1024] PROGMEM = {
   0x00, 0x00, 0x00, 0x00, 
 };
 static const Bitmap bmp_nupogodi11(png_nupogodi11, 128, 64);
-static const Picture pic_nupogodi11(bmp_nupogodi11);
+static const Picture pic_nupogodi11(bmp_nupogodi11, 3, 4, 121, 53);
 
 static const uint8_t png_nupogodi12[1024] PROGMEM = {
   0x01, 0x80, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 
@@ -363,4 +363,4 @@ static const uint8_t png_nupogodi12[1024] PROGMEM = {
   0x00, 0x00, 0x00, 0x00, 
 };
 static const Bitmap bmp_nupogodi12(png_nupogodi12, 128, 64);
-static const Picture pic_nupogodi12(bmp_nupogodi12);
+static const Picture pic_nupogodi12(bmp_nupogodi12, 3, 4, 121, 53);

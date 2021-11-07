@@ -97,11 +97,10 @@ void Graphics::drawPicture(Picture pic, Position pos)
   const int picWholeBytes = (pic.width - picPreBits - picPostBits) / BITS_IN_BYTE;
   const int bmpWidth = pic.bmp->width / BITS_IN_BYTE;
   const uint8_t* bmpPos = pic.bmp->data + pic.x / BITS_IN_BYTE + pic.y * bmpWidth;
-  const int endRaw = pic.height + pos.y;
   uint8_t* bufPos = buf.data + pos.x + pos.y / BITS_IN_BYTE * buf.width;
   int y = pos.y;
-  int picPreRows = BITS_IN_BYTE - pic.y % BITS_IN_BYTE;
-  int picPostRows = (pic.y + pic.height) % BITS_IN_BYTE;
+  int picPreRows = BITS_IN_BYTE - pos.y % BITS_IN_BYTE;
+  int picPostRows = (pos.y + pic.height) % BITS_IN_BYTE;
   if (picPreRows > pic.height)
   {
     picPreRows = pic.height;
