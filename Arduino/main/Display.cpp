@@ -8,15 +8,6 @@ static constexpr uint8_t PIN_CS = 10;
 static constexpr uint8_t SPI_PIN_MOSI = 11; // connect to the DIN pin of OLED
 static constexpr uint8_t SPI_PIN_SCK = 13; // connect to the CLK pin of OLED
 
-// Display dimentions.
-static constexpr int DISPLAY_WIDTH = 128;
-static constexpr int DISPLAY_HEIGHT = 64;
-static constexpr int DISPLAY_NUM_PAGE = 8;
-
-// Other constants
-static constexpr int BITS_IN_BYTE = 8;
-static constexpr int BUF_SIZE = DISPLAY_WIDTH * DISPLAY_HEIGHT / BITS_IN_BYTE;
-
 Display::Display() :
   // первый параметр влияет на скорость передачи данных на дисплей
   // это заметно по тому как заполняются страницы
@@ -218,9 +209,8 @@ void Display::init()
   delay(100);
 }
 
-void Display::refresh()
+void Display::update()
 {
-
   uint8_t page = 0;
   const uint8_t* buf = buffer;
   const uint8_t* end = buffer + DISPLAY_WIDTH * DISPLAY_NUM_PAGE;

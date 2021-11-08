@@ -16,7 +16,7 @@ class Display {
 public:
   Display();
   void init();
-  void refresh();
+  void update();
   Buffer getBuffer();
 private:
   void transfer(const uint8_t* buf, size_t count);

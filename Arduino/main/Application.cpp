@@ -3,14 +3,16 @@
 #include "Arduino.h"
 #include "Images.h"
 
-
-void log(const char* str) {
+void log(const char* str)
+{
   Serial.print(str);
   Serial.print("\n");
 }
 
-void turnOffOledOnBoard() {
-  // Turn off LEDs on the board.
+// Turn off LEDs on the board.
+void turnOffOledOnBoard()
+{
+  // We need this delay to give the board some time to calm.
   delay(500);
   digitalWrite(LED_BUILTIN_RX, HIGH);
   digitalWrite(LED_BUILTIN_TX, HIGH);
@@ -18,7 +20,8 @@ void turnOffOledOnBoard() {
 
 void Application::init()
 {
-  // prepare physical display for work
+  // Prepare physical display for work.
+  // This takes approximately 0.3 seconds.
   display.init();
 
   turnOffOledOnBoard();
@@ -29,20 +32,23 @@ void Application::init()
   // init buttons
   controller.init({ this, &Application::pressDown });
 
+  // init game core
+  core.init();
+
   // init port for logs
   Serial.begin(9600);
   log("OLED Example\n");
 
   // clean display
   graphics.clear();
-  display.refresh();
+  display.update();
 }
 
 void Application::update()
 {
+  core.update();
   controller.update();
-
-  display.refresh();
+  display.update();
   // Do not overburden the CPU. It's enough for us to do the things at 100 FPS.
   delay(10);
 }
