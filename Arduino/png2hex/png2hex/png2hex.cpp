@@ -12,7 +12,7 @@ using namespace std;
 
 DBiArray<unsigned char> convertToBits(const DImage& img) {
   static constexpr size_t BITS_IN_BYTE = 8;
-  const auto imgSize = img.size();
+  const DSize imgSize = img.size();
   const int16 widthOut = (imgSize.width() / BITS_IN_BYTE +
     (imgSize.width() % BITS_IN_BYTE ? 1 : 0));
 
@@ -27,9 +27,14 @@ DBiArray<unsigned char> convertToBits(const DImage& img) {
       bits.reset();
       for (int k = BITS_IN_BYTE - 1; k >= 0 && j < imgSize.width(); ++j, --k)
       {
-        // White and Transparent are - 0 (considered as a background),
-        // otherwise - 1
-        bits.set(k, img[i][j] != DColors::WHITE && img[i][j] != DColors::TRANSPARENT);
+        // Turn colored pixel into grayscale. Use Luma coding Rec. 601:
+        //   Y = 0.299 * R + 0.587 * G + 0.114 * B;
+        // BRIGHT pixels are 0's (background), DARK pixels are 1's.
+        // Brightness is in range of [0, 255].
+        // Bright pixels are >=128. Dark pixels are <128.
+        const DColor color = img[i][j];
+        const double brightness = 0.299 * color.red() + 0.587 * color.green() + 0.114 * color.blue();
+        bits.set(k, /*isDark*/ brightness < 128);
       }
       output.raw()[k] = static_cast<unsigned char>(bits.to_ulong());
     }
