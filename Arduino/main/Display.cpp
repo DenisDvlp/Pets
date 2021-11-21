@@ -14,7 +14,7 @@ Display::Display() :
   Settings(/*Speed up to 16M Hz*/8000000, MSBFIRST, SPI_MODE0)
 {}
 
-void Display::init()
+void Display::init() const
 {
   // Difference between SSD1306and SH1106:
   // - The SH1106 controller has an internal RAM of 132x64 pixel.
@@ -209,7 +209,7 @@ void Display::init()
   delay(100);
 }
 
-void Display::update()
+void Display::update() const
 {
   uint8_t page = 0;
   const uint8_t* buf = buffer;
@@ -221,39 +221,41 @@ void Display::update()
   }
 }
 
-Buffer Display::getBuffer()
+Buffer Display::getBuffer() const
 {
-  return { buffer, DISPLAY_WIDTH, DISPLAY_HEIGHT };
+  return { const_cast<uint8_t*>(buffer), DISPLAY_WIDTH, DISPLAY_HEIGHT };
 }
 
-// This function is an improved version of `SPIClass::transfer` function. See all details in it. This version doesn't erase the data. of the given buffer.
-void Display::transfer(const uint8_t* buf, size_t count) {
+// This function is an improved version of `SPIClass::transfer` function.
+// See all details in it. This version doesn't erase the data. of the given buffer.
+void Display::transfer(const uint8_t* buf, size_t count) const {
   while (count--) {
     SPDR = *(buf++);
     while (!(SPSR & _BV(SPIF)));
   }
 }
 
-// This function is an improved version of `SPIClass::transfer` function. See all details in it. This version returns `void`.
+// This function is an improved version of `SPIClass::transfer` function.
+// See all details in it. This version returns `void`.
 // NOTE: This function is designed to be invoked from `init` function only.
 // To use it from other places you should set command flag explicitly: digitalWrite(PIN_DC, LOW);
-void Display::command(uint8_t cmd) {
+void Display::command(uint8_t cmd) const {
   SPDR = cmd;
   asm volatile("nop");
   while (!(SPSR & _BV(SPIF)));
 }
 
 // See function above.
-void Display::command(uint8_t cmd, uint8_t data) {
+void Display::command(uint8_t cmd, uint8_t data) const {
   command(cmd);
   command(data);
 }
 
-void Display::fillPage(uint8_t pageNum, const uint8_t* buf)
+void Display::fillPage(uint8_t pageNum, const uint8_t* buf) const
 {
-  digitalWrite(PIN_DC, LOW); // set command flag
-  command(0xB0 + pageNum); // set page address
-  command(0x02, 0x10);     // set LOW and HIGH column address
+  digitalWrite(PIN_DC, LOW);  // set command flag
+  command(0xB0 + pageNum);    // set page address
+  command(0x02, 0x10);        // set LOW and HIGH column address
   digitalWrite(PIN_DC, HIGH); // set data flag
   transfer(buf, DISPLAY_WIDTH);
 }

@@ -15,12 +15,12 @@ class Display {
   SPISettings Settings;
 public:
   Display();
-  void init();
-  void update();
-  Buffer getBuffer();
+  void init() const;
+  void update() const;
+  Buffer getBuffer() const;
 private:
-  void transfer(const uint8_t* buf, size_t count);
-  void command(uint8_t cmd);
-  void command(uint8_t cmd, uint8_t data);
-  void fillPage(uint8_t pageNum, const uint8_t* buf);
+  void transfer(const uint8_t* buf, size_t count) const;
+  void command(uint8_t cmd) const;
+  void command(uint8_t cmd, uint8_t data) const;
+  void fillPage(uint8_t pageNum, const uint8_t* buf) const;
 };

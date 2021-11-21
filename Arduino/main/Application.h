@@ -7,7 +7,7 @@
 
 class Application {
   Graphics graphics;
-  Display display;
+  const Display display;
   Controller controller;
   Core core;
 public:

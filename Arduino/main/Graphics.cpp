@@ -14,6 +14,53 @@ void Graphics::clear()
   memset(buf.data, 0, (buf.width * buf.height / BITS_IN_BYTE));
 }
 
+void Graphics::drawPicture(Picture pic, Position pos)
+{
+  // if the picture is out of visible area, then do not draw.
+  if (!adjustSize(pic.x, pic.width, pos.x, buf.width) ||
+    !adjustSize(pic.y, pic.height, pos.y, buf.height))
+    return;
+
+  // preparatory calculations
+  int picPreBits = BITS_IN_BYTE - pic.x % BITS_IN_BYTE;
+  int picPostBits = (pic.x + pic.width) % BITS_IN_BYTE;
+  int preBitsShift = 0;
+  if (picPreBits > pic.width)
+  {
+    preBitsShift = picPreBits - pic.width;
+    picPreBits = pic.width;
+    picPostBits = 0;
+  }
+  const int picWholeBytes = (pic.width - picPreBits - picPostBits) / BITS_IN_BYTE;
+  const int bmpWidth = pic.bmp->width / BITS_IN_BYTE;
+  const uint8_t* bmpPos = pic.bmp->data + pic.x / BITS_IN_BYTE + pic.y * bmpWidth;
+  uint8_t* bufPos = buf.data + pos.x + pos.y / BITS_IN_BYTE * buf.width;
+  int y = pos.y;
+  int picPreRows = BITS_IN_BYTE - pos.y % BITS_IN_BYTE;
+  int picPostRows = (pos.y + pic.height) % BITS_IN_BYTE;
+  if (picPreRows > pic.height)
+  {
+    picPreRows = pic.height;
+    picPostRows = 0;
+  }
+  const int picWholeRows = (pic.height - picPreRows - picPostRows) / BITS_IN_BYTE;
+  // fill buffer
+  drawLines(bmpPos, bmpWidth, picPreRows, picPreBits, picWholeBytes, picPostBits, preBitsShift, bufPos, y);
+  y += picPreRows;
+  bmpPos += bmpWidth * picPreRows;
+  bufPos += buf.width;
+  const int wholeBmpWidth = bmpWidth * BITS_IN_BYTE;
+  int i = picWholeRows;
+  while (i--)
+  {
+    drawLines(bmpPos, bmpWidth, BITS_IN_BYTE, picPreBits, picWholeBytes, picPostBits, preBitsShift, bufPos, y);
+    y += BITS_IN_BYTE;
+    bmpPos += wholeBmpWidth;
+    bufPos += buf.width;
+  }
+  drawLines(bmpPos, bmpWidth, picPostRows, picPreBits, picWholeBytes, picPostBits, preBitsShift, bufPos, y);
+}
+
 void Graphics::drawBits(uint8_t byte, uint8_t bitCount, uint8_t* buf, uint8_t mask, uint8_t bufBitShift)
 {
   while (bitCount--)
@@ -75,51 +122,4 @@ bool Graphics::adjustSize(int& picI, int& picSize, int& bufI, int& bufSize)
   }
   picSize = sizeI - bufI;
   return true;
-}
-
-void Graphics::drawPicture(Picture pic, Position pos)
-{
-  // if the picture is out of visible area, then do not draw.
-  if (!adjustSize(pic.x, pic.width, pos.x, buf.width) ||
-    !adjustSize(pic.y, pic.height, pos.y, buf.height))
-    return;
-
-  // preparatory calculations
-  int picPreBits = BITS_IN_BYTE - pic.x % BITS_IN_BYTE;
-  int picPostBits = (pic.x + pic.width) % BITS_IN_BYTE;
-  int preBitsShift = 0;
-  if (picPreBits > pic.width)
-  {
-    preBitsShift = picPreBits - pic.width;
-    picPreBits = pic.width;
-    picPostBits = 0;
-  }
-  const int picWholeBytes = (pic.width - picPreBits - picPostBits) / BITS_IN_BYTE;
-  const int bmpWidth = pic.bmp->width / BITS_IN_BYTE;
-  const uint8_t* bmpPos = pic.bmp->data + pic.x / BITS_IN_BYTE + pic.y * bmpWidth;
-  uint8_t* bufPos = buf.data + pos.x + pos.y / BITS_IN_BYTE * buf.width;
-  int y = pos.y;
-  int picPreRows = BITS_IN_BYTE - pos.y % BITS_IN_BYTE;
-  int picPostRows = (pos.y + pic.height) % BITS_IN_BYTE;
-  if (picPreRows > pic.height)
-  {
-    picPreRows = pic.height;
-    picPostRows = 0;
-  }
-  const int picWholeRows = (pic.height - picPreRows - picPostRows) / BITS_IN_BYTE;
-  // fill buffer
-  drawLines(bmpPos, bmpWidth, picPreRows, picPreBits, picWholeBytes, picPostBits, preBitsShift, bufPos, y);
-  y += picPreRows;
-  bmpPos += bmpWidth * picPreRows;
-  bufPos += buf.width;
-  const int wholeBmpWidth = bmpWidth * BITS_IN_BYTE;
-  int i = picWholeRows;
-  while (i--)
-  {
-    drawLines(bmpPos, bmpWidth, BITS_IN_BYTE, picPreBits, picWholeBytes, picPostBits, preBitsShift, bufPos, y);
-    y += BITS_IN_BYTE;
-    bmpPos += wholeBmpWidth;
-    bufPos += buf.width;
-  }
-  drawLines(bmpPos, bmpWidth, picPostRows, picPreBits, picWholeBytes, picPostBits, preBitsShift, bufPos, y);
 }
