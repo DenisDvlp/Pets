@@ -10,7 +10,7 @@
 
 using namespace std;
 
-DBiArray<unsigned char> convertToBits(const DImage& img) {
+DBiArray<unsigned char> convertToBits(const DImage& img, uint8 threshold) {
   static constexpr size_t BITS_IN_BYTE = 8;
   const DSize imgSize = img.size();
   const int16 widthOut = (imgSize.width() / BITS_IN_BYTE +
@@ -34,7 +34,7 @@ DBiArray<unsigned char> convertToBits(const DImage& img) {
         // Bright pixels are >=128. Dark pixels are <128.
         const DColor color = img[i][j];
         const double brightness = 0.299 * color.red() + 0.587 * color.green() + 0.114 * color.blue();
-        bits.set(k, /*isDark*/ brightness < 128);
+        bits.set(k, /*isDark*/ brightness < threshold);
       }
       output.raw()[k] = static_cast<unsigned char>(bits.to_ulong());
     }
@@ -113,7 +113,7 @@ DVector<string> readFromFile(string filepath)
   DVector<string> list;
   string str;
   while (!imgfile.eof()) {
-    imgfile >> str;
+    std::getline(imgfile, str);
     if (!str.empty()) {
       list.push(str);
     }
@@ -128,8 +128,14 @@ int main(int count, const char** args)
     cout << "This program read `imglist.txt`\n"
       "which contains a list of image names. It converts\n"
       "the images into PROGMEM arrays of HEX values\n"
-      "suitable for Arduino projects."
-      "For instance:\n\nfilepath/img1.png\nfilepath/img2.png\n\n";
+      "suitable for Arduino projects.\n"
+      "For instance:\n\nfilepath/img1.png -t200\nimg2.png -t128\n\n"
+      "Put -t flag with a following value of the threshold after the image path.\n"
+      "All pixels with brightness higher than the given threshold are considered\n"
+      "as a background(or white), otherwise those, which are lower than the threshold,\n"
+      "are considered as black pixels. The threshold `-t` flag is not mandatory.\n"
+      "Default value is 128. The threshold shall be in range of [0, 255].\n\n"
+      "Note: image file path shall be without spaces.\n";
     return 1;
   }
 
@@ -164,6 +170,15 @@ int main(int count, const char** args)
 
   for (auto& name : list)
   {
+    uint8 threshold = 128;
+    DString s = name;
+    auto it = s.find(" -t");
+    if (it != s.end()) {
+      string t = { it + 3, s.cend() };
+      threshold = static_cast<uint8>(std::atoi(t.data()));
+      s.erase(it, s.cend());
+      name = s.data();
+    }
     DImage img;
     if (!img.load(name)) {
       cout << "Unable to read image `" << name << "`. Skipped." << endl;
@@ -171,8 +186,8 @@ int main(int count, const char** args)
     }
     cout << "Image `" << name << "` read." << endl;
 
-    DBiArray<unsigned char> output = convertToBits(img);
-    DString s = name;
+
+    DBiArray<unsigned char> output = convertToBits(img, threshold);
     s.remove(".png");
     string array = getStringArray(output, s.data());
     if (!appendToFile(cppName.data(), array)) {

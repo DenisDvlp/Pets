@@ -47,4 +47,4 @@ using ClassMethodT = Return(T::*)(Args...);
 template<typename Return, typename... Args>
 using FunctionT = Return(*)(Args...);
 
-using dint = int16;
+using dint = int;
