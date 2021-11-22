@@ -49,17 +49,16 @@ void Application::update()
   core.update();
   controller.update();
   display.update();
-  // Do not overburden the CPU. It's enough for us to do the things at 100 FPS.
-  delay(10);
 }
-int x = 0, y = 0;
+
 void Application::pressDown(uint8_t button)
 {
+  static int x = 0, y = 0;
   graphics.clear();
   switch (button) {
-  case Controller::BUTTON_X: graphics.drawPicture(pic_man, { x -= 10,y }); break;
-  case Controller::BUTTON_Y: graphics.drawPicture(pic_man, { x,y -= 10 }); break;
-  case Controller::BUTTON_A: graphics.drawPicture(pic_man, { x,y += 10 }); break;
-  case Controller::BUTTON_B: graphics.drawPicture(pic_man, { x += 10,y }); break;
+  case Controller::BUTTON_X: graphics.drawPicture(pic_hand, { x -= 10,y }); break;
+  case Controller::BUTTON_Y: graphics.drawPicture(pic_hand, { x,y -= 10 }); break;
+  case Controller::BUTTON_A: graphics.drawPicture(pic_hand, { x,y += 10 }); break;
+  case Controller::BUTTON_B: graphics.drawPicture(pic_hand, { x += 10,y }); break;
   }
 }

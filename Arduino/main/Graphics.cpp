@@ -61,6 +61,16 @@ void Graphics::drawPicture(Picture pic, Position pos)
   drawLines(bmpPos, bmpWidth, picPostRows, picPreBits, picWholeBytes, picPostBits, preBitsShift, bufPos, y);
 }
 
+void Graphics::drawText(String text, Position pos, Font* font)
+{
+  for (char c : text)
+  {
+    Picture pic = font->getPicture(c);
+    drawPicture(pic, pos);
+    pos.x += pic.width + 1;
+  }
+}
+
 void Graphics::drawBits(uint8_t byte, uint8_t bitCount, uint8_t* buf, uint8_t mask, uint8_t bufBitShift)
 {
   while (bitCount--)
