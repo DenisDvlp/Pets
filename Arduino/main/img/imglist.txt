@@ -1,8 +1,3 @@
-nupogodi.png
-nupogodi2.png
-nupogodi11.png
-nupogodi12.png
-ti.png
-foto.png
-foto2.png -t140
-man.png
+cirillic.png
+digits.png
+hand.png
