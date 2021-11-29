@@ -2,11 +2,11 @@
 #include "Picture.h"
 #include "Arduino.h"
 #include "Images.h"
+#include "FontCirillic.h"
 
 void log(const char* str)
 {
-  Serial.print(str);
-  Serial.print("\n");
+  Serial.println(str);
 }
 
 // Turn off LEDs on the board.
@@ -37,7 +37,6 @@ void Application::init()
 
   // init port for logs
   Serial.begin(9600);
-  log("OLED Example\n");
 
   // clean display
   graphics.clear();
@@ -51,12 +50,28 @@ void Application::update()
   display.update();
 }
 
+template<typename T, size_t S>
+constexpr size_t size(T(&)[S]) { return S; }
+
 void Application::pressDown(uint8_t button)
 {
+  const char16_t arr[] = u"ЁАБВГДЕЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯабвгдежзийклмнопрстуфхцчшщъыьэюяё";
+  for (size_t i = 0; i < size(arr); i++)
+  {
+    Serial.print(int(arr[i]));
+    Serial.print(int(arr[i]));
+  }
+
+
   static int x = 0, y = 0;
   graphics.clear();
+  FontCirillic font;
+  font.isBold = false;
+  font.space = 8;
+  font.letterSpace = 1;
+  Position pos = { (Display::WIDTH - graphics.calculateTextWidth("Ну Погоди", font)) / 2, 20 };
   switch (button) {
-  case Controller::BUTTON_X: graphics.drawPicture(pic_hand, { x -= 10,y }); break;
+  case Controller::BUTTON_X: graphics.drawText("Ну Погоди", pos, font); break;
   case Controller::BUTTON_Y: graphics.drawPicture(pic_hand, { x,y -= 10 }); break;
   case Controller::BUTTON_A: graphics.drawPicture(pic_hand, { x,y += 10 }); break;
   case Controller::BUTTON_B: graphics.drawPicture(pic_hand, { x += 10,y }); break;

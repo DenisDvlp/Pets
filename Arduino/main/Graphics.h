@@ -9,7 +9,8 @@ public:
   void init(Buffer buffer);
   void clear();
   void drawPicture(Picture pic, Position pos);
-  void drawText(String text, Position pos, Font* font);
+  void drawText(String text, Position pos, const Font& font);
+  int calculateTextWidth(String text, const Font& font);
 private:
   void drawBits(uint8_t byte, uint8_t bitCount, uint8_t* buf, uint8_t mask, uint8_t bufBitShift);
   void drawLine(const uint8_t* bytes, int preBits, int wholeBytes, int postBits, int preBitsShift, uint8_t* buf, int y);

@@ -16,7 +16,7 @@ Display::Display() :
 
 void Display::init() const
 {
-  // Difference between SSD1306and SH1106:
+  // Difference between SSD1306 and SH1106:
   // - The SH1106 controller has an internal RAM of 132x64 pixel.
   //   The SSD1306 controller only has 128x64 pixel.
   // - The SSD1306 has an expanded command set over the SH1106.
@@ -213,17 +213,17 @@ void Display::update() const
 {
   uint8_t page = 0;
   const uint8_t* buf = buffer;
-  const uint8_t* end = buffer + DISPLAY_WIDTH * DISPLAY_NUM_PAGE;
+  const uint8_t* end = buffer + WIDTH * NUM_PAGE;
   while (buf != end)
   {
     fillPage(page++, buf);
-    buf += DISPLAY_WIDTH;
+    buf += WIDTH;
   }
 }
 
 Buffer Display::getBuffer() const
 {
-  return { const_cast<uint8_t*>(buffer), DISPLAY_WIDTH, DISPLAY_HEIGHT };
+  return { const_cast<uint8_t*>(buffer), WIDTH, HEIGHT };
 }
 
 // This function is an improved version of `SPIClass::transfer` function.
@@ -257,5 +257,5 @@ void Display::fillPage(uint8_t pageNum, const uint8_t* buf) const
   command(0xB0 + pageNum);    // set page address
   command(0x02, 0x10);        // set LOW and HIGH column address
   digitalWrite(PIN_DC, HIGH); // set data flag
-  transfer(buf, DISPLAY_WIDTH);
+  transfer(buf, WIDTH);
 }

@@ -4,12 +4,14 @@
 #include <SPI.h>
 
 class Display {
+public:
   // Display dimentions.
-  static constexpr int DISPLAY_WIDTH = 128;
-  static constexpr int DISPLAY_HEIGHT = 64;
-  static constexpr int DISPLAY_NUM_PAGE = 8;
+  static constexpr int WIDTH = 128;
+  static constexpr int HEIGHT = 64;
+private:
+  static constexpr int NUM_PAGE = 8;
   static constexpr int BITS_IN_BYTE = 8;
-  static constexpr int BUF_SIZE = DISPLAY_WIDTH * DISPLAY_HEIGHT / BITS_IN_BYTE;
+  static constexpr int BUF_SIZE = WIDTH * HEIGHT / BITS_IN_BYTE;
 
   uint8_t buffer[BUF_SIZE];
   SPISettings Settings;

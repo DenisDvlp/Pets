@@ -61,14 +61,41 @@ void Graphics::drawPicture(Picture pic, Position pos)
   drawLines(bmpPos, bmpWidth, picPostRows, picPreBits, picWholeBytes, picPostBits, preBitsShift, bufPos, y);
 }
 
-void Graphics::drawText(String text, Position pos, Font* font)
+void Graphics::drawText(String text, Position pos, const Font& font)
 {
-  for (char c : text)
+  size_t i = 0;
+  while (i < text.length())
   {
-    Picture pic = font->getPicture(c);
+    if (text[i] == ' ') {
+      pos.x += font.space;
+      ++i;
+      continue;
+    }
+    char16_t c = char16_t(text[i] & 0b00011111) << 6 | (text[i + 1] & 0b00111111);
+    Picture pic = font.getPicture(c);
     drawPicture(pic, pos);
-    pos.x += pic.width + 1;
+    pos.x += pic.width + font.letterSpace;
+    i += 2;
   }
+}
+
+int Graphics::calculateTextWidth(String text, const Font& font)
+{
+  size_t i = 0;
+  int width = 0;
+  while (i < text.length())
+  {
+    const bool isAscii = text[i] & 0b10000000;
+    if (text[i] == ' ') {
+      width += font.space;
+      ++i;
+      continue;
+    }
+    char16_t c = char16_t(text[i] & 0b00011111) << 6 | (text[i + 1] & 0b00111111);
+    width += font.getCharWidth(c) + font.letterSpace;
+    i += 2;
+  }
+  return width;
 }
 
 void Graphics::drawBits(uint8_t byte, uint8_t bitCount, uint8_t* buf, uint8_t mask, uint8_t bufBitShift)
