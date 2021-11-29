@@ -16,3 +16,5 @@ extern const Picture pic_nupogodi12;
 extern const Bitmap bmp_1;
 extern const Picture pic_1;
 
+extern const Bitmap bmp_cirillic;
+extern const Picture pic_cirillic;

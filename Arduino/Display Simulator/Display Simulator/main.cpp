@@ -135,12 +135,33 @@ void drawPicture(Picture pic, Buffer& buf, Position pos)
   drawLines(bmpPos, bmpWidth, picPostRows, picPreBits, picWholeBytes, picPostBits, preBitsShift, bufPos, y);
 }
 
+Picture getPicture(char c)
+{
+  static const uint8_t mapping[] = { 7,9,7,6,10,8,8,13,6,8,8,8,8,10,8,9,8,9,6,8,8,11,8,10,8,12,14,10,10,8,7,13,7 };
+  static const uint8_t pageHeight = 17;
+  c += 32;
+  int x = 0;
+  for (uint8_t i = 0; i < c; i++)
+  {
+    x += mapping[i];
+  }
+  return Picture(bmp_cirillic, x, 0, mapping[c], pageHeight);
+}
+void drawText(Buffer& buf, std::string text, Position pos)
+{
+  for (char c : text)
+  {
+    Picture pic = getPicture(c);
+    drawPicture(pic, buf, pos);
+    pos.x += pic.width + 1;
+  }
+}
 Buffer buffer(buf, W, H);
 
 void main()
 {
   Position pos(0, 0);
   srand(time(0));
-  drawPicture(pic_nupogodi, buffer, {0,20});
+  drawText(buffer, "рсту", {0,0});
 	display();
 }
