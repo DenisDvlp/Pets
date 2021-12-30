@@ -5,9 +5,6 @@
 #include "DSizeT.h"
 #include "DSfinae.h"
 
-#undef max
-#undef min
-
 template<typename T>
 class DRectT
 {

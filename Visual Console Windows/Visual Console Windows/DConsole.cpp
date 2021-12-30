@@ -2,9 +2,6 @@
 #include "DConsole.h"
 #include <unordered_map>
 
-#ifdef min
-#undef min
-#endif
 #ifdef DELETE
 #undef DELETE
 #endif

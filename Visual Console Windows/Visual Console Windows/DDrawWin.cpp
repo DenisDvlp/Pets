@@ -3,16 +3,6 @@
 #include "DColor.h"
 #include <Windows.h>
 
-#ifdef max
-#undef max
-#endif
-#ifdef min
-#undef min
-#endif
-#ifdef IN
-#undef IN
-#endif
-
 //WINDOWS CONSOLE IMPLEMENTATION
 
 byte convertToConsoleColor(const DColor color)
@@ -48,7 +38,7 @@ void DDrawWin::drawRect(const DRect& rect, const DColor color)
         });
 }
 
-#define HAS_FLAG(IN, FLAG) ((static_cast<uint8>(IN) & static_cast<uint8>(FLAG)) == static_cast<uint8>(FLAG))
+#define HAS_FLAG(BYTE, FLAG) ((static_cast<uint8>(BYTE) & static_cast<uint8>(FLAG)) == static_cast<uint8>(FLAG))
 
 template<>
 void DDrawWin::drawText(const DRect& rect, const DString& text, const DColor color, const DAlign align)

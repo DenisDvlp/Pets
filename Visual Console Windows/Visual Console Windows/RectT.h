@@ -5,9 +5,6 @@
 #include "Size.h"
 #include "sfinae.h"
 
-#undef max
-#undef min
-
 #pragma warning(push)
 #pragma warning(disable : 4544)
 
