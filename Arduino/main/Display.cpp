@@ -1,6 +1,8 @@
 #include "Display.h"
 #include <avr/pgmspace.h>
 
+// Display driver for SH1106
+
 // Pin configuration.
 static constexpr uint8_t PIN_RESET = 14;
 static constexpr uint8_t PIN_DC = 18;
