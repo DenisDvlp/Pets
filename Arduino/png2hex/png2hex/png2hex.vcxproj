@@ -200,6 +200,7 @@ copy $(TargetPath) %ARD_PATH%\img\$(TargetFileName) /Y</Command>
     <ClCompile Include="zlib\zutil.c" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="ArrayOfExtendedByte.h" />
     <ClInclude Include="DBiArray.h" />
     <ClInclude Include="DColor.h" />
     <ClInclude Include="DContainerT.h" />

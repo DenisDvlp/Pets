@@ -2,6 +2,7 @@
 //
 #include "DImage.h"
 #include "DString.h"
+#include "ArrayOfExtendedByte.h"
 #include <iostream>
 #include <bitset>
 #include <sstream>
@@ -9,6 +10,10 @@
 #include <filesystem>
 
 using namespace std;
+DBiArray<unsigned char> readFont(const DImage& img) {
+  DBiArray<unsigned char> output;
+  return output;
+}
 
 DBiArray<unsigned char> convertToBits(const DImage& img, uint8 threshold) {
   static constexpr size_t BITS_IN_BYTE = 8;
@@ -170,9 +175,18 @@ int main(int count, const char** args)
 
   for (auto& name : list)
   {
-    uint8 threshold = 128;
     DString s = name;
-    auto it = s.find(" -t");
+    // font image found
+    bool isFont = false;
+    auto it = s.find(" -f");
+    if (it != s.end()) {
+      isFont = true;
+      s.erase(it, it + 3);
+      name = s.data();
+    }
+    // casual image found
+    uint8 threshold = 128;
+    it = s.find(" -t");
     if (it != s.end()) {
       string t = { it + 3, s.cend() };
       threshold = static_cast<uint8>(std::atoi(t.data()));
@@ -186,9 +200,14 @@ int main(int count, const char** args)
     }
     cout << "Image `" << name << "` read." << endl;
 
+    s.remove(".png");
+
+    if (isFont) {
+      DBiArray<unsigned char> output = readFont(img);
+      continue;
+    }
 
     DBiArray<unsigned char> output = convertToBits(img, threshold);
-    s.remove(".png");
     string array = getStringArray(output, s.data());
     if (!appendToFile(cppName.data(), array)) {
       cout << "Unable to write to file `" << cppName.data() << "`." << endl;

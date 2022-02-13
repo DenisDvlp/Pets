@@ -215,5 +215,8 @@
     <ClInclude Include="DString.h">
       <Filter>Исходные файлы</Filter>
     </ClInclude>
+    <ClInclude Include="ArrayOfExtendedByte.h">
+      <Filter>Файлы заголовков</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

@@ -29,9 +29,8 @@ struct Bitmap : Size {
 
 struct Picture : Position, Size {
   const Bitmap* bmp = nullptr;
-  Picture() = default;
   Picture(const Bitmap& bmp)
-    : bmp(&bmp), Size(bmp) {}
+    : bmp(&bmp), Position(0, 0), Size(bmp) {}
   Picture(const Bitmap& bmp, int x, int y, int w, int h)
     : bmp(&bmp), Position(x, y), Size(w, h) {}
 };
