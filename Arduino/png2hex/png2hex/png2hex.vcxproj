@@ -128,8 +128,8 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
     <PostBuildEvent>
-      <Command>copy $(ProjectDir)kit\Picture.h C:\Users\Denis\Documents\Arduino\main /Y
-copy $(TargetPath) C:\Users\Denis\Documents\Arduino\main\img\$(TargetFileName) /Y</Command>
+      <Command>
+      </Command>
     </PostBuildEvent>
     <PreBuildEvent>
       <Command>

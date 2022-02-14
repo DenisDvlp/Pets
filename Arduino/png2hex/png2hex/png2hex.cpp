@@ -10,22 +10,29 @@
 #include <filesystem>
 
 using namespace std;
-DBiArray<unsigned char> readFont(const DImage& img) {
-  DBiArray<unsigned char> output;
-  return output;
-}
 
-DBiArray<unsigned char> convertToBits(const DImage& img, uint8 threshold) {
-  static constexpr size_t BITS_IN_BYTE = 8;
+static constexpr size_t BITS_IN_BYTE = 8;
+
+
+class FontInfo {
+public:
+  FontInfo() : offsets(offsetsData) {}
+  ArrayOfExtendedByte<short, 10> offsets;
+  short offsetsSize = 0;
+  DBiArray<unsigned char> output;
+  unsigned char offsetsData[2000] = {};
+};
+
+DBiArray<unsigned char> convertToBitsHelper(const DImage& img, uint8 threshold, size_t fromLine = 0) {
   const DSize imgSize = img.size();
   const int16 widthOut = (imgSize.width() / BITS_IN_BYTE +
     (imgSize.width() % BITS_IN_BYTE ? 1 : 0));
 
   DBiArray<unsigned char> output;
-  output.size(widthOut, imgSize.height());
+  output.size(widthOut, imgSize.height() - fromLine);
 
   bitset<BITS_IN_BYTE> bits;
-  for (size_t i = 0, k = 0; i < imgSize.height(); i++)
+  for (size_t i = fromLine, k = 0; i < imgSize.height(); i++)
   {
     for (size_t j = 0; j < imgSize.width(); ++k)
     {
@@ -47,50 +54,68 @@ DBiArray<unsigned char> convertToBits(const DImage& img, uint8 threshold) {
   return output;
 }
 
-string getExternStructs(string name) {
-  string bmpName("bmp_");
-  bmpName.append(name);
-  string picName("pic_");
-  picName.append(name);
-  std::stringstream ss;
-  ss << 
-    "extern const Bitmap " << bmpName << ";\n"
-    "extern const Picture " << picName << ";\n\n";
+FontInfo readFontInfo(const DImage& img, uint8 threshold) {
+  FontInfo fi;
+  const DSize imgSize = img.size();
 
-  return ss.str();
+  short k = 0;
+  for (size_t i = 0; i < imgSize.width(); ++i)
+  {
+    if(img[0][i] == DColors::BLACK)
+      fi.offsets[k++] = i;
+  }
+  fi.offsets[k++] = imgSize.width();
+  fi.offsetsSize = k * 10 / BITS_IN_BYTE + bool(k * 10 % BITS_IN_BYTE);
+
+  fi.output = convertToBitsHelper(img, threshold, 1);
+
+  return fi;
 }
 
-string getStringArray(const DBiArray<unsigned char>& output, string name) {
+DBiArray<unsigned char> convertToBits(const DImage& img, uint8 threshold) {
+  return convertToBitsHelper(img, threshold);
+}
+
+string getStringArray(const unsigned char* output, int size, string name) {
   static constexpr size_t HEX_IN_ROW = 12;
   static const char lookupHexTable[] = {
     '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F'
   };
-  size_t outSize = output.size().square();
-  if (outSize == 0) {
+  if (size == 0) {
     return "";
   }
 
-  // get array of hex values
-  string pngName("png_");
-  pngName.append(name);
   std::stringstream ss;
-  ss << "static const uint8_t " << pngName <<"[" << outSize << "] PROGMEM = {";
-  for (size_t i = 0; i < outSize; ++i)
+  ss << "static const uint8_t " << name << "[" << size << "] PROGMEM = {";
+  for (size_t i = 0; i < size; ++i)
   {
     if (i % HEX_IN_ROW == 0) {
       ss << "\n  ";
     }
-    ss << "0x" << lookupHexTable[output.raw()[i] >> 4] << lookupHexTable[output.raw()[i] & 0xF] << ", ";
+    ss << "0x" << lookupHexTable[output[i] >> 4] << lookupHexTable[output[i] & 0xF] << ", ";
   }
+  ss << "\n};\n";
+
+  return ss.str();
+}
+
+string getBitmapString(const unsigned char* output, int width, int height, string name) {
+  size_t outSize = width * height;
+  if (outSize == 0) {
+    return "";
+  }
+
+  string pngName = "png_" + name;
+  std::stringstream ss;
+  ss << getStringArray(output, outSize, pngName);
 
   // get full structs
   string bmpName("bmp_");
   bmpName.append(name);
   string picName("pic_");
   picName.append(name);
-  ss << "\n};\n"
-    "static const Bitmap " << bmpName << "(" << pngName << ", "
-    << (output.size().width() * 8) << ", " << output.size().height() << ");\n"
+  ss << "static const Bitmap " << bmpName << "(" << pngName << ", "
+    << (width * 8) << ", " << height << ");\n"
     "static const Picture " << picName << "(" << bmpName << ");\n\n";
 
   return ss.str();
@@ -130,17 +155,40 @@ DVector<string> readFromFile(string filepath)
 int main(int count, const char** args)
 {
   if (!filesystem::exists("imglist.txt")) {
-    cout << "This program read `imglist.txt`\n"
-      "which contains a list of image names. It converts\n"
-      "the images into PROGMEM arrays of HEX values\n"
-      "suitable for Arduino projects.\n"
-      "For instance:\n\nfilepath/img1.png -t200\nimg2.png -t128\n\n"
-      "Put -t flag with a following value of the threshold after the image path.\n"
-      "All pixels with brightness higher than the given threshold are considered\n"
-      "as a background(or white), otherwise those, which are lower than the threshold,\n"
-      "are considered as black pixels. The threshold `-t` flag is not mandatory.\n"
-      "Default value is 128. The threshold shall be in range of [0, 255].\n\n"
-      "Note: image file path shall be without spaces.\n";
+    const char helpText[] = R"(
+This program read `imglist.txt` which contains a list of image names. It converts
+the images into PROGMEM arrays of HEX values suitable for Arduino projects.
+
+Run example:
+>png2hex [<path for generated files>]
+
+Structure shall look like:
+-root
+|-png2hex.exe
+|-imglist.txt
+|-filepath
+ `-img1.png
+|-img2.png
+`-fontpic.png
+
+imglist.txt:
+  filepath/img1.png -t200
+  img2.png -t128\
+  fontpic.png -f"
+
+imglist.txt flags:
+-t128  flag with a following value of the threshold after the image path.
+       All pixels with brightness higher than the given threshold are considered
+       as a background(or white), otherwise those, which are lower than the threshold,
+       are considered as black pixels. The threshold `-t` flag is not mandatory.
+       Default value is 128. The threshold shall be in range of [0, 255].
+       Note: image file path shall be without spaces.
+-f     flag indicates this is a font image.
+       The first line of pixels in font image shall be for metrics which denotes
+       the offset og each particular letter. The remaining lines is for the 
+       graphical representation of letters.
+)";
+    cout << helpText;
     return 1;
   }
 
@@ -173,52 +221,74 @@ int main(int count, const char** args)
   includes += "#include <avr/pgmspace.h>\n\n";
   appendToFile(cppName.data(), includes);
 
-  for (auto& name : list)
+  for (DString command : list)
   {
-    DString s = name;
-    // font image found
-    bool isFont = false;
-    auto it = s.find(" -f");
-    if (it != s.end()) {
-      isFont = true;
-      s.erase(it, it + 3);
-      name = s.data();
-    }
-    // casual image found
+    // font flag
+    const bool isFont = command.find(" -f") != command.end();
+    // threashold flag
     uint8 threshold = 128;
-    it = s.find(" -t");
-    if (it != s.end()) {
-      string t = { it + 3, s.cend() };
-      threshold = static_cast<uint8>(std::atoi(t.data()));
-      s.erase(it, s.cend());
-      name = s.data();
+    auto it = command.find(" -t");
+    if (it != command.end()) {
+      const char *str = &*(it + 3);
+      threshold = static_cast<uint8>(std::atoi(str));
     }
+    // extract name
+    it = command.find(".png");
+    if (it != command.end()) {
+      command.assign(command.cbegin(), it + 4);
+    }
+
     DImage img;
-    if (!img.load(name)) {
-      cout << "Unable to read image `" << name << "`. Skipped." << endl;
+    if (!img.load(command.data())) {
+      cout << "Unable to read image `" << command.data() << "`. Skipped." << endl;
       continue;
     }
-    cout << "Image `" << name << "` read." << endl;
+    cout << "Image `" << command.data() << "` read." << endl;
 
-    s.remove(".png");
+    command.remove(".png");
 
     if (isFont) {
-      DBiArray<unsigned char> output = readFont(img);
-      continue;
-    }
+      FontInfo fi = readFontInfo(img, threshold);
 
-    DBiArray<unsigned char> output = convertToBits(img, threshold);
-    string array = getStringArray(output, s.data());
-    if (!appendToFile(cppName.data(), array)) {
-      cout << "Unable to write to file `" << cppName.data() << "`." << endl;
-      return 1;
+      string bitmapArray = getBitmapString(fi.output.raw(), fi.output.size().width(), fi.output.size().height(), command.data());
+      DString offsetName = "font_offsets_" + command;
+      string offsetsArray = getStringArray(fi.offsetsData, fi.offsetsSize, offsetName.data());
+      offsetsArray = "// Each offset value contains 10 bits. Use `ArrayOfExtendedByte` to read.\n" + offsetsArray;
+      if (!appendToFile(cppName.data(), offsetsArray)) {
+        cout << "Unable to write to file `" << cppName.data() << "`." << endl;
+        return 1;
+      }
+      if (!appendToFile(cppName.data(), bitmapArray)) {
+        cout << "Unable to write to file `" << cppName.data() << "`." << endl;
+        return 1;
+      }
+      DString structs =
+        "extern const Bitmap bmp_" + command +
+        ";\nextern const Picture pic_" + command +
+        ";\nextern const uint8_t font_offsets_" + command + ";\n\n";
+      if (!appendToFile(headerName.data(), structs.data())) {
+        cout << "Unable to write to file `" << headerName.data() << "`." << endl;
+        return 1;
+      }
     }
-    string structs = getExternStructs(s.data());
-    if (!appendToFile(headerName.data(), structs)) {
-      cout << "Unable to write to file `" << headerName.data() << "`." << endl;
-      return 1;
+    else {
+      DBiArray<unsigned char> output = convertToBits(img, threshold);
+      string array = getBitmapString(output.raw(), output.size().width(), output.size().height(), command.data());
+      if (!appendToFile(cppName.data(), array)) {
+        cout << "Unable to write to file `" << cppName.data() << "`." << endl;
+        return 1;
+      }
+      DString structs = 
+        "extern const Bitmap bmp_" + command + 
+        ";\nextern const Picture pic_" + command + ";\n\n";
+      if (!appendToFile(headerName.data(), structs.data())) {
+        cout << "Unable to write to file `" << headerName.data() << "`." << endl;
+        return 1;
+      }
     }
   }
+  cout << "Generated `" << headerName.data() << "`." << endl;
+  cout << "Generated `" << cppName.data() << "`." << endl;
   cout << "Done." << endl;
   return 0;
 }
