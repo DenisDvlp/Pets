@@ -2,13 +2,15 @@
 #include "Font.h"
 
 class FontCirillic : public Font {
-  const int mapping[133] = { 0,7,18,26,34,40,52,59,74,82,92,102,110,120,132,141,153,162,170,179,187,197,209,219,230,240,254,269,280,291,299,308,324,333,340,349,356,362,372,380,393,399,407,415,423,431,441,449,458,466,475,481,489,497,508,516,526,534,546,560,570,580,588,595,608,615,623,630,642,651,660,668,680,687,704,714,723,734,744,755,770,781,792,803,813,822,832,843,855,866,878,888,903,919,931,944,953,962,978,988,995,1003,1011,1017,1028,1035,1049,1055,1064,1073,1082,1091,1102,1111,1120,1129,1138,1145,1152,1160,1171,1180,1190,1198,1211,1225,1235,1247,1255,1261,1274,1283,1290 };
 public:
-  FontCirillic() {
-    space = 8; letterSpace = 1;
-  }
+  FontCirillic();
   Picture getPicture(char16_t c) const override;
-  int getCharWidth(char16_t c) const override;
+  byte getCharWidth(char16_t c) const override;
+  byte getSpaceWidth() const override;
+  byte getCharSpaceWidth() const override;
 private:
-  const int* getMapping(char16_t c) const;
+  const Bitmap* bmps[5];
+  const uint8_t* offsets[5];
+  byte getCharHeight() const;
+  int getOffset(char16_t c) const;
 };

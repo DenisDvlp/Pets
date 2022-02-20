@@ -67,14 +67,14 @@ void Graphics::drawText(String text, Position pos, const Font& font)
   while (i < text.length())
   {
     if (text[i] == ' ') {
-      pos.x += font.space;
+      pos.x += font.getSpaceWidth();
       ++i;
       continue;
     }
     char16_t c = char16_t(text[i] & 0b00011111) << 6 | (text[i + 1] & 0b00111111);
     Picture pic = font.getPicture(c);
     drawPicture(pic, pos);
-    pos.x += pic.width + font.letterSpace;
+    pos.x += pic.width + font.getCharSpaceWidth();
     i += 2;
   }
 }
@@ -87,12 +87,12 @@ int Graphics::calculateTextWidth(String text, const Font& font)
   {
     const bool isAscii = text[i] & 0b10000000;
     if (text[i] == ' ') {
-      width += font.space;
+      width += font.getSpaceWidth();
       ++i;
       continue;
     }
     char16_t c = char16_t(text[i] & 0b00011111) << 6 | (text[i + 1] & 0b00111111);
-    width += font.getCharWidth(c) + font.letterSpace;
+    width += font.getCharWidth(c) + font.getCharSpaceWidth();
     i += 2;
   }
   return width;

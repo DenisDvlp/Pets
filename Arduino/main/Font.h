@@ -4,11 +4,12 @@
 class Font {
 public:
   bool isBold = false;
-  int space = 0;
-  int letterSpace = 0;
-  virtual ~Font() {};
+  byte size = 0;
+  virtual ~Font() = default;
   virtual Picture getPicture(char c) const { return {}; };
   virtual Picture getPicture(char16_t c) const { return {}; };
-  virtual int getCharWidth(char c) const { return {}; };
-  virtual int getCharWidth(char16_t c) const { return {}; };
+  virtual byte getCharWidth(char c) const { return {}; };
+  virtual byte getCharWidth(char16_t c) const { return {}; };
+  virtual byte getSpaceWidth() const;
+  virtual byte getCharSpaceWidth() const;
 };

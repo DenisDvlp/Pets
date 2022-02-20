@@ -1,3 +1,8 @@
 cirillic.png
 digits.png
 hand.png
+font1.png -f
+font2.png -f
+font3.png -f
+font4.png -f
+font5.png -f
