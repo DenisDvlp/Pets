@@ -11,19 +11,20 @@
 
 using namespace std;
 
-static constexpr size_t BITS_IN_BYTE = 8;
+static constexpr int8_t BITS_IN_BYTE = 8;
 
 
 class FontInfo {
 public:
+  static constexpr int8_t OFFSET_BITS = 10;
   FontInfo() : offsets(offsetsData) {}
-  ArrayOfExtendedByte<short, 10> offsets;
-  short offsetsSize = 0;
+  ArrayOfExtendedByte<int, OFFSET_BITS> offsets;
+  int offsetsSize = 0;
   DBiArray<unsigned char> output;
   unsigned char offsetsData[2000] = {};
 };
 
-DBiArray<unsigned char> convertToBitsHelper(const DImage& img, uint8 threshold, size_t fromLine = 0) {
+DBiArray<unsigned char> convertToBitsHelper(const DImage& img, uint8 threshold, int fromLine = 0) {
   const DSize imgSize = img.size();
   const int16 widthOut = (imgSize.width() / BITS_IN_BYTE +
     (imgSize.width() % BITS_IN_BYTE ? 1 : 0));
@@ -59,13 +60,13 @@ FontInfo readFontInfo(const DImage& img, uint8 threshold) {
   const DSize imgSize = img.size();
 
   short k = 0;
-  for (size_t i = 0; i < imgSize.width(); ++i)
+  for (int i = 0; i < imgSize.width(); ++i)
   {
     if(img[0][i] == DColors::BLACK)
       fi.offsets[k++] = i;
   }
   fi.offsets[k++] = imgSize.width();
-  fi.offsetsSize = k * 10 / BITS_IN_BYTE + bool(k * 10 % BITS_IN_BYTE);
+  fi.offsetsSize = k * FontInfo::OFFSET_BITS / BITS_IN_BYTE + bool(k * FontInfo::OFFSET_BITS % BITS_IN_BYTE);
 
   fi.output = convertToBitsHelper(img, threshold, 1);
 
@@ -76,7 +77,7 @@ DBiArray<unsigned char> convertToBits(const DImage& img, uint8 threshold) {
   return convertToBitsHelper(img, threshold);
 }
 
-string getStringArray(const unsigned char* output, int size, string name) {
+string getStringArray(const unsigned char* output, size_t size, string name) {
   static constexpr size_t HEX_IN_ROW = 12;
   static const char lookupHexTable[] = {
     '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F'
@@ -243,7 +244,7 @@ imglist.txt flags:
       cout << "Unable to read image `" << command.data() << "`. Skipped." << endl;
       continue;
     }
-    cout << "Image `" << command.data() << "` read." << endl;
+    cout << (isFont ? "Font" : "Image") << " `" << command.data() << "` read." << endl;
 
     command.remove(".png");
 
@@ -253,7 +254,9 @@ imglist.txt flags:
       string bitmapArray = getBitmapString(fi.output.raw(), fi.output.size().width(), fi.output.size().height(), command.data());
       DString offsetName = "font_offsets_" + command;
       string offsetsArray = getStringArray(fi.offsetsData, fi.offsetsSize, offsetName.data());
-      offsetsArray = "// Each offset value contains 10 bits. Use `ArrayOfExtendedByte` to read.\n" + offsetsArray;
+      stringstream ss;
+      ss << "// Each offset value contains " << int(FontInfo::OFFSET_BITS) << " bits. Use `ArrayOfExtendedByte` to read.\n" << offsetsArray;
+      offsetsArray = std::move(ss.str());
       if (!appendToFile(cppName.data(), offsetsArray)) {
         cout << "Unable to write to file `" << cppName.data() << "`." << endl;
         return 1;

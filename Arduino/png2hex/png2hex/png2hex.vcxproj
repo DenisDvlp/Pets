@@ -159,9 +159,8 @@
       </Command>
     </PreBuildEvent>
     <PostBuildEvent>
-      <Command>set ARD_PATH=D:\WORK\Projects\Pets\Arduino\main
-copy $(ProjectDir)kit\Picture.h %ARD_PATH% /Y
-copy $(TargetPath) %ARD_PATH%\img\$(TargetFileName) /Y</Command>
+      <Command>copy $(ProjectDir)kit\Picture.h $(ProjectDir)..\..\main\ /Y
+copy $(TargetPath) $(ProjectDir)..\..\main\img\$(TargetFileName) /Y</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>

@@ -23,12 +23,14 @@ struct Size {
 
 struct Bitmap : Size {
   const uint8_t* data = nullptr;
+  constexpr Bitmap() = default;
   Bitmap(const uint8_t* data, int w, int h)
     : data(data), Size(w, h) {}
 };
 
 struct Picture : Position, Size {
   const Bitmap* bmp = nullptr;
+  constexpr Picture() = default;
   Picture(const Bitmap& bmp)
     : bmp(&bmp), Position(0, 0), Size(bmp) {}
   Picture(const Bitmap& bmp, int x, int y, int w, int h)
