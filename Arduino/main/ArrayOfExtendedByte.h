@@ -13,7 +13,7 @@
 //   short x = exBytes[4]; // return 1999
 template<typename T>
 class ArrayOfExtendedByte {
-  static constexpr byte BITS_IN_BYTE;
+  static constexpr byte BITS_IN_BYTE = 8;
   const uint8_t* const bytes;
   const byte bitsInByte;
 

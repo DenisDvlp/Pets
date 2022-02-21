@@ -67,8 +67,6 @@ void Application::pressDown(uint8_t button)
   graphics.clear();
   FontCirillic font;
   font.isBold = false;
-  font.space = 8;
-  font.letterSpace = 1;
   Position pos = { (Display::WIDTH - graphics.calculateTextWidth("Ну Погоди", font)) / 2, 20 };
   switch (button) {
   case Controller::BUTTON_X: graphics.drawText("Ну Погоди", pos, font); break;

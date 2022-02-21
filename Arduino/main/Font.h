@@ -1,5 +1,6 @@
 #pragma once
 #include "Picture.h"
+#include "Arduino.h"
 
 class Font {
 public:
