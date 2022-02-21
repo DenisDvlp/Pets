@@ -268,7 +268,7 @@ imglist.txt flags:
       DString structs =
         "extern const Bitmap bmp_" + command +
         ";\nextern const Picture pic_" + command +
-        ";\nextern const uint8_t font_offsets_" + command + ";\n\n";
+        ";\nextern const uint8_t font_offsets_" + command + "[];\n\n";
       if (!appendToFile(headerName.data(), structs.data())) {
         cout << "Unable to write to file `" << headerName.data() << "`." << endl;
         return 1;
