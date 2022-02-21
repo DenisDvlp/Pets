@@ -2,6 +2,8 @@
 #include "Images.h"
 #include "ArrayOfExtendedByte.h"
 
+//!"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\]^_`abcdefghijklmnopqrstuvwxyz{|}~¨ÀÁÂÃÄÅÆÇÈÉÊËÌÍÎÏÐÑÒÓÔÕÖ×ØÙÚÛÜÝÞ‗אבגדהוזחטיךכלםמןנסעףפץצקרשתûü‎‏ÿ¸
+
 FontCirillic::FontCirillic() :
   bmps{
     &bmp_font1,

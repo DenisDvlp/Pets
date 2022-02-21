@@ -55,23 +55,15 @@ constexpr size_t size(T(&)[S]) { return S; }
 
 void Application::pressDown(uint8_t button)
 {
-  const char16_t arr[] = u"ЁАБВГДЕЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯабвгдежзийклмнопрстуфхцчшщъыьэюяё";
-  for (size_t i = 0; i < size(arr); i++)
-  {
-    Serial.print(int(arr[i]));
-    Serial.print(int(arr[i]));
-  }
-
-
   static int x = 0, y = 0;
   graphics.clear();
   FontCirillic font;
   font.isBold = false;
   Position pos = { (Display::WIDTH - graphics.calculateTextWidth("Ну Погоди", font)) / 2, 20 };
   switch (button) {
-  case Controller::BUTTON_X: graphics.drawText("Ну Погоди", pos, font); break;
-  case Controller::BUTTON_Y: graphics.drawPicture(pic_hand, { x,y -= 10 }); break;
-  case Controller::BUTTON_A: graphics.drawPicture(pic_hand, { x,y += 10 }); break;
-  case Controller::BUTTON_B: graphics.drawPicture(pic_hand, { x += 10,y }); break;
+  case Controller::BUTTON_X: graphics.drawText("Ну Погоди", {0,0}, font); break;
+  //case Controller::BUTTON_Y: graphics.drawPicture(pic_hand, { x,y -= 10 }); break;
+  //case Controller::BUTTON_A: graphics.drawPicture(pic_hand, { x,y += 10 }); break;
+  //case Controller::BUTTON_B: graphics.drawPicture(pic_hand, { x += 10,y }); break;
   }
 }
