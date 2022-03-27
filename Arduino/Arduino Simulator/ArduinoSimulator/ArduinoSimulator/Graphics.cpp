@@ -59,21 +59,57 @@ void Graphics::drawPicture(Picture pic, Position pos)
   drawLines(bmpPos, bmpWidth, picPostRows, picPreBits, picWholeBytes, picPostBits, preBitsShift, bufPos, y);
 }
 
+// 1 byte 0XXXXXXX
+// 2 byte 110XXXXX 10XXXXXX
+// 3 byte 1110XXXX 10XXXXXX 10XXXXXX
+// 4 byte 11110XXX 10XXXXXX 10XXXXXX 10XXXXXX
+int readUTF8Code(const char*& it) {
+  int code = -1;
+
+  // 1 byte
+  if ((it[0] & 0b10000000) == 0b00000000)
+  {
+    code = it[0];
+    it += 1;
+  }
+  // 2 bytes
+  else if ((it[0] & 0b11100000) == 0b11000000)
+  {
+    code = (it[0] & 0b00011111) << 6 | (it[1] & 0b00111111);
+    it += 2;
+  }
+  // 3 bytes
+  else if ((it[0] & 0b11110000) == 0b11100000)
+  {
+    code = (it[0] & 0b00001111) << 12 | (it[1] & 0b00111111) << 6 | (it[2] & 0b00111111);
+    it += 3;
+  }
+  // 4 bytes
+  else if ((it[0] & 0b11111000) == 0b11110000)
+  {
+    code = (it[0] & 0b00000111) << 18 | (it[1] & 0b00111111) << 12 | (it[2] & 0b00111111) << 6 | (it[3] & 0b00111111);
+    it += 4;
+  }
+
+  return code;
+}
+
 void Graphics::drawText(std::string text, Position pos, const Font& font)
 {
   size_t i = 0;
-  while (i < text.size())
+  const char* it = text.data();
+  const char* end = it + text.length();
+  while (it != end)
   {
-    if (text[i] == ' ') {
+    int code = readUTF8Code(it);
+    if (code == int(' '))
+    {
       pos.x += font.getSpaceWidth();
-      ++i;
       continue;
     }
-    char16_t c = char16_t(text[i] & 0b00011111) << 6 | (text[i + 1] & 0b00111111);
-    Picture pic = font.getPicture(c);
+    Picture pic = font.getPicture(code);
     drawPicture(pic, pos);
     pos.x += pic.width + font.getCharSpaceWidth();
-    i += 2;
   }
 }
 

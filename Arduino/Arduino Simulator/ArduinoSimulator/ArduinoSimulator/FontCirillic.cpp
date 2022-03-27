@@ -21,14 +21,15 @@ FontCirillic::FontCirillic() :
   }
 {
   isBold = false;
-  size = 1; // range [1, 5]
+  size = 0; // range [0, 4]
 }
 
-inline byte FontCirillic::getCharHeight() const
+inline int FontCirillic::getCharHeight() const
 {
   return bmps[size]->height;
 }
-int FontCirillic::getOffset(char16_t c) const
+
+int FontCirillic::getOffset(int c) const
 { 
   struct range{ const int from; const int to; };
   // 33-126,1025,1040-1103,1105
@@ -49,29 +50,29 @@ int FontCirillic::getOffset(char16_t c) const
   return -1;
 }
 
-Picture FontCirillic::getPicture(char16_t c) const
+Picture FontCirillic::getPicture(int code) const
 {
-  const int offset = getOffset(c);
+  const int offset = getOffset(code);
   const ArrayOfExtendedByte<int> exBytes(offsets[size], 10);
   const int x1 = exBytes[offset];
   const int x2 = exBytes[offset + 1];
   return Picture(*bmps[size], x1, 0, x2 - x1, getCharHeight());
 }
 
-byte FontCirillic::getCharWidth(char16_t c) const
+int FontCirillic::getCharWidth(int code) const
 {
-  const int offset = getOffset(c);
+  const int offset = getOffset(code);
   const ArrayOfExtendedByte<int> exBytes(offsets[size], 10);
   return exBytes[offset + 1] - exBytes[offset];
 }
 
-byte FontCirillic::getSpaceWidth() const
+int FontCirillic::getSpaceWidth() const
 {
-  return size * 2.5;
+  return size;
 }
 
-byte FontCirillic::getCharSpaceWidth() const
+int FontCirillic::getCharSpaceWidth() const
 {
-  return size * 1.2;
+  return 1;
 }
 

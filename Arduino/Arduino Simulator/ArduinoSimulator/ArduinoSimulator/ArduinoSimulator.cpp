@@ -64,18 +64,19 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 //
 ATOM MyRegisterClass(HINSTANCE hInstance)
 {
+    HBRUSH brsh = CreateSolidBrush(RGB(0, 0, 255));
     WNDCLASSEXW wcex;
 
     wcex.cbSize = sizeof(WNDCLASSEX);
 
-    wcex.style          = 0 | 0;
+    wcex.style          = 0;
     wcex.lpfnWndProc    = WndProc;
     wcex.cbClsExtra     = 0;
     wcex.cbWndExtra     = 0;
     wcex.hInstance      = hInstance;
     wcex.hIcon          = LoadIcon(hInstance, MAKEINTRESOURCE(IDI_ARDUINOSIMULATOR));
     wcex.hCursor        = LoadCursor(nullptr, IDC_ARROW);
-    wcex.hbrBackground  = (HBRUSH)(COLOR_WINDOW+1);
+    wcex.hbrBackground  = brsh;
     wcex.lpszMenuName   = 0;
     wcex.lpszClassName  = szWindowClass;
     wcex.hIconSm        = LoadIcon(wcex.hInstance, MAKEINTRESOURCE(IDI_SMALL));
@@ -96,8 +97,8 @@ ATOM MyRegisterClass(HINSTANCE hInstance)
 
 constexpr int size = 7;
 constexpr int pixelInterval = 1;
-constexpr int offsetLeft = 5;
-constexpr int offsetTop = 5;
+constexpr int offsetLeft = 3;
+constexpr int offsetTop = 3;
 constexpr int displayWidth = 128;
 constexpr int displayHeight = 64;
 constexpr int width = displayWidth * (size + pixelInterval) + offsetLeft * 2;
@@ -109,7 +110,7 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 {
    hInst = hInstance; // Сохранить маркер экземпляра в глобальной переменной
 
-   HWND hWnd = CreateWindowW(szWindowClass, szTitle, WS_OVERLAPPEDWINDOW,
+   HWND hWnd = CreateWindowW(szWindowClass, szTitle, WS_OVERLAPPED | WS_MINIMIZEBOX | WS_SYSMENU,
       CW_USEDEFAULT, 0, width + wndWidthShadow, height + wndHeightShadow, nullptr, nullptr, hInstance, nullptr);
 
    if (!hWnd)
@@ -181,7 +182,6 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
     return 0;
 }
 
-
 extern bool buttons[20] = {};
 
 //VK_A - VK_Z are the same as ASCII 'A' - 'Z' (0x41 - 0x5A)
@@ -224,45 +224,39 @@ void keyUp(HWND hwnd, WPARAM wParam) {
 }
 
 void DisplaySimulator(HDC hdc) {
-  RECT bgR = { 0, 0, width, height };
-  FillRect(hdc, &bgR, (HBRUSH)(COLOR_WINDOW + 2));
+  HDC hdcMemory = CreateCompatibleDC(hdc);
+  HBITMAP hbmp = CreateCompatibleBitmap(hdc, width, height);
+  SelectObject(hdcMemory, hbmp);
 
+  static const RECT bgR = { 0, 0, width, height };
+  static const HBRUSH brushBkg = CreateSolidBrush(RGB(0, 0, 0));
+  FillRect(hdcMemory, &bgR, brushBkg);
+
+  constexpr int NUM_PAGE = 8;
   Buffer buf = app.getBuffer();
-  bool b = false;
-  {
-    int l = 0;
-    for (size_t i = 0; i < 8; i++)
-    {
-      for (size_t j = 0; j < displayWidth; j++)
-      {
-        std::bitset<8> bits = buf.data[l++];
-
-        for (size_t k = 0; k < 8; k++)
-        {
-          if (bits[k]) { b = true; break; }
-        }
-      }
-    }
-  }
-
   RECT r = {};
   int l = 0;
-  for (size_t i = 0; i < 8; i++)
+  std::bitset<CHAR_BIT> bits;
+  static const HBRUSH brushOn = CreateSolidBrush(RGB(255, 255, 0));
+  static const HBRUSH brushOff = CreateSolidBrush(RGB(0, 0, 255));
+
+  for (size_t i = 0; i < NUM_PAGE; i++)
   {
     for (size_t j = 0; j < displayWidth; j++)
     {
       r.left = (size + pixelInterval) * j + offsetLeft;
       r.right = r.left + size;
-
-      std::bitset<8> bits = buf.data[l++];
-
-      for (size_t k = 0; k < 8; k++)
+      bits = buf.data[l++];
+      for (size_t k = 0; k < CHAR_BIT; k++)
       {
-        r.top = (size + pixelInterval) * (i * 8 + k) + offsetTop;
+        r.top = (size + pixelInterval) * (i * CHAR_BIT + k) + offsetTop;
         r.bottom = r.top + size;
-        FillRect(hdc, &r, (HBRUSH)(COLOR_WINDOW + bits[k] * 5));
+        FillRect(hdcMemory, &r, bits[k] ? brushOn : brushOff);
       }
     }
   }
 
+  BitBlt(hdc, 0, 0, width, height, hdcMemory, 0, 0, SRCCOPY);
+  DeleteObject(hbmp);
+  DeleteDC(hdcMemory);
 }

@@ -8,10 +8,9 @@ public:
   bool isBold = false;
   byte size = 0;
   virtual ~Font() = default;
-  virtual Picture getPicture(char c) const { return {}; }
-  virtual Picture getPicture(char16_t c) const { return {}; }
-  virtual byte getCharWidth(char c) const { return {}; }
-  virtual byte getCharWidth(char16_t c) const { return {}; }
-  virtual byte getSpaceWidth() const { return {}; }
-  virtual byte getCharSpaceWidth() const { return {}; }
+  virtual Picture getPicture(int code) const { return {}; }
+  virtual int getCharWidth(int code) const { return {}; }
+  virtual int getCharHeight() const { return {}; }
+  virtual int getSpaceWidth() const { return {}; }
+  virtual int getCharSpaceWidth() const { return {}; }
 };

@@ -40,17 +40,37 @@ constexpr size_t size(T(&)[S]) { return S; }
 
 void Application::pressDown(uint8_t button)
 {
-  if (button != Controller::BUTTON_X)
-    return;
   static int x = 0, y = 0;
   graphics.clear();
   FontCirillic font;
   font.isBold = false;
-  Position pos = { (Display::WIDTH - graphics.calculateTextWidth("Ну Погоди", font)) / 2, 20 };
+  std::string text = "! \"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~ЁАБВГДЕЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯабвгдежзийклмнопрстуфхцчшщъыьэюяё";
+
+  auto draw = [&](int x) {
+    font.size = 0;
+    Position pos = { x, 0 };
+    graphics.drawText(text, pos, font);
+    pos.y += font.getCharHeight();
+    font.size = 1;
+    graphics.drawText(text, pos, font);
+    pos.y += font.getCharHeight();
+    font.size = 2;
+    graphics.drawText(text, pos, font);
+    pos.y += font.getCharHeight();
+    font.size = 3;
+    graphics.drawText(text, pos, font);
+    pos.y += font.getCharHeight();
+    font.size = 4;
+    graphics.drawText(text, pos, font);
+  };
+
   switch (button) {
-  case Controller::BUTTON_X: graphics.drawText("Ну Погоди", pos, font); break;
-  //case Controller::BUTTON_Y: graphics.drawPicture(pic_hand, { x,y -= 10 }); break;
-  //case Controller::BUTTON_A: graphics.drawPicture(pic_hand, { x,y += 10 }); break;
-  //case Controller::BUTTON_B: graphics.drawPicture(pic_hand, { x += 10,y }); break;
+  case Controller::BUTTON_X:
+    draw(x); break;
+  case Controller::BUTTON_Y:
+    draw(x+=10); break;
+  case Controller::BUTTON_A:
+    draw(x-=10); break;
+  case Controller::BUTTON_B: graphics.drawPicture(pic_hand, { x += 10,y }); break;
   }
 }
