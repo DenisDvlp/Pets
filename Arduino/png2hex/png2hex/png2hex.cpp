@@ -223,6 +223,8 @@ imglist.txt flags:
   includes += "#include <avr/pgmspace.h>\n\n";
   appendToFile(cppName.data(), includes);
 
+  size_t totalNumberOfBytes = 0;
+
   for (DString command : list)
   {
     // font flag
@@ -251,7 +253,7 @@ imglist.txt flags:
 
     if (isFont) {
       FontInfo fi = readFontInfo(img, threshold);
-
+      totalNumberOfBytes += fi.output.size().square() + fi.offsetsSize;
       string bitmapArray = getBitmapString(fi.output.raw(), img.size().width(), fi.output.size().width(), fi.output.size().height(), command.data());
       DString offsetName = "font_offsets_" + command;
       string offsetsArray = getStringArray(fi.offsetsData, fi.offsetsSize, offsetName.data());
@@ -277,6 +279,7 @@ imglist.txt flags:
     }
     else {
       DBiArray<unsigned char> output = convertToBits(img, threshold);
+      totalNumberOfBytes += output.size().square();
       string array = getBitmapString(output.raw(), img.size().width(), output.size().width(), output.size().height(), command.data());
       if (!appendToFile(cppName.data(), array)) {
         cout << "Unable to write to file `" << cppName.data() << "`." << endl;
@@ -293,6 +296,7 @@ imglist.txt flags:
   }
   cout << "Generated `" << headerName.data() << "`." << endl;
   cout << "Generated `" << cppName.data() << "`." << endl;
+  cout << "Total PROGMEM bytes used:" << totalNumberOfBytes << endl;
   cout << "Done." << endl;
   return 0;
 }
