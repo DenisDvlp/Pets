@@ -100,7 +100,7 @@ string getStringArray(const unsigned char* output, size_t size, string name) {
   return ss.str();
 }
 
-string getBitmapString(const unsigned char* output, int width, int height, string name) {
+string getBitmapString(const unsigned char* output, int realWidth, int width, int height, string name) {
   size_t outSize = width * height;
   if (outSize == 0) {
     return "";
@@ -117,7 +117,8 @@ string getBitmapString(const unsigned char* output, int width, int height, strin
   picName.append(name);
   ss << "static const Bitmap " << bmpName << "(" << pngName << ", "
     << (width * 8) << ", " << height << ");\n"
-    "static const Picture " << picName << "(" << bmpName << ");\n\n";
+    "static const Picture " << picName << "(" << bmpName << ", 0, 0, "
+    << realWidth << ", " << height << ");\n\n";
 
   return ss.str();
 }
@@ -251,7 +252,7 @@ imglist.txt flags:
     if (isFont) {
       FontInfo fi = readFontInfo(img, threshold);
 
-      string bitmapArray = getBitmapString(fi.output.raw(), fi.output.size().width(), fi.output.size().height(), command.data());
+      string bitmapArray = getBitmapString(fi.output.raw(), img.size().width(), fi.output.size().width(), fi.output.size().height(), command.data());
       DString offsetName = "font_offsets_" + command;
       string offsetsArray = getStringArray(fi.offsetsData, fi.offsetsSize, offsetName.data());
       stringstream ss;
@@ -276,7 +277,7 @@ imglist.txt flags:
     }
     else {
       DBiArray<unsigned char> output = convertToBits(img, threshold);
-      string array = getBitmapString(output.raw(), output.size().width(), output.size().height(), command.data());
+      string array = getBitmapString(output.raw(), img.size().width(), output.size().width(), output.size().height(), command.data());
       if (!appendToFile(cppName.data(), array)) {
         cout << "Unable to write to file `" << cppName.data() << "`." << endl;
         return 1;
