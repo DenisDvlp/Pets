@@ -1,14 +1,26 @@
 #pragma once
 #include "Picture.h"
 
-extern const Bitmap bmp_cirillic;
-extern const Picture pic_cirillic;
+extern const Bitmap bmp_w_body;
+extern const Picture pic_w_body;
 
-extern const Bitmap bmp_digits;
-extern const Picture pic_digits;
+extern const Bitmap bmp_w_basket;
+extern const Picture pic_w_basket;
 
-extern const Bitmap bmp_hand;
-extern const Picture pic_hand;
+extern const Bitmap bmp_w_lleg;
+extern const Picture pic_w_lleg;
+
+extern const Bitmap bmp_w_rleg;
+extern const Picture pic_w_rleg;
+
+extern const Bitmap bmp_hline;
+extern const Picture pic_hline;
+
+extern const Bitmap bmp_eggs;
+extern const Picture pic_eggs;
+
+extern const Bitmap bmp_chicken;
+extern const Picture pic_chicken;
 
 extern const Bitmap bmp_font1;
 extern const Picture pic_font1;

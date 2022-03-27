@@ -1,4 +1,5 @@
 #pragma once
+#include <cstring>
 
 template<typename Return, typename... Args>
 class Function;
@@ -191,7 +192,7 @@ private:
         } ptr;
         ptr.method = reinterpret_cast<Method>(method);
         MethodUnion methodUnion;
-        memcpy(methodUnion.raw, ptr.raw, MAX_UNION_SIZE);
+        std::memcpy(methodUnion.raw, ptr.raw, MAX_UNION_SIZE);
         return pair<MethodUnion, CallType>{methodUnion, static_cast<CallType>(x - 1)};
     }
 

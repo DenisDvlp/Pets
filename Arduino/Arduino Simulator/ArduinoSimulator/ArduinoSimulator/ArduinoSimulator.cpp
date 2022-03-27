@@ -186,18 +186,22 @@ extern bool buttons[20] = {};
 
 //VK_A - VK_Z are the same as ASCII 'A' - 'Z' (0x41 - 0x5A)
 void keyDown(HWND hwnd, WPARAM wParam) {
+  //X
   if (wParam == 0x41) //A
   {
     buttons[0] = true;
   }
+  //Y
   if (wParam == 0x44) //D
   {
     buttons[1] = true;
   }
+  //A
   if (wParam == 0x53) //S
   {
     buttons[2] = true;
   }
+  //B
   if (wParam == 0x57) //W
   {
     buttons[3] = true;
@@ -224,6 +228,7 @@ void keyUp(HWND hwnd, WPARAM wParam) {
 }
 
 void DisplaySimulator(HDC hdc) {
+  // This is for double buffering, to avoid flickering.
   HDC hdcMemory = CreateCompatibleDC(hdc);
   HBITMAP hbmp = CreateCompatibleBitmap(hdc, width, height);
   SelectObject(hdcMemory, hbmp);
@@ -240,14 +245,14 @@ void DisplaySimulator(HDC hdc) {
   static const HBRUSH brushOn = CreateSolidBrush(RGB(255, 255, 0));
   static const HBRUSH brushOff = CreateSolidBrush(RGB(0, 0, 255));
 
-  for (size_t i = 0; i < NUM_PAGE; i++)
+  for (int i = 0; i < NUM_PAGE; i++)
   {
-    for (size_t j = 0; j < displayWidth; j++)
+    for (int j = 0; j < displayWidth; j++)
     {
       r.left = (size + pixelInterval) * j + offsetLeft;
       r.right = r.left + size;
       bits = buf.data[l++];
-      for (size_t k = 0; k < CHAR_BIT; k++)
+      for (int k = 0; k < CHAR_BIT; k++)
       {
         r.top = (size + pixelInterval) * (i * CHAR_BIT + k) + offsetTop;
         r.bottom = r.top + size;
