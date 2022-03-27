@@ -81,13 +81,29 @@ void Core::pressDown(uint8_t button)
     graphics->drawText(text, pos, font);
   };
   Wolf w;
-  w.pos = { 0, 0 };
+  w.pos = { 32, 10 };
   switch (button) {
   case Controller::BUTTON_X:
+    font.size = 0;
+    graphics->drawText("Счёт: 123", { 70, 0 }, font);
+    graphics->drawPicture(Picture(bmp_chicken, 0, 0, 11, 11), {0, 0});
+    graphics->drawPicture(Picture(bmp_chicken, 0, 0, 11, 11), {0, 19});
+    graphics->drawPicture(pic_hline, { -4, 11 });
+    graphics->drawPicture(pic_hline, { -4, 30 });
+    graphics->drawPicture(pic_dline, { 11, 11 });
+    graphics->drawPicture(pic_dline, { 11, 30 });
     drawSprite(graphics, w);
     break;
   case Controller::BUTTON_Y:
   {
+    font.size = 0;
+    graphics->drawText("Счёт: 123", { 70, 0 }, font);
+    graphics->drawPicture(Picture(bmp_chicken, 0, 0, 11, 11), { 0, 0 });
+    graphics->drawPicture(Picture(bmp_chicken, 0, 0, 11, 11), { 0, 19 });
+    graphics->drawPicture(pic_hline, { -4, 11 });
+    graphics->drawPicture(pic_hline, { -4, 30 });
+    graphics->drawPicture(pic_dline, { 11, 11 });
+    graphics->drawPicture(pic_dline, { 11, 30 });
     drawSprite(graphics, w);
     Position pos = { w.pos.x , w.pos.y + 6 };
     graphics->drawPicture(pic_w_basket, pos);

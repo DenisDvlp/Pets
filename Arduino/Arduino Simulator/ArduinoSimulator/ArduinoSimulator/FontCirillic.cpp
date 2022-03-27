@@ -68,7 +68,7 @@ int FontCirillic::getCharWidth(int code) const
 
 int FontCirillic::getSpaceWidth() const
 {
-  return size;
+  return (size + 1) * 2;
 }
 
 int FontCirillic::getCharSpaceWidth() const

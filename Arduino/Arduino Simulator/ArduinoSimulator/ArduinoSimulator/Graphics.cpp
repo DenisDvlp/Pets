@@ -96,7 +96,6 @@ int readUTF8Code(const char*& it) {
 
 void Graphics::drawText(std::string text, Position pos, const Font& font)
 {
-  size_t i = 0;
   const char* it = text.data();
   const char* end = it + text.length();
   while (it != end)
@@ -115,19 +114,18 @@ void Graphics::drawText(std::string text, Position pos, const Font& font)
 
 int Graphics::calculateTextWidth(std::string text, const Font& font)
 {
-  size_t i = 0;
+  const char* it = text.data();
+  const char* end = it + text.length();
   int width = 0;
-  while (i < text.length())
+  while (it != end)
   {
-    const bool isAscii = text[i] & 0b10000000;
-    if (text[i] == ' ') {
+    int code = readUTF8Code(it);
+    if (code == int(' '))
+    {
       width += font.getSpaceWidth();
-      ++i;
       continue;
     }
-    char16_t c = char16_t(text[i] & 0b00011111) << 6 | (text[i + 1] & 0b00111111);
-    width += font.getCharWidth(c) + font.getCharSpaceWidth();
-    i += 2;
+    width += font.getCharWidth(code) + font.getCharSpaceWidth();
   }
   return width;
 }
