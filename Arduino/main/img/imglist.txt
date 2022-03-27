@@ -3,6 +3,7 @@ w_basket.png
 w_lleg.png
 w_rleg.png
 hline.png
+dline.png
 eggs.png
 chicken.png
 font1.png -f
