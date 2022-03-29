@@ -11,10 +11,29 @@ struct PicPos {
 };
 
 class Sprite {
+private:
+  Size size;
 public:
   Position pos;
-  virtual int size() = 0;
+  virtual int numberOfPics() = 0;
   virtual const PicPos& operator[](int i) = 0;
+  void calcSize() {
+    const PicPos& pp = operator[](0);
+    int minW = pp.pos.x;
+    int maxW = pp.pos.x + pp.pic.width;
+    int minH = pp.pos.y;
+    int maxH = pp.pos.y + pp.pic.height;
+    for (int i = 1; i < numberOfPics(); ++i)
+    {
+      const PicPos& pp = operator[](i);
+      minW = std::min(minW, pp.pos.x);
+      maxW = std::max(maxW, pp.pos.x + pp.pic.width);
+      minH = std::min(minH, pp.pos.y);
+      maxH = std::max(maxH, pp.pos.y + pp.pic.height);
+    }
+    size.width = maxW - minW;
+    size.height = maxH - minH;
+  }
 };
 
 class Wolf : public Sprite {
@@ -26,7 +45,10 @@ private:
     { Picture(bmp_hline, 0, 0, 8, 1), { 26, 40 }},
   };
 public:
-  int size() override { return ::size(pics); }
+  Wolf() {
+    calcSize();
+  }
+  int numberOfPics() override { return ::size(pics); }
   const PicPos& operator[](int i) override { return pics[i]; }
 };
 
@@ -45,7 +67,7 @@ void Core::update()
 }
 
 void drawSprite(Graphics* g, Sprite& sprite) {
-  for (int i = 0; i < sprite.size(); i++)
+  for (int i = 0; i < sprite.numberOfPics(); i++)
   {
     const PicPos& picPos = sprite[i];
     Position pos = {

@@ -64,34 +64,30 @@ void Graphics::drawPicture(Picture pic, Position pos)
 // 3 byte 1110XXXX 10XXXXXX 10XXXXXX
 // 4 byte 11110XXX 10XXXXXX 10XXXXXX 10XXXXXX
 int readUTF8Code(const char*& it) {
-  int code = -1;
+  static constexpr char auxMask = 0b00111111;
+  static constexpr char masks[] = {
+    0b10000000,
+    0b11100000,
+    0b11110000,
+    0b11111000
+  };
 
-  // 1 byte
-  if ((it[0] & 0b10000000) == 0b00000000)
+  for (auto mask : masks)
   {
-    code = it[0];
-    it += 1;
-  }
-  // 2 bytes
-  else if ((it[0] & 0b11100000) == 0b11000000)
-  {
-    code = (it[0] & 0b00011111) << 6 | (it[1] & 0b00111111);
-    it += 2;
-  }
-  // 3 bytes
-  else if ((it[0] & 0b11110000) == 0b11100000)
-  {
-    code = (it[0] & 0b00001111) << 12 | (it[1] & 0b00111111) << 6 | (it[2] & 0b00111111);
-    it += 3;
-  }
-  // 4 bytes
-  else if ((it[0] & 0b11111000) == 0b11110000)
-  {
-    code = (it[0] & 0b00000111) << 18 | (it[1] & 0b00111111) << 12 | (it[2] & 0b00111111) << 6 | (it[3] & 0b00111111);
-    it += 4;
+    if (char(*it & mask) == char(mask << 1))
+    {
+      int code = *(it++) & ~mask;
+      mask <<= 1;
+      while (mask <<= 1)
+      {
+        code <<= 6;
+        code |= *(it++) & auxMask;
+      }
+      return code;
+    }
   }
 
-  return code;
+  return -1;
 }
 
 void Graphics::drawText(std::string text, Position pos, const Font& font)

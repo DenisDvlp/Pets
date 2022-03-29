@@ -242,7 +242,7 @@ void DisplaySimulator(HDC hdc) {
   RECT r = {};
   int l = 0;
   std::bitset<CHAR_BIT> bits;
-  static const HBRUSH brushOn = CreateSolidBrush(RGB(255, 255, 0));
+  static const HBRUSH brushOn = CreateSolidBrush(RGB(60, 60, 60));
   static const HBRUSH brushOff = CreateSolidBrush(RGB(0, 0, 255));
 
   for (int i = 0; i < NUM_PAGE; i++)
