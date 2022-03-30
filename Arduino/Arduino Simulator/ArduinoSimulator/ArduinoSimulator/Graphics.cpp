@@ -12,6 +12,16 @@ void Graphics::clear()
   memset(buf.data, 0, (buf.width * buf.height / BITS_IN_BYTE));
 }
 
+void Graphics::drawPixel(bool active, Position pos)
+{
+  if (pos.x >= buf.width || pos.x < 0 || pos.y >= buf.height || pos.y < 0)
+    return;
+  uint8_t &b = buf.data[pos.y / BITS_IN_BYTE * buf.width + pos.x];
+  char mask = 1 << pos.y % BITS_IN_BYTE;
+  b &= ~mask;
+  b |= (active * mask);
+}
+
 void Graphics::drawPicture(Picture pic, Position pos)
 {
   // if the picture is out of visible area, then do not draw.
@@ -59,70 +69,72 @@ void Graphics::drawPicture(Picture pic, Position pos)
   drawLines(bmpPos, bmpWidth, picPostRows, picPreBits, picWholeBytes, picPostBits, preBitsShift, bufPos, y);
 }
 
-// 1 byte 0XXXXXXX
-// 2 byte 110XXXXX 10XXXXXX
-// 3 byte 1110XXXX 10XXXXXX 10XXXXXX
-// 4 byte 11110XXX 10XXXXXX 10XXXXXX 10XXXXXX
-int readUTF8Code(const char*& it) {
-  static constexpr char auxMask = 0b00111111;
-  static constexpr char masks[] = {
-    0b10000000,
-    0b11100000,
-    0b11110000,
-    0b11111000
-  };
+class utf8reader {
+  std::string text;
+public:
+  utf8reader(std::string str) : text(std::move(str)) {}
 
-  for (auto mask : masks)
+  template<class F>
+  void read(F func)
   {
-    if (char(*it & mask) == char(mask << 1))
+    // 1 byte 0XXXXXXX
+    // 2 byte 110XXXXX 10XXXXXX
+    // 3 byte 1110XXXX 10XXXXXX 10XXXXXX
+    // 4 byte 11110XXX 10XXXXXX 10XXXXXX 10XXXXXX
+    static constexpr char auxMask = 0b00111111;
+    static constexpr char masks[] = {
+      0b10000000,
+      0b11100000,
+      0b11110000,
+      0b11111000
+    };
+
+    const char* it = text.data();
+    const char* end = it + text.length();
+    while (it != end)
     {
-      int code = *(it++) & ~mask;
-      mask <<= 1;
-      while (mask <<= 1)
+      for (auto mask : masks)
       {
-        code <<= 6;
-        code |= *(it++) & auxMask;
+        if (char(*it & mask) == char(mask << 1))
+        {
+          int code = *(it++) & ~mask;
+          mask <<= 1;
+          while (mask <<= 1)
+          {
+            code <<= 6;
+            code |= *(it++) & auxMask;
+          }
+          func(code);
+        }
       }
-      return code;
     }
   }
-
-  return -1;
-}
+};
 
 void Graphics::drawText(std::string text, Position pos, const Font& font)
 {
-  const char* it = text.data();
-  const char* end = it + text.length();
-  while (it != end)
-  {
-    int code = readUTF8Code(it);
+  utf8reader u8reader(std::move(text));
+  u8reader.read([&](int code) {
     if (code == int(' '))
     {
       pos.x += font.getSpaceWidth();
-      continue;
     }
-    Picture pic = font.getPicture(code);
-    drawPicture(pic, pos);
-    pos.x += pic.width + font.getCharSpaceWidth();
-  }
+    else
+    {
+      Picture pic = font.getPicture(code);
+      drawPicture(pic, pos);
+      pos.x += pic.width + font.getCharSpaceWidth();
+    }
+    });
 }
 
 int Graphics::calculateTextWidth(std::string text, const Font& font)
 {
-  const char* it = text.data();
-  const char* end = it + text.length();
+  utf8reader u8reader(std::move(text));
   int width = 0;
-  while (it != end)
-  {
-    int code = readUTF8Code(it);
-    if (code == int(' '))
-    {
-      width += font.getSpaceWidth();
-      continue;
-    }
-    width += font.getCharWidth(code) + font.getCharSpaceWidth();
-  }
+  u8reader.read([&](int code) {
+    width += (code == int(' ')) ? font.getSpaceWidth() : font.getCharWidth(code) + font.getCharSpaceWidth();
+    });
   return width;
 }
 
@@ -164,7 +176,7 @@ void Graphics::drawLines(const uint8_t* bytes, int bmpWidth, int lineCount, int 
 
 // return `false` if it is no sense to draw, because the picture is out of screen bound,
 // return `true` otherwise.
-bool Graphics::adjustSize(int& picI, int& picSize, int& bufI, int& bufSize)
+bool Graphics::adjustSize(int& picI, int& picSize, int& bufI, int bufSize)
 {
   int sizeI = bufI + picSize;
   if (bufI < 0)

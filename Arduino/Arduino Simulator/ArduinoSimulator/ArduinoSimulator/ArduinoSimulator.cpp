@@ -64,7 +64,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 //
 ATOM MyRegisterClass(HINSTANCE hInstance)
 {
-    HBRUSH brsh = CreateSolidBrush(RGB(0, 0, 255));
+    HBRUSH brsh = CreateSolidBrush(RGB(50, 50, 255));
     WNDCLASSEXW wcex;
 
     wcex.cbSize = sizeof(WNDCLASSEX);
@@ -118,6 +118,7 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
       return FALSE;
    }
    hwnd = hWnd;
+   SetTimer(hWnd, 1, 300, NULL);
    app.init();
 
    ShowWindow(hWnd, nCmdShow);
@@ -138,6 +139,7 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 //
 LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
+  void updateDisplay();
     switch (message)
     {
     case WM_KEYDOWN:
@@ -145,14 +147,19 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
       void keyDown(HWND hwnd, WPARAM);
       keyDown(hWnd, wParam);
       app.update();
-      RECT r = { 0, 0, width, height };
-      InvalidateRect(hWnd, &r, 1);
+      updateDisplay();
     }
     case WM_KEYUP:
     {
       void keyUp(HWND hwnd, WPARAM);
       keyUp(hWnd, wParam);
       app.update();
+      updateDisplay();
+    }
+    case WM_TIMER:
+    {
+      app.update();
+      updateDisplay();
     }
     case WM_COMMAND:
         {
@@ -180,6 +187,30 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
         return DefWindowProc(hWnd, message, wParam, lParam);
     }
     return 0;
+}
+
+
+void updateDisplay()
+{
+  Buffer buf = app.getBuffer();
+  static uint8_t prevBuf[128 * 8] = {};
+
+  bool changed = false;
+  for (size_t i = 0; i < 128 * 8; i++)
+  {
+    if (prevBuf[i] != buf.data[i])
+    {
+      changed = true;
+      break;
+    }
+  }
+  if (!changed)
+    return;
+
+  memcpy(prevBuf, buf.data, 128 * 8);
+
+  RECT r = { 0, 0, width, height };
+  InvalidateRect(hwnd, &r, 1);
 }
 
 extern bool buttons[20] = {};
@@ -233,8 +264,11 @@ void DisplaySimulator(HDC hdc) {
   HBITMAP hbmp = CreateCompatibleBitmap(hdc, width, height);
   SelectObject(hdcMemory, hbmp);
 
+  // Turn in on to see inactive pixels.
+  constexpr bool drawInactivePixels = false;
+
   static const RECT bgR = { 0, 0, width, height };
-  static const HBRUSH brushBkg = CreateSolidBrush(RGB(0, 0, 0));
+  static const HBRUSH brushBkg = CreateSolidBrush(drawInactivePixels ? RGB(50, 50, 50) : RGB(50, 50, 255));
   FillRect(hdcMemory, &bgR, brushBkg);
 
   constexpr int NUM_PAGE = 8;
@@ -242,8 +276,9 @@ void DisplaySimulator(HDC hdc) {
   RECT r = {};
   int l = 0;
   std::bitset<CHAR_BIT> bits;
-  static const HBRUSH brushOn = CreateSolidBrush(RGB(60, 60, 60));
-  static const HBRUSH brushOff = CreateSolidBrush(RGB(0, 0, 255));
+  std::bitset<CHAR_BIT> prevBits;
+  static const HBRUSH brushOn = CreateSolidBrush(RGB(0, 0, 0));
+  static const HBRUSH brushOff = CreateSolidBrush(RGB(50, 50, 255));
 
   for (int i = 0; i < NUM_PAGE; i++)
   {
@@ -256,7 +291,8 @@ void DisplaySimulator(HDC hdc) {
       {
         r.top = (size + pixelInterval) * (i * CHAR_BIT + k) + offsetTop;
         r.bottom = r.top + size;
-        FillRect(hdcMemory, &r, bits[k] ? brushOn : brushOff);
+        if(drawInactivePixels || bits[k])
+          FillRect(hdcMemory, &r, bits[k] ? brushOn : brushOff);
       }
     }
   }

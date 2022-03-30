@@ -63,7 +63,8 @@ void Core::init(Controller& c, Graphics& g)
 
 void Core::update()
 {
-
+  static int x = 0;
+  graphics->drawPixel(true, { x++,x });
 }
 
 void drawSprite(Graphics* g, Sprite& sprite) {
