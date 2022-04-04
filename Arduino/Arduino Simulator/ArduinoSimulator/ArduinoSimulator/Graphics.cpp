@@ -2,6 +2,17 @@
 
 static constexpr uint8_t BITS_IN_BYTE = 8;
 
+// [min, max]
+static bool isOutOfRange(int what, int min, int max)
+{
+  return what < min || what > max;
+}
+
+static bool isOutOfSize(Position what, Size size)
+{
+  return isOutOfRange(what.x, 0, size.width) || isOutOfRange(what.y, 0, size.height);
+}
+
 void Graphics::init(Buffer buffer)
 {
   buf = buffer;
@@ -14,12 +25,62 @@ void Graphics::clear()
 
 void Graphics::drawPixel(bool active, Position pos)
 {
-  if (pos.x >= buf.width || pos.x < 0 || pos.y >= buf.height || pos.y < 0)
+  if (isOutOfSize(pos, buf))
     return;
   uint8_t &b = buf.data[pos.y / BITS_IN_BYTE * buf.width + pos.x];
   char mask = 1 << pos.y % BITS_IN_BYTE;
   b &= ~mask;
   b |= (active * mask);
+}
+
+void Graphics::drawHLine(Position startPos, int size)
+{
+  if (isOutOfRange(startPos.y, 0, buf.height))
+    return;
+  if (startPos.x < 0)
+  {
+    size += startPos.x;
+    startPos.x = 0;
+  }
+  if (startPos.x + size > buf.width)
+  {
+    size = buf.width - startPos.x;
+  }
+  if (size < 0)
+    return;
+
+  uint8_t* b = buf.data + startPos.y / BITS_IN_BYTE * buf.width + startPos.x;
+  char mask = 1 << startPos.y % BITS_IN_BYTE;
+  while (size--)
+  {
+    *b &= ~mask;
+    *b |= mask;
+    ++b;
+  }
+}
+
+void Graphics::drawVLine(Position startPos, int size)
+{
+  if (startPos.x < 0)
+  {
+    size += startPos.x;
+    startPos.x = 0;
+  }
+  if (startPos.x + size > buf.width)
+  {
+    size = buf.width - startPos.x;
+  }
+  if (size <= 0)
+    return;
+
+  uint8_t* b = buf.data + startPos.y / BITS_IN_BYTE * buf.width + startPos.x;
+  char mask = 1 << startPos.y % BITS_IN_BYTE;
+  while (size--)
+  {
+    *b &= ~mask;
+    *b |= mask;
+    ++b;
+  }
 }
 
 void Graphics::drawPicture(Picture pic, Position pos)
@@ -69,52 +130,45 @@ void Graphics::drawPicture(Picture pic, Position pos)
   drawLines(bmpPos, bmpWidth, picPostRows, picPreBits, picWholeBytes, picPostBits, preBitsShift, bufPos, y);
 }
 
-class utf8reader {
-  std::string text;
-public:
-  utf8reader(std::string str) : text(std::move(str)) {}
+template<class F>
+void readUTF8string(std::string text, F func)
+{
+  // 1 byte 0XXXXXXX
+  // 2 byte 110XXXXX 10XXXXXX
+  // 3 byte 1110XXXX 10XXXXXX 10XXXXXX
+  // 4 byte 11110XXX 10XXXXXX 10XXXXXX 10XXXXXX
+  static constexpr char auxMask = 0b00111111;
+  static constexpr char masks[] = {
+    0b10000000,
+    0b11100000,
+    0b11110000,
+    0b11111000
+  };
 
-  template<class F>
-  void read(F func)
+  const char* it = text.data();
+  const char* end = it + text.length();
+  while (it != end)
   {
-    // 1 byte 0XXXXXXX
-    // 2 byte 110XXXXX 10XXXXXX
-    // 3 byte 1110XXXX 10XXXXXX 10XXXXXX
-    // 4 byte 11110XXX 10XXXXXX 10XXXXXX 10XXXXXX
-    static constexpr char auxMask = 0b00111111;
-    static constexpr char masks[] = {
-      0b10000000,
-      0b11100000,
-      0b11110000,
-      0b11111000
-    };
-
-    const char* it = text.data();
-    const char* end = it + text.length();
-    while (it != end)
+    for (auto mask : masks)
     {
-      for (auto mask : masks)
+      if (char(*it & mask) == char(mask << 1))
       {
-        if (char(*it & mask) == char(mask << 1))
+        int code = *(it++) & ~mask;
+        mask <<= 1;
+        while (mask <<= 1)
         {
-          int code = *(it++) & ~mask;
-          mask <<= 1;
-          while (mask <<= 1)
-          {
-            code <<= 6;
-            code |= *(it++) & auxMask;
-          }
-          func(code);
+          code <<= 6;
+          code |= *(it++) & auxMask;
         }
+        func(code);
       }
     }
   }
-};
+}
 
 void Graphics::drawText(std::string text, Position pos, const Font& font)
 {
-  utf8reader u8reader(std::move(text));
-  u8reader.read([&](int code) {
+  readUTF8string(std::move(text), [&](int code) {
     if (code == int(' '))
     {
       pos.x += font.getSpaceWidth();
@@ -130,10 +184,10 @@ void Graphics::drawText(std::string text, Position pos, const Font& font)
 
 int Graphics::calculateTextWidth(std::string text, const Font& font)
 {
-  utf8reader u8reader(std::move(text));
   int width = 0;
-  u8reader.read([&](int code) {
-    width += (code == int(' ')) ? font.getSpaceWidth() : font.getCharWidth(code) + font.getCharSpaceWidth();
+  readUTF8string(std::move(text), [&](int code) {
+    width += (code == int(' ')) ? font.getSpaceWidth() :
+      font.getCharWidth(code) + font.getCharSpaceWidth();
     });
   return width;
 }
@@ -176,15 +230,15 @@ void Graphics::drawLines(const uint8_t* bytes, int bmpWidth, int lineCount, int 
 
 // return `false` if it is no sense to draw, because the picture is out of screen bound,
 // return `true` otherwise.
-bool Graphics::adjustSize(int& picI, int& picSize, int& bufI, int bufSize)
+bool Graphics::adjustSize(int& picPos, int& picSize, int& bufPos, int bufSize)
 {
-  int sizeI = bufI + picSize;
-  if (bufI < 0)
+  int sizeI = bufPos + picSize;
+  if (bufPos < 0)
   {
-    picI -= bufI;
-    bufI = 0;
+    picPos -= bufPos;
+    bufPos = 0;
   }
-  else if (bufI >= bufSize)
+  else if (bufPos >= bufSize)
   {
     return false;
   }
@@ -197,6 +251,6 @@ bool Graphics::adjustSize(int& picI, int& picSize, int& bufI, int bufSize)
   {
     return false;
   }
-  picSize = sizeI - bufI;
+  picSize = sizeI - bufPos;
   return true;
 }

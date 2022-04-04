@@ -6,11 +6,11 @@
 
 class Application {
   Graphics graphics;
-  const Display display;
+  Display display;
   Controller controller;
   Core core;
 public:
-  void init();
+  void init(HWND hwnd, Size windowSize);
   void update();
   Buffer getBuffer() const;
 };

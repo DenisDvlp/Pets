@@ -1,6 +1,7 @@
 #pragma once
 #include "stdint.h"
 #include "Picture.h"
+#include <Windows.h>
 
 class Display {
 public:
@@ -13,8 +14,10 @@ private:
   static constexpr int BUF_SIZE = WIDTH * HEIGHT / BITS_IN_BYTE;
 
   uint8_t buffer[BUF_SIZE];
+  HWND hwnd;
+  Size windowSize;
 public:
-  void init() const;
+  void init(HWND hwnd, Size windowSize);
   void update() const;
   Buffer getBuffer() const;
 };

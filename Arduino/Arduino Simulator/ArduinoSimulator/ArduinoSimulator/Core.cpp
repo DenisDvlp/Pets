@@ -1,55 +1,69 @@
 #include "Core.h"
 #include "FontCirillic.h"
 #include "Images.h"
+#include "Sprite.h"
 
-template<typename T, size_t S>
-constexpr size_t size(T(&)[S]) { return S; }
-
-struct PicPos {
-  Picture pic;
-  Position pos;
-};
-
-class Sprite {
-private:
-  Size size;
-public:
-  Position pos;
-  virtual int numberOfPics() = 0;
-  virtual const PicPos& operator[](int i) = 0;
-  void calcSize() {
-    const PicPos& pp = operator[](0);
-    int minW = pp.pos.x;
-    int maxW = pp.pos.x + pp.pic.width;
-    int minH = pp.pos.y;
-    int maxH = pp.pos.y + pp.pic.height;
-    for (int i = 1; i < numberOfPics(); ++i)
-    {
-      const PicPos& pp = operator[](i);
-      minW = std::min(minW, pp.pos.x);
-      maxW = std::max(maxW, pp.pos.x + pp.pic.width);
-      minH = std::min(minH, pp.pos.y);
-      maxH = std::max(maxH, pp.pos.y + pp.pic.height);
-    }
-    size.width = maxW - minW;
-    size.height = maxH - minH;
-  }
-};
+template<typename T, int S>
+constexpr int size(T(&)[S]) { return S; }
 
 class Wolf : public Sprite {
 private:
-  PicPos pics[4] = {
+  PicPos pics[3] = {
     { pic_w_body, {0, 0} },
     { pic_w_lleg, {7, 40} },
     { pic_w_rleg, {34, 35} },
-    { Picture(bmp_hline, 0, 0, 8, 1), { 26, 40 }},
   };
 public:
-  Wolf() {
-    calcSize();
-  }
+  int frame = 0;
   int numberOfPics() override { return ::size(pics); }
-  const PicPos& operator[](int i) override { return pics[i]; }
+  const PicPos& getPic(int i) override { return pics[i]; }
+  void draw(Graphics* g) override
+  {
+    drawPics(g);
+    g->drawHLine({ pos.x + 27, pos.y + 40 }, 7);
+    if (frame)
+    {
+      g->drawPicture(pic_w_basket, { pos.x , pos.y + 6 });
+    }
+  }
+};
+
+class Barn : public Sprite {
+private:
+  PicPos pics[2] = {
+    { pic_dline, { 11, 11 } },
+    { pic_dline, { 11, 30 } },
+  };
+public:
+  int numberOfPics() override { return ::size(pics); }
+  const PicPos& getPic(int i) override { return pics[i]; }
+  void draw(Graphics* g) override
+  {
+    drawPics(g);
+    g->drawHLine({ pos.x + -4, pos.y + 11 }, 16);
+    g->drawHLine({ pos.x + -4, pos.y + 30 }, 16);
+  }
+};
+
+class Chicken : public Sprite {
+private:
+public:
+  int frame = 0;
+  void draw(Graphics* g) override
+  {
+    g->drawPicture(Picture(bmp_chicken, (frame ? 11 : 0), 0, 11, 11), pos);
+  }
+};
+
+class Text : public Sprite {
+private:
+public:
+  FontCirillic font;
+  std::string text;
+  void draw(Graphics* g) override
+  {
+    g->drawText(text, { 70, 0 }, font);
+  }
 };
 
 void Core::init(Controller& c, Graphics& g)
@@ -61,22 +75,34 @@ void Core::init(Controller& c, Graphics& g)
   c.init({ this, &Core::pressDown });
 }
 
-void Core::update()
+Wolf w;
+Chicken c1, c2;
+Barn b;
+Text text;
+
+void Stage(Graphics* graphics)
 {
-  static int x = 0;
-  graphics->drawPixel(true, { x++,x });
+  text.text = "Счёт: 123";
+  text.draw(graphics);
+
+  c1.frame = c1.frame ? 0 : 1;
+  c1.draw(graphics);
+
+  c2.frame = c2.frame ? 0 : 1;
+  c2.pos.y = 19;
+  c2.draw(graphics);
+
+  b.draw(graphics);
+
+  w.frame = w.frame ? 0 : 1;
+  w.pos = { 32, 10 };
+  w.draw(graphics);
 }
 
-void drawSprite(Graphics* g, Sprite& sprite) {
-  for (int i = 0; i < sprite.numberOfPics(); i++)
-  {
-    const PicPos& picPos = sprite[i];
-    Position pos = {
-      picPos.pos.x + sprite.pos.x,
-      picPos.pos.y + sprite.pos.y
-    };
-    g->drawPicture(picPos.pic, pos);
-  }
+void Core::update()
+{
+  graphics->clear();
+  Stage(graphics);
 }
 
 void Core::pressDown(uint8_t button)
@@ -115,7 +141,7 @@ void Core::pressDown(uint8_t button)
     graphics->drawPicture(pic_hline, { -4, 30 });
     graphics->drawPicture(pic_dline, { 11, 11 });
     graphics->drawPicture(pic_dline, { 11, 30 });
-    drawSprite(graphics, w);
+    w.draw(graphics);
     break;
   case Controller::BUTTON_Y:
   {
@@ -127,7 +153,7 @@ void Core::pressDown(uint8_t button)
     graphics->drawPicture(pic_hline, { -4, 30 });
     graphics->drawPicture(pic_dline, { 11, 11 });
     graphics->drawPicture(pic_dline, { 11, 30 });
-    drawSprite(graphics, w);
+    w.draw(graphics);
     Position pos = { w.pos.x , w.pos.y + 6 };
     graphics->drawPicture(pic_w_basket, pos);
   }

@@ -9,6 +9,7 @@
 static Application app;
 
 #define MAX_LOADSTRING 100
+#define MAX_ARDUINO_LOOP WM_USER + 1
 
 // Глобальные переменные:
 HINSTANCE hInst;                                // текущий экземпляр
@@ -108,23 +109,22 @@ constexpr int wndHeightShadow = 39;
 HWND hwnd;
 BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 {
-   hInst = hInstance; // Сохранить маркер экземпляра в глобальной переменной
+  hInst = hInstance; // Сохранить маркер экземпляра в глобальной переменной
 
-   HWND hWnd = CreateWindowW(szWindowClass, szTitle, WS_OVERLAPPED | WS_MINIMIZEBOX | WS_SYSMENU,
-      CW_USEDEFAULT, 0, width + wndWidthShadow, height + wndHeightShadow, nullptr, nullptr, hInstance, nullptr);
+  HWND hWnd = CreateWindowW(szWindowClass, szTitle, WS_OVERLAPPED | WS_MINIMIZEBOX | WS_SYSMENU,
+    CW_USEDEFAULT, 0, width + wndWidthShadow, height + wndHeightShadow, nullptr, nullptr, hInstance, nullptr);
 
-   if (!hWnd)
-   {
-      return FALSE;
-   }
-   hwnd = hWnd;
-   SetTimer(hWnd, 1, 300, NULL);
-   app.init();
+  if (!hWnd)
+  {
+    return FALSE;
+  }
+  hwnd = hWnd;
+  app.init(hWnd, { width, height });
 
-   ShowWindow(hWnd, nCmdShow);
-   UpdateWindow(hWnd);
+  ShowWindow(hWnd, nCmdShow);
+  UpdateWindow(hWnd);
 
-   return TRUE;
+  return TRUE;
 }
 
 //
@@ -139,38 +139,35 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 //
 LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
-  void updateDisplay();
     switch (message)
     {
+    case WM_ACTIVATE:
+    {
+      SetTimer(hWnd, 0, USER_TIMER_MINIMUM, NULL);
+      break;
+    }
+    case WM_TIMER:
+    {
+      PostMessage(hWnd, MAX_ARDUINO_LOOP, 7, 8);
+      break;
+    }
+    case MAX_ARDUINO_LOOP:
+    {
+      app.update();
+      break;
+    }
     case WM_KEYDOWN:
     {
       void keyDown(HWND hwnd, WPARAM);
       keyDown(hWnd, wParam);
-      app.update();
-      updateDisplay();
+      break;
     }
     case WM_KEYUP:
     {
       void keyUp(HWND hwnd, WPARAM);
       keyUp(hWnd, wParam);
-      app.update();
-      updateDisplay();
+      break;
     }
-    case WM_TIMER:
-    {
-      app.update();
-      updateDisplay();
-    }
-    case WM_COMMAND:
-        {
-            int wmId = LOWORD(wParam);
-            switch (wmId)
-            {
-            default:
-                return DefWindowProc(hWnd, message, wParam, lParam);
-            }
-        }
-        break;
     case WM_PAINT:
         {
             PAINTSTRUCT ps;
@@ -187,30 +184,6 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
         return DefWindowProc(hWnd, message, wParam, lParam);
     }
     return 0;
-}
-
-
-void updateDisplay()
-{
-  Buffer buf = app.getBuffer();
-  static uint8_t prevBuf[128 * 8] = {};
-
-  bool changed = false;
-  for (size_t i = 0; i < 128 * 8; i++)
-  {
-    if (prevBuf[i] != buf.data[i])
-    {
-      changed = true;
-      break;
-    }
-  }
-  if (!changed)
-    return;
-
-  memcpy(prevBuf, buf.data, 128 * 8);
-
-  RECT r = { 0, 0, width, height };
-  InvalidateRect(hwnd, &r, 1);
 }
 
 extern bool buttons[20] = {};
@@ -259,7 +232,7 @@ void keyUp(HWND hwnd, WPARAM wParam) {
 }
 
 void DisplaySimulator(HDC hdc) {
-  // This is for double buffering, to avoid flickering.
+  // This is for double buffering, to avoid seeing the "live" drawing.
   HDC hdcMemory = CreateCompatibleDC(hdc);
   HBITMAP hbmp = CreateCompatibleBitmap(hdc, width, height);
   SelectObject(hdcMemory, hbmp);
@@ -276,7 +249,6 @@ void DisplaySimulator(HDC hdc) {
   RECT r = {};
   int l = 0;
   std::bitset<CHAR_BIT> bits;
-  std::bitset<CHAR_BIT> prevBits;
   static const HBRUSH brushOn = CreateSolidBrush(RGB(0, 0, 0));
   static const HBRUSH brushOff = CreateSolidBrush(RGB(50, 50, 255));
 

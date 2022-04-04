@@ -9,6 +9,8 @@ public:
   void init(Buffer buffer);
   void clear();
   void drawPixel(bool active, Position pos);
+  void drawHLine(Position startPos, int size);
+  void drawVLine(Position startPos, int size);
   void drawPicture(Picture pic, Position pos);
   void drawText(std::string text, Position pos, const Font& font);
   int calculateTextWidth(std::string text, const Font& font);

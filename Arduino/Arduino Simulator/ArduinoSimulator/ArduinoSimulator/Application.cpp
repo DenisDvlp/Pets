@@ -1,20 +1,16 @@
 #include "Application.h"
 
-void Application::init()
+void Application::init(HWND hwnd, Size windowSize)
 {
   // Prepare physical display for work.
   // This takes approximately 0.3 seconds.
-  display.init();
+  display.init(hwnd, windowSize);
 
   // set the output source (display buffer) to drawing system
   graphics.init(display.getBuffer());
 
   // init game core
   core.init(controller, graphics);
-
-  // clean display
-  graphics.clear();
-  display.update();
 }
 
 Buffer Application::getBuffer() const

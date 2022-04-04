@@ -154,6 +154,7 @@
     <ClInclude Include="Images.h" />
     <ClInclude Include="Picture.h" />
     <ClInclude Include="Resource.h" />
+    <ClInclude Include="Sprite.h" />
     <ClInclude Include="targetver.h" />
   </ItemGroup>
   <ItemGroup>
