@@ -61,17 +61,21 @@ void Graphics::drawHLine(Position startPos, int size)
 
 void Graphics::drawVLine(Position startPos, int size)
 {
-  if (startPos.x < 0)
+  if (isOutOfRange(startPos.x, 0, buf.width))
+    return;
+  if (startPos.y < 0)
   {
-    size += startPos.x;
-    startPos.x = 0;
+    size += startPos.y;
+    startPos.y = 0;
   }
-  if (startPos.x + size > buf.width)
+  if (startPos.y + size > buf.height / BITS_IN_BYTE)
   {
-    size = buf.width - startPos.x;
+    size = buf.width - startPos.y;
   }
   if (size <= 0)
     return;
+
+  int y = (startPos.y + size) % BITS_IN_BYTE;
 
   uint8_t* b = buf.data + startPos.y / BITS_IN_BYTE * buf.width + startPos.x;
   char mask = 1 << startPos.y % BITS_IN_BYTE;

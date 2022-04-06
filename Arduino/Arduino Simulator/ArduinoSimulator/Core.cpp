@@ -62,7 +62,7 @@ public:
   std::string text;
   void draw(Graphics* g) override
   {
-    g->drawText(text, { 70, 0 }, font);
+    g->drawText(text, pos, font);
   }
 };
 
@@ -83,6 +83,7 @@ Text text;
 void Stage(Graphics* graphics)
 {
   text.text = "Счёт: 123";
+  text.pos = { 70, 0 };
   text.draw(graphics);
 
   c1.frame = c1.frame ? 0 : 1;
@@ -102,7 +103,26 @@ void Stage(Graphics* graphics)
 void Core::update()
 {
   graphics->clear();
-  Stage(graphics);
+  //Stage(graphics);
+
+  static int x = 0, y = 0;
+  FontCirillic font;
+  std::string text = "! \"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~ЁАБВГДЕЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯабвгдежзийклмнопрстуфхцчшщъыьэюяё";
+  font.size = 0;
+  Position pos = { x, y };
+  graphics->drawText(text, pos, font);
+  pos.y += font.getCharHeight();
+  font.size = 1;
+  graphics->drawText(text, pos, font);
+  pos.y += font.getCharHeight();
+  font.size = 2;
+  graphics->drawText(text, pos, font);
+  pos.y += font.getCharHeight();
+  font.size = 3;
+  graphics->drawText(text, pos, font);
+  pos.y += font.getCharHeight();
+  font.size = 4;
+  graphics->drawText(text, pos, font);
 }
 
 void Core::pressDown(uint8_t button)
