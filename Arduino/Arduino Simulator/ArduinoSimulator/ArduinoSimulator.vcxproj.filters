@@ -66,6 +66,9 @@
     <ClInclude Include="Sprite.h">
       <Filter>Исходные файлы</Filter>
     </ClInclude>
+    <ClInclude Include="Animation.h">
+      <Filter>Исходные файлы</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ArduinoSimulator.cpp">

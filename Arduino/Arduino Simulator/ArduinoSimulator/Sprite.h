@@ -12,20 +12,25 @@ private:
   Size size;
 public:
   Position pos;
-  virtual int numberOfPics() { return 0; };
-  virtual const PicPos& getPic(int i) { return *static_cast<const PicPos*>(nullptr); };
-  void drawPics(Graphics* g) {
-    for (int i = 0; i < numberOfPics(); ++i)
+  bool show = true;
+  virtual int numberOfPics() const { return 0; };
+  virtual const PicPos& getPic(int i) const { return *static_cast<const PicPos*>(nullptr); };
+  void draw(Graphics* g) {
+    if (show)
     {
-      const PicPos& picPos = getPic(i);
-      const Position pos = {
-        picPos.pos.x + this->pos.x,
-        picPos.pos.y + this->pos.y
-      };
-      g->drawPicture(picPos.pic, pos);
+      for (int i = 0; i < numberOfPics(); ++i)
+      {
+        const PicPos& picPos = getPic(i);
+        const Position pos = {
+          picPos.pos.x + this->pos.x,
+          picPos.pos.y + this->pos.y
+        };
+        g->drawPicture(picPos.pic, pos);
+      }
+      onDraw(g);
     }
   }
-  virtual void draw(Graphics* g) {}
+  virtual void onDraw(Graphics* g) {}
 
   void calcSize() {
     const PicPos& pp = getPic(0);
