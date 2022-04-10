@@ -45,9 +45,10 @@ private:
   };
   void onDraw(Graphics* g) override
   {
-    g->drawPicture(pics[getCurrentFrame()], pos);
+    g->drawPicture(pics[frame], pos);
   }
 public:
+  int frame = 0;
   Chicken() : FrameAnimation(2, 1000) {}
 };
 
@@ -69,36 +70,43 @@ public:
 
 class EggRolling : public Sprite, public Animation {
 private:
+  Chicken chicken;
   Egg egg;
+  FrameAnimation fa;
   ValueAnimation<Position> animPos, animPos2;
-  DelayAnimation da;
-  Animation* anims[3] = {
-    &animPos, &da, &animPos2
+  ValueAnimation<bool> animShow;
+  Animation* anims[4] = {
+    &fa, &animShow, &animPos, &animPos2
   };
   SequenceAnimation sa;
-  Animation* anims2[3] = {
-    &sa, &da, &sa
-  };
-  SequenceAnimation sa2;
 public:
+  Position pos;
   EggRolling() :
-    animPos(egg.pos, { 10, 5 }, { 30, 15 }, 2000, 1),
+    fa(2, 300, 3),
+    animPos(egg.pos, { 10, 5 }, { 30, 15 }, 1500, 1),
     animPos2(egg.pos, { 30, 15 }, { 30, 60 }, 1000, 1),
-    da(1000),
-    sa(anims, ::size(anims), 1) ,
-    sa2(anims2, ::size(anims2)) {}
+    animShow(egg.show, false, true, 0, 1),
+    sa(anims, ::size(anims)) {
+    egg.show = false;
+    egg.pos = { 10, 5 };
+  }
+  void setPosition(Position pos)
+  {
+  }
   void onStart(milliseconds now)
   {
-    sa2.start(now);
+    sa.start(now);
     egg.start(now);
   }
   void onUpdate(milliseconds now)
   {
-    sa2.update(now);
+    sa.update(now);
+    chicken.frame = fa.getCurrentFrame();
     egg.update(now);
   }
   void onDraw(Graphics* g)
   {
+    chicken.draw(g);
     egg.draw(g);
   }
 };
@@ -115,6 +123,8 @@ Position operator*(const Position& l, float r) {
 Position operator*(float l, const Position& r) {
   return r * l;
 }
+
+const size_t s = sizeof EggRolling;
 
 class Text : public Sprite {
 private:
@@ -150,10 +160,6 @@ void Stage(Graphics* graphics)
   text.text = "Счёт: 123";
   text.pos = { 70, 0 };
   text.draw(graphics);
-
-  c1.start(now);
-  c1.update(now);
-  c1.draw(graphics);
 
   c2.pos.y = 19;
   c2.start(now);
