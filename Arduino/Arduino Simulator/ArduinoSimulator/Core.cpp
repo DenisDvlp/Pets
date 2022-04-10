@@ -45,13 +45,10 @@ private:
   };
   void onDraw(Graphics* g) override
   {
-    g->drawPicture(pics[currentFrame()], pos);
+    g->drawPicture(pics[getCurrentFrame()], pos);
   }
 public:
-  Chicken() : FrameAnimation(2, 1000)
-  {
-    start();
-  }
+  Chicken() : FrameAnimation(2, 1000) {}
 };
 
 class Egg : public Sprite, public FrameAnimation {
@@ -64,35 +61,44 @@ private:
   };
   void onDraw(Graphics* g) override
   {
-    g->drawPicture(pics[currentFrame()], pos, true);
+    g->drawPicture(pics[getCurrentFrame()], pos, true);
   }
 public:
-  Egg() : FrameAnimation(4, 700)
-  {
-    start();
-  }
+  Egg() : FrameAnimation(4, 700) {}
 };
 
-class EggRolling {
+class EggRolling : public Sprite, public Animation {
 private:
-  ValueAnimation<Position> animPos, animPos2;
-  Animation* anims[2] = {
-    &animPos, &animPos2
-  };
-  AnimationSequence as;
-public:
   Egg egg;
+  ValueAnimation<Position> animPos, animPos2;
+  DelayAnimation da;
+  Animation* anims[3] = {
+    &animPos, &da, &animPos2
+  };
+  SequenceAnimation sa;
+  Animation* anims2[3] = {
+    &sa, &da, &sa
+  };
+  SequenceAnimation sa2;
+public:
   EggRolling() :
     animPos(egg.pos, { 10, 5 }, { 30, 15 }, 2000, 1),
-    animPos2(egg.pos, { 30, 15 }, { 30, 60 }, 2000, 1),
-    as(anims, size(anims))
+    animPos2(egg.pos, { 30, 15 }, { 30, 60 }, 1000, 1),
+    da(1000),
+    sa(anims, ::size(anims), 1) ,
+    sa2(anims2, ::size(anims2)) {}
+  void onStart(milliseconds now)
   {
-    egg.start();
-    as.start();
+    sa2.start(now);
+    egg.start(now);
   }
-  void update(Graphics* g)
+  void onUpdate(milliseconds now)
   {
-    as.update();
+    sa2.update(now);
+    egg.update(now);
+  }
+  void onDraw(Graphics* g)
+  {
     egg.draw(g);
   }
 };
@@ -139,13 +145,19 @@ void Stage(Graphics* graphics)
   static Text text;
   static EggRolling egg;
 
+  milliseconds now = millis();
+
   text.text = "Счёт: 123";
   text.pos = { 70, 0 };
   text.draw(graphics);
 
+  c1.start(now);
+  c1.update(now);
   c1.draw(graphics);
 
   c2.pos.y = 19;
+  c2.start(now);
+  c2.update(now);
   c2.draw(graphics);
 
   b.draw(graphics);
@@ -153,7 +165,9 @@ void Stage(Graphics* graphics)
   w.pos = { 32, 10 };
   w.draw(graphics);
 
-  egg.update(graphics);
+  egg.start(now);
+  egg.update(now);
+  egg.draw(graphics);
 }
 
 void Core::update()
