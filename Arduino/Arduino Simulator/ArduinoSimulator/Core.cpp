@@ -19,6 +19,7 @@ private:
   void onDraw(Graphics* g) override
   {
     g->drawHLine({ pos.x + 27, pos.y + 40 }, 7);
+    g->drawPicture(pic_w_basket, { pos.x, pos.y + 6 });
   }
 };
 
