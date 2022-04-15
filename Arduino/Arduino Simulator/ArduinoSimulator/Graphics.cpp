@@ -1,4 +1,7 @@
 #include "Graphics.h"
+#ifdef ARDUINO
+#include "Function.h"
+#endif
 
 static constexpr uint8_t BITS_IN_BYTE = 8;
 
@@ -152,7 +155,7 @@ void Graphics::drawPicture(Picture pic, Position pos, bool transparent /*=false*
 }
 
 template<class F>
-void readUTF8string(std::string text, F func)
+void readUTF8string(const String text, F func)
 {
   // 1 byte 0XXXXXXX
   // 2 byte 110XXXXX 10XXXXXX
@@ -166,7 +169,7 @@ void readUTF8string(std::string text, F func)
     0b11111000
   };
 
-  const char* it = text.data();
+  const char* it = &*text.begin();
   const char* end = it + text.length();
   while (it != end)
   {
@@ -187,9 +190,9 @@ void readUTF8string(std::string text, F func)
   }
 }
 
-void Graphics::drawText(std::string text, Position pos, const Font& font)
+void Graphics::drawText(String text, Position pos, const Font& font)
 {
-  readUTF8string(std::move(text), [&](int code) {
+  readUTF8string(move(text), [&](int code) {
     if (code == int(' '))
     {
       pos.x += font.getSpaceWidth();
@@ -203,10 +206,10 @@ void Graphics::drawText(std::string text, Position pos, const Font& font)
     });
 }
 
-int Graphics::calculateTextWidth(std::string text, const Font& font)
+int Graphics::calculateTextWidth(String text, const Font& font)
 {
   int width = 0;
-  readUTF8string(std::move(text), [&](int code) {
+  readUTF8string(move(text), [&](int code) {
     width += (code == int(' ')) ? font.getSpaceWidth() :
       font.getCharWidth(code) + font.getCharSpaceWidth();
     });

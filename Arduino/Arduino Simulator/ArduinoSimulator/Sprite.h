@@ -2,6 +2,12 @@
 #include "Picture.h"
 #include "Graphics.h"
 
+#ifdef ARDUINO
+#else
+using namespace std;
+#endif
+
+
 struct PicPos {
   Picture pic;
   Position pos;
@@ -41,10 +47,10 @@ public:
     for (int i = 1; i < numberOfPics(); ++i)
     {
       const PicPos& pp = getPic(i);
-      minW = std::min(minW, pp.pos.x);
-      maxW = std::max(maxW, pp.pos.x + pp.pic.width);
-      minH = std::min(minH, pp.pos.y);
-      maxH = std::max(maxH, pp.pos.y + pp.pic.height);
+      minW = min(minW, pp.pos.x);
+      maxW = max(maxW, pp.pos.x + pp.pic.width);
+      minH = min(minH, pp.pos.y);
+      maxH = max(maxH, pp.pos.y + pp.pic.height);
     }
     size.width = maxW - minW;
     size.height = maxH - minH;

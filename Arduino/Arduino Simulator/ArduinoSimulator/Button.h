@@ -1,6 +1,6 @@
 #pragma once
 #include "stdint.h"
-#include "function.h"
+#include "Function.h"
 
 using Callback = Function<void(uint8_t)>;
 

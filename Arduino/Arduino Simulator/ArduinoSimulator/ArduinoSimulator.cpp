@@ -8,8 +8,6 @@
 #include <chrono>
 #include <thread>
 
-#ifdef ARDUINO_SIMULATOR
-
 void delay(unsigned long ms) {
   std::chrono::milliseconds duration(ms);
   std::this_thread::sleep_for(duration);
@@ -21,8 +19,6 @@ unsigned long millis() {
   auto ms = duration_cast<milliseconds>(t).count();
   return static_cast<unsigned long>(ms);
 }
-
-#endif
 
 static Application app;
 

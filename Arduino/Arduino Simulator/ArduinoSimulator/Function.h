@@ -1,5 +1,9 @@
 #pragma once
+#ifdef ARDUINO
+#include <string.h>
+#else
 #include <cstring>
+#endif
 
 template<typename Return, typename... Args>
 class Function;

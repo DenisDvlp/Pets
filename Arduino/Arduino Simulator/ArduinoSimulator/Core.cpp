@@ -125,13 +125,11 @@ Position operator*(float l, const Position& r) {
   return r * l;
 }
 
-const size_t s = sizeof EggRolling;
-
 class Text : public Sprite {
 private:
 public:
   FontCirillic font;
-  std::string text;
+  String text;
 private:
   void onDraw(Graphics* g) override
   {
@@ -188,7 +186,7 @@ void Core::pressDown(uint8_t button)
   static int x = 0, y = 0;
   graphics->clear();
   FontCirillic font;
-  std::string text = "! \"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~ЁАБВГДЕЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯабвгдежзийклмнопрстуфхцчшщъыьэюяё";
+  String text = "! \"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~ЁАБВГДЕЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯабвгдежзийклмнопрстуфхцчшщъыьэюяё";
 
   auto draw = [&]() {
     font.size = 0;

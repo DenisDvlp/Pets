@@ -1,7 +1,10 @@
 #pragma once
 #include "Picture.h"
-
+#ifdef ARDUINO
+#include "Arduino.h"
+#else
 using byte = unsigned char;
+#endif
 
 class Font {
 public:
