@@ -7,7 +7,7 @@
 // you can represent the bytes as 11-bit-numbers instead.
 //E.g.:
 //   ArrayOfExtendedByte<short, 11> exBytes(bytes);
-//                        // ^ get and set the values as `short`
+//                         ^ get and set the values as `short`
 //   // 4th element starts from the 2nd bit of 5th byte (offset is 3 * 11 = 33 bits).
 //   exBytes[4] = 1999;
 //   short x = exBytes[4]; // return 1999

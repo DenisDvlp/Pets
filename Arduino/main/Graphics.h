@@ -1,19 +1,25 @@
 #pragma once
 #include "Picture.h"
 #include "Font.h"
+
+#ifdef ARDUINO
 #include "WString.h"
+#else
+#include <string>
+using String = std::string;
+#endif
 
 class Graphics {
   Buffer buf;
 public:
   void init(Buffer buffer);
   void clear();
-  void drawPicture(Picture pic, Position pos);
+  void drawPixel(Position pos);
+  void drawHLine(Position startPos, int size);
+  void drawVLine(Position startPos, int size);
+  void drawPicture(Picture pic, Position pos, bool transparent = false);
   void drawText(String text, Position pos, const Font& font);
   int calculateTextWidth(String text, const Font& font);
 private:
-  void drawBits(uint8_t byte, uint8_t bitCount, uint8_t* buf, uint8_t mask, uint8_t bufBitShift);
-  void drawLine(const uint8_t* bytes, int preBits, int wholeBytes, int postBits, int preBitsShift, uint8_t* buf, int y);
-  void drawLines(const uint8_t* bytes, int bmpWidth, int lineCount, int picPreBits, int wholeBytes, int postBits, int preBitsShift, uint8_t* buf, int y);
-  bool adjustSize(int& picI, int& picSize, int& bufI, int& bufSize);
+  uint8_t* bufferOffset(Position pos);
 };

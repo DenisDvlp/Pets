@@ -1,4 +1,5 @@
 #pragma once
+#include <string.h>
 
 template<typename Return, typename... Args>
 class Function;

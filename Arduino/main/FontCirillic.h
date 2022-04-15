@@ -4,13 +4,13 @@
 class FontCirillic : public Font {
 public:
   FontCirillic();
-  Picture getPicture(char16_t c) const override;
-  byte getCharWidth(char16_t c) const override;
-  byte getSpaceWidth() const override;
-  byte getCharSpaceWidth() const override;
+  Picture getPicture(int code) const override;
+  int getCharWidth(int code) const override;
+  int getSpaceWidth() const override;
+  int getCharSpaceWidth() const override;
+  int getCharHeight() const override;
 private:
   const Bitmap* bmps[5];
   const uint8_t* offsets[5];
-  byte getCharHeight() const;
-  int getOffset(char16_t c) const;
+  int getOffset(int code) const;
 };

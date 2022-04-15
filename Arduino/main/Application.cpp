@@ -33,7 +33,7 @@ void Application::init()
   controller.init({ this, &Application::pressDown });
 
   // init game core
-  core.init();
+  core.init(controller, graphics);
 
   // init port for logs
   Serial.begin(9600);
@@ -61,9 +61,9 @@ void Application::pressDown(uint8_t button)
   font.isBold = false;
   Position pos = { (Display::WIDTH - graphics.calculateTextWidth("Ну Погоди", font)) / 2, 20 };
   switch (button) {
-  case Controller::BUTTON_X: graphics.drawText("Ну Погоди", {0,0}, font); break;
-  //case Controller::BUTTON_Y: graphics.drawPicture(pic_hand, { x,y -= 10 }); break;
-  //case Controller::BUTTON_A: graphics.drawPicture(pic_hand, { x,y += 10 }); break;
-  //case Controller::BUTTON_B: graphics.drawPicture(pic_hand, { x += 10,y }); break;
+  case Controller::BUTTON_X: graphics.drawText("Жёлтая кнопка", {10,10}, font); break;
+  case Controller::BUTTON_Y: graphics.drawText("Синяя кнопка", {20,20}, font); break;
+  case Controller::BUTTON_A: graphics.drawText("Красная кнопка", {30,30}, font); break;
+  case Controller::BUTTON_B: graphics.drawText("Зелёная кнопка", {40,40}, font); break;
   }
 }

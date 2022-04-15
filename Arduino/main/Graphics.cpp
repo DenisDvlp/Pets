@@ -1,6 +1,7 @@
 #include "Graphics.h"
-#include <string.h>
-#include <avr/pgmspace.h>
+#ifdef ARDUINO
+#include "Function.h"
+#endif
 
 static constexpr uint8_t BITS_IN_BYTE = 8;
 
@@ -14,137 +15,92 @@ void Graphics::clear()
   memset(buf.data, 0, (buf.width * buf.height / BITS_IN_BYTE));
 }
 
-void Graphics::drawPicture(Picture pic, Position pos)
+// [min, max]
+static bool isOutOfRange(int what, int min, int max)
 {
-  // if the picture is out of visible area, then do not draw.
-  if (!adjustSize(pic.x, pic.width, pos.x, buf.width) ||
-    !adjustSize(pic.y, pic.height, pos.y, buf.height))
+  return what < min || what > max;
+}
+
+static bool isOutOfSize(Position what, Size size)
+{
+  return isOutOfRange(what.x, 0, size.width) || isOutOfRange(what.y, 0, size.height);
+}
+
+inline uint8_t* Graphics::bufferOffset(Position pos)
+{
+  return buf.data + pos.y / BITS_IN_BYTE * buf.width + pos.x;
+}
+
+void Graphics::drawPixel(Position pos)
+{
+  if (isOutOfSize(pos, buf))
+    return;
+  const char mask = 1 << pos.y % BITS_IN_BYTE;
+  *bufferOffset(pos) |= mask;
+}
+
+// return `false` if it is no sense to draw, because the line is out of screen bound,
+// return `true` otherwise.
+static bool adjustLine(int& a, int b, int& size, int bufA, int bufB)
+{
+  if (isOutOfRange(b, 0, bufB))
+    return false;
+  if (a < 0)
+  {
+    size += a;
+    a = 0;
+  }
+  if (a + size > bufA)
+  {
+    size = bufA - a;
+  }
+  return (size >= 0);
+}
+
+void Graphics::drawHLine(Position startPos, int size)
+{
+  if (!adjustLine(startPos.x, startPos.y, size, buf.width, buf.height))
     return;
 
-  // preparatory calculations
-  int picPreBits = BITS_IN_BYTE - pic.x % BITS_IN_BYTE;
-  int picPostBits = (pic.x + pic.width) % BITS_IN_BYTE;
-  int preBitsShift = 0;
-  if (picPreBits > pic.width)
+  uint8_t* b = bufferOffset(startPos);
+  const uint8_t mask = 1 << startPos.y % BITS_IN_BYTE;
+  while (size--)
   {
-    preBitsShift = picPreBits - pic.width;
-    picPreBits = pic.width;
-    picPostBits = 0;
+    *b |= mask;
+    ++b;
   }
-  const int picWholeBytes = (pic.width - picPreBits - picPostBits) / BITS_IN_BYTE;
-  const int bmpWidth = pic.bmp->width / BITS_IN_BYTE;
-  const uint8_t* bmpPos = pic.bmp->data + pic.x / BITS_IN_BYTE + pic.y * bmpWidth;
-  uint8_t* bufPos = buf.data + pos.x + pos.y / BITS_IN_BYTE * buf.width;
-  int y = pos.y;
-  int picPreRows = BITS_IN_BYTE - pos.y % BITS_IN_BYTE;
-  int picPostRows = (pos.y + pic.height) % BITS_IN_BYTE;
-  if (picPreRows > pic.height)
-  {
-    picPreRows = pic.height;
-    picPostRows = 0;
-  }
-  const int picWholeRows = (pic.height - picPreRows - picPostRows) / BITS_IN_BYTE;
-  // fill buffer
-  drawLines(bmpPos, bmpWidth, picPreRows, picPreBits, picWholeBytes, picPostBits, preBitsShift, bufPos, y);
-  y += picPreRows;
-  bmpPos += bmpWidth * picPreRows;
-  bufPos += buf.width;
-  const int wholeBmpWidth = bmpWidth * BITS_IN_BYTE;
-  int i = picWholeRows;
-  while (i--)
-  {
-    drawLines(bmpPos, bmpWidth, BITS_IN_BYTE, picPreBits, picWholeBytes, picPostBits, preBitsShift, bufPos, y);
-    y += BITS_IN_BYTE;
-    bmpPos += wholeBmpWidth;
-    bufPos += buf.width;
-  }
-  drawLines(bmpPos, bmpWidth, picPostRows, picPreBits, picWholeBytes, picPostBits, preBitsShift, bufPos, y);
 }
 
-void Graphics::drawText(String text, Position pos, const Font& font)
+void Graphics::drawVLine(Position startPos, int size)
 {
-  size_t i = 0;
-  while (i < text.length())
+  if (!adjustLine(startPos.y, startPos.x, size, buf.height, buf.width))
+    return;
+
+  uint8_t* b = bufferOffset(startPos);
+  uint8_t mask = 1 << startPos.y % BITS_IN_BYTE;
+  while (size--)
   {
-    if (text[i] == ' ') {
-      pos.x += font.getSpaceWidth();
-      ++i;
-      continue;
+    *b |= mask;
+    mask <<= 1;
+    if (!mask)
+    {
+      mask = 1;
+      b += buf.width;
     }
-    char16_t c = char16_t(text[i] & 0b00011111) << 6 | (text[i + 1] & 0b00111111);
-    Picture pic = font.getPicture(c);
-    drawPicture(pic, pos);
-    pos.x += pic.width + font.getCharSpaceWidth();
-    i += 2;
-  }
-}
-
-int Graphics::calculateTextWidth(String text, const Font& font)
-{
-  size_t i = 0;
-  int width = 0;
-  while (i < text.length())
-  {
-    const bool isAscii = text[i] & 0b10000000;
-    if (text[i] == ' ') {
-      width += font.getSpaceWidth();
-      ++i;
-      continue;
-    }
-    char16_t c = char16_t(text[i] & 0b00011111) << 6 | (text[i + 1] & 0b00111111);
-    width += font.getCharWidth(c) + font.getCharSpaceWidth();
-    i += 2;
-  }
-  return width;
-}
-
-void Graphics::drawBits(uint8_t byte, uint8_t bitCount, uint8_t* buf, uint8_t mask, uint8_t bufBitShift)
-{
-  while (bitCount--)
-  {
-    *buf = *buf & mask | ((byte & 0x80) >> bufBitShift);
-    byte <<= 1;
-    ++buf;
-  }
-}
-
-void Graphics::drawLine(const uint8_t* bytes, int preBits, int wholeBytes, int postBits, int preBitsShift, uint8_t* buf, int y)
-{
-  const uint8_t bufBitShift = 7 - y % BITS_IN_BYTE;
-  const uint8_t mask = ~(0x80 >> bufBitShift);
-  uint8_t byte = pgm_read_byte(bytes) << (BITS_IN_BYTE - preBits - preBitsShift);
-  drawBits(byte, preBits, buf, mask, bufBitShift);
-  buf += preBits;
-  ++bytes;
-  while (wholeBytes--)
-  {
-    drawBits(pgm_read_byte(bytes), BITS_IN_BYTE, buf, mask, bufBitShift);
-    buf += BITS_IN_BYTE;
-    ++bytes;
-  }
-  drawBits(pgm_read_byte(bytes), postBits, buf, mask, bufBitShift);
-}
-
-void Graphics::drawLines(const uint8_t* bytes, int bmpWidth, int lineCount, int picPreBits, int wholeBytes, int postBits, int preBitsShift, uint8_t* buf, int y)
-{
-  while (lineCount--)
-  {
-    drawLine(bytes, picPreBits, wholeBytes, postBits, preBitsShift, buf, y++);
-    bytes += bmpWidth;
   }
 }
 
 // return `false` if it is no sense to draw, because the picture is out of screen bound,
 // return `true` otherwise.
-bool Graphics::adjustSize(int& picI, int& picSize, int& bufI, int& bufSize)
+bool adjustSize(int& picPos, int& picSize, int& bufPos, int bufSize)
 {
-  int sizeI = bufI + picSize;
-  if (bufI < 0)
+  int sizeI = bufPos + picSize;
+  if (bufPos < 0)
   {
-    picI -= bufI;
-    bufI = 0;
+    picPos -= bufPos;
+    bufPos = 0;
   }
-  else if (bufI >= bufSize)
+  else if (bufPos >= bufSize)
   {
     return false;
   }
@@ -157,6 +113,105 @@ bool Graphics::adjustSize(int& picI, int& picSize, int& bufI, int& bufSize)
   {
     return false;
   }
-  picSize = sizeI - bufI;
+  picSize = sizeI - bufPos;
   return true;
+}
+
+void drawPictureLine(uint8_t* buf, int size, const uint8_t* bytes, int shiftRight, const int shiftLeft, bool transparent)
+{
+  const uint8_t clearBitMask = ~(1 << shiftLeft) | transparent * 0xFF;
+  while (size--)
+  {
+    *buf &= clearBitMask;
+    *buf |= ((*bytes >> shiftRight) & 1) << shiftLeft;
+    ++buf;
+    if (!shiftRight--)
+    {
+      shiftRight = BITS_IN_BYTE - 1;
+      ++bytes;
+    }
+  }
+}
+
+void Graphics::drawPicture(Picture pic, Position pos, bool transparent /*=false*/)
+{
+  // if the picture is out of visible area, then do not draw.
+  if (!adjustSize(pic.x, pic.width, pos.x, buf.width) ||
+    !adjustSize(pic.y, pic.height, pos.y, buf.height))
+    return;
+  uint8_t* b = bufferOffset(pos);
+  const int bmpWidthInBytes = pic.bmp->width / BITS_IN_BYTE;
+  const uint8_t* p = pic.bmp->data + pic.y * bmpWidthInBytes + pic.x / BITS_IN_BYTE;
+  const int shiftRight = BITS_IN_BYTE - 1 - pic.x % BITS_IN_BYTE;
+  while (pic.height--) {
+    const int shiftLeft = pos.y++ % BITS_IN_BYTE;
+    drawPictureLine(b, pic.width, p, shiftRight, shiftLeft, transparent);
+    if (shiftLeft == BITS_IN_BYTE - 1)
+    {
+      b += buf.width;
+    }
+    p += bmpWidthInBytes;
+  }
+}
+
+template<class F>
+void readUTF8string(const String text, F func)
+{
+  // 1 byte 0XXXXXXX
+  // 2 byte 110XXXXX 10XXXXXX
+  // 3 byte 1110XXXX 10XXXXXX 10XXXXXX
+  // 4 byte 11110XXX 10XXXXXX 10XXXXXX 10XXXXXX
+  static constexpr char auxMask = 0b00111111;
+  static constexpr char masks[] = {
+    0b10000000,
+    0b11100000,
+    0b11110000,
+    0b11111000
+  };
+
+  const char* it = &*text.begin();
+  const char* end = it + text.length();
+  while (it != end)
+  {
+    for (auto mask : masks)
+    {
+      if (char(*it & mask) == char(mask << 1))
+      {
+        int code = *(it++) & ~mask;
+        mask <<= 1;
+        while (mask <<= 1)
+        {
+          code <<= 6;
+          code |= *(it++) & auxMask;
+        }
+        func(code);
+      }
+    }
+  }
+}
+
+void Graphics::drawText(String text, Position pos, const Font& font)
+{
+  readUTF8string(move(text), [&](int code) {
+    if (code == int(' '))
+    {
+      pos.x += font.getSpaceWidth();
+    }
+    else
+    {
+      Picture pic = font.getPicture(code);
+      drawPicture(pic, pos);
+      pos.x += pic.width + font.getCharSpaceWidth();
+    }
+    });
+}
+
+int Graphics::calculateTextWidth(String text, const Font& font)
+{
+  int width = 0;
+  readUTF8string(move(text), [&](int code) {
+    width += (code == int(' ')) ? font.getSpaceWidth() :
+      font.getCharWidth(code) + font.getCharSpaceWidth();
+    });
+  return width;
 }
