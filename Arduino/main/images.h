@@ -13,9 +13,6 @@ extern const Picture pic_w_lleg;
 extern const Bitmap bmp_w_rleg;
 extern const Picture pic_w_rleg;
 
-extern const Bitmap bmp_hline;
-extern const Picture pic_hline;
-
 extern const Bitmap bmp_dline;
 extern const Picture pic_dline;
 

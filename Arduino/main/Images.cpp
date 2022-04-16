@@ -57,12 +57,6 @@ static const uint8_t png_w_rleg[36] PROGMEM = {
 static const Bitmap bmp_w_rleg(png_w_rleg, 16, 18);
 static const Picture pic_w_rleg(bmp_w_rleg, 0, 0, 16, 18);
 
-static const uint8_t png_hline[2] PROGMEM = {
-  0xFF, 0xFF, 
-};
-static const Bitmap bmp_hline(png_hline, 16, 1);
-static const Picture pic_hline(bmp_hline, 0, 0, 16, 1);
-
 static const uint8_t png_dline[30] PROGMEM = {
   0x80, 0x00, 0x00, 0xE0, 0x00, 0x00, 0x38, 0x00, 0x00, 0x0E, 0x00, 0x00, 
   0x03, 0x80, 0x00, 0x00, 0xE0, 0x00, 0x00, 0x38, 0x00, 0x00, 0x0E, 0x00, 

@@ -55,7 +55,6 @@ constexpr size_t size(T(&)[S]) { return S; }
 
 void Application::pressDown(uint8_t button)
 {
-  static int x = 0, y = 0;
   graphics.clear();
   FontCirillic font;
   font.isBold = false;

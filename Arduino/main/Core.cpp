@@ -87,17 +87,24 @@ public:
     animPos(egg.pos, { 10, 5 }, { 30, 15 }, 1500, 1),
     animPos2(egg.pos, { 30, 15 }, { 30, 60 }, 1000, 1),
     animShow(egg.show, false, true, 0, 1),
-    sa(anims, ::size(anims)) {
+    sa(anims, ::size(anims), 1) {
     egg.show = false;
     egg.pos = { 10, 5 };
   }
   void setPosition(Position pos)
   {
   }
-  void onStart(milliseconds now)
+  void onStart(milliseconds now) override
   {
     sa.start(now);
     egg.start(now);
+  }
+  void onStop() override
+  {
+    sa.stop();
+    chicken.frame = 0;
+    egg.show = false;
+    egg.stop();
   }
   void onUpdate(milliseconds now)
   {
@@ -146,13 +153,13 @@ void Core::init(Controller& c, Graphics& g)
   c.init({ this, &Core::pressDown });
 }
 
-void Stage(Graphics* graphics)
-{
   static Wolf w;
   static Chicken c1, c2;
   static Barn b;
   static Text text;
   static EggRolling egg;
+void Stage(Graphics* graphics)
+{
 
   milliseconds now = millis();
 
@@ -170,77 +177,28 @@ void Stage(Graphics* graphics)
   w.pos = { 32, 10 };
   w.draw(graphics);
 
-  egg.start(now);
   egg.update(now);
   egg.draw(graphics);
 }
 
 void Core::update()
 {
-  graphics->clear();
+  //graphics->clear();
   //Stage(graphics);
 }
 
 void Core::pressDown(uint8_t button)
 {
-  static int x = 0, y = 0;
-  graphics->clear();
-  FontCirillic font;
-  String text = "! \"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~ЁАБВГДЕЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯабвгдежзийклмнопрстуфхцчшщъыьэюяё";
-
-  auto draw = [&]() {
-    font.size = 0;
-    Position pos = { x, y };
-    graphics->drawText(text, pos, font);
-    pos.y += font.getCharHeight();
-    font.size = 1;
-    graphics->drawText(text, pos, font);
-    pos.y += font.getCharHeight();
-    font.size = 2;
-    graphics->drawText(text, pos, font);
-    pos.y += font.getCharHeight();
-    font.size = 3;
-    graphics->drawText(text, pos, font);
-    pos.y += font.getCharHeight();
-    font.size = 4;
-    graphics->drawText(text, pos, font);
-  };
-  Wolf w;
-  w.pos = { 32, 10 };
   switch (button) {
   case Controller::BUTTON_X:
-    font.size = 0;
-    graphics->drawText("Счёт: 123", { 70, 0 }, font);
-    graphics->drawPicture(Picture(bmp_chicken, 0, 0, 11, 11), {0, 0});
-    graphics->drawPicture(Picture(bmp_chicken, 0, 0, 11, 11), {0, 19});
-    graphics->drawPicture(pic_hline, { -4, 11 });
-    graphics->drawPicture(pic_hline, { -4, 30 });
-    graphics->drawPicture(pic_dline, { 11, 11 });
-    graphics->drawPicture(pic_dline, { 11, 30 });
-    w.draw(graphics);
+    graphics->clear();
+    graphics->drawPicture(pic_chicken, { 10,20 });
     break;
   case Controller::BUTTON_Y:
-  {
-    font.size = 0;
-    graphics->drawText("Счёт: 123", { 70, 0 }, font);
-    graphics->drawPicture(Picture(bmp_chicken, 0, 0, 11, 11), { 0, 0 });
-    graphics->drawPicture(Picture(bmp_chicken, 0, 0, 11, 11), { 0, 19 });
-    graphics->drawPicture(pic_hline, { -4, 11 });
-    graphics->drawPicture(pic_hline, { -4, 30 });
-    graphics->drawPicture(pic_dline, { 11, 11 });
-    graphics->drawPicture(pic_dline, { 11, 30 });
-    w.draw(graphics);
-    Position pos = { w.pos.x , w.pos.y + 6 };
-    graphics->drawPicture(pic_w_basket, pos);
-  }
     break;
   case Controller::BUTTON_A:
-    y += 10;
-    draw();
     break;
   case Controller::BUTTON_B:
-    y -= 10;
-    draw();
     break;
   }
 }

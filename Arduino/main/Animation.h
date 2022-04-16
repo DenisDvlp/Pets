@@ -166,6 +166,21 @@ public:
     FractionAnimation(duration, times), value(value), from(from), to(to) {}
 };
 
+template<>
+class ValueAnimation<bool> : public FractionAnimation {
+protected:
+  bool& value;
+  const bool from, to;
+private:
+  void onFraction(float part) override
+  {
+    value = (part == 1.0f) ? to : from;
+  }
+public:
+  ValueAnimation(bool& value, bool from, bool to, milliseconds duration, int times = -1) :
+    FractionAnimation(duration, times), value(value), from(from), to(to) {}
+};
+
 class SequenceAnimation : public Animation {
 protected:
   Animation** animations;
