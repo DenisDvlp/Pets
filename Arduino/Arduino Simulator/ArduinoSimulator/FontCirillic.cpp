@@ -29,7 +29,7 @@ inline int FontCirillic::getCharHeight() const
   return bmps[size]->height;
 }
 
-int FontCirillic::getOffset(int c) const
+int FontCirillic::getOffset(int code) const
 { 
   struct range{ const int from; const int to; };
   // 33-126,1025,1040-1103,1105
@@ -41,10 +41,9 @@ int FontCirillic::getOffset(int c) const
   };
 
   int offset = 0;
-  int code = static_cast<int>(c);
   for (auto r : mapping) {
-    if (c < r.from) return -1;
-    if (c <= r.to) return offset + code - r.from;
+    if (code < r.from) return -1;
+    if (code <= r.to) return offset + code - r.from;
     offset += r.to - r.from + 1;
   }
   return -1;

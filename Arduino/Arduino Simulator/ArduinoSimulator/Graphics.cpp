@@ -120,15 +120,28 @@ bool adjustSize(int& picPos, int& picSize, int& bufPos, int bufSize)
 void drawPictureLine(uint8_t* buf, int size, const uint8_t* bytes, int shiftRight, const int shiftLeft, bool transparent)
 {
   const uint8_t clearBitMask = ~(1 << shiftLeft) | transparent * 0xFF;
-  while (size--)
+  uint8_t byte =
+#ifdef ARDUINO
+    pgm_read_byte(bytes);
+#else
+    *bytes;
+#endif
+  while (true)
   {
     *buf &= clearBitMask;
-    *buf |= ((*bytes >> shiftRight) & 1) << shiftLeft;
+    *buf |= ((byte >> shiftRight) & 1) << shiftLeft;
     ++buf;
+    if (!--size)
+      return;
     if (!shiftRight--)
     {
       shiftRight = BITS_IN_BYTE - 1;
-      ++bytes;
+      byte =
+#ifdef ARDUINO
+      pgm_read_byte(++bytes);
+#else
+      *++bytes;
+#endif
     }
   }
 }
