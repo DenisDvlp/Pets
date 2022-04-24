@@ -141,7 +141,7 @@
   <ItemGroup>
     <ClInclude Include="Application.h" />
     <ClInclude Include="ArduinoSimulator.h" />
-    <ClInclude Include="ArrayOfExtendedByte.h" />
+    <ClInclude Include="ExtIntArray.h" />
     <ClInclude Include="Button.h" />
     <ClInclude Include="Animation.h" />
     <ClInclude Include="Controller.h" />

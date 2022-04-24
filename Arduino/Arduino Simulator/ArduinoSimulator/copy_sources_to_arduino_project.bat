@@ -3,6 +3,8 @@ echo off
 call :CopySource Animation.h
 call :CopySource Core.h
 call :CopySource Core.cpp
+call :CopySource Images.h
+call :CopySource Images.cpp
 call :CopySource Font.h
 call :CopySource FontCirillic.h
 call :CopySource FontCirillic.cpp

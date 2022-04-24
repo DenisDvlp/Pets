@@ -1,6 +1,6 @@
 #include "FontCirillic.h"
 #include "Images.h"
-#include "ArrayOfExtendedByte.h"
+#include "ExtIntArray.h"
 
 //!"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\]^_`abcdefghijklmnopqrstuvwxyz{|}~¨ÀÁÂÃÄÅÆÇÈÉÊËÌÍÎÏĞÑÒÓÔÕÖ×ØÙÚÛÜİŞßàáâãäåæçèéêëìíîïğñòóôõö÷øùúûüışÿ¸
 
@@ -52,7 +52,7 @@ int FontCirillic::getOffset(int code) const
 Picture FontCirillic::getPicture(int code) const
 {
   const int offset = getOffset(code);
-  const ArrayOfExtendedByte<int> exBytes(offsets[size], 10);
+  const ExtIntArray<int> exBytes(offsets[size], 10);
   const int x1 = exBytes[offset];
   const int x2 = exBytes[offset + 1];
   return Picture(*bmps[size], x1, 0, x2 - x1, getCharHeight());
@@ -61,7 +61,7 @@ Picture FontCirillic::getPicture(int code) const
 int FontCirillic::getCharWidth(int code) const
 {
   const int offset = getOffset(code);
-  const ArrayOfExtendedByte<int> exBytes(offsets[size], 10);
+  const ExtIntArray<int> exBytes(offsets[size], 10);
   return exBytes[offset + 1] - exBytes[offset];
 }
 

@@ -30,7 +30,7 @@
     <ClInclude Include="Application.h">
       <Filter>Исходные файлы</Filter>
     </ClInclude>
-    <ClInclude Include="ArrayOfExtendedByte.h">
+    <ClInclude Include="ExtIntArray.h">
       <Filter>Исходные файлы</Filter>
     </ClInclude>
     <ClInclude Include="Button.h">

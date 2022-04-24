@@ -153,13 +153,13 @@ void Core::init(Controller& c, Graphics& g)
   c.init({ this, &Core::pressDown });
 }
 
-  static Wolf w;
-  static Chicken c1, c2;
-  static Barn b;
-  static Text text;
-  static EggRolling egg;
+//static EggRolling egg;
 void Stage(Graphics* graphics)
 {
+  //static Wolf w;
+  //static Chicken c2;
+  static Barn b;
+  static Text text;
 
   milliseconds now = millis();
 
@@ -167,32 +167,34 @@ void Stage(Graphics* graphics)
   text.pos = { 70, 0 };
   text.draw(graphics);
 
-  c2.pos.y = 19;
-  c2.start(now);
-  c2.update(now);
-  c2.draw(graphics);
+  //c2.pos.y = 19;
+  //c2.start(now);
+  //c2.update(now);
+  //c2.draw(graphics);
 
-  b.draw(graphics);
+  b.draw(graphics); 
 
-  w.pos = { 32, 10 };
-  w.draw(graphics);
+  //w.pos = { 32, 10 };
+  //w.draw(graphics);
 
-  egg.update(now);
-  egg.draw(graphics);
+  //egg.update(now);
+  //egg.draw(graphics);
 }
 
 void Core::update()
 {
-  //graphics->clear();
-  //Stage(graphics);
+  graphics->clear();
+  Stage(graphics);
 }
 
 void Core::pressDown(uint8_t button)
 {
   switch (button) {
   case Controller::BUTTON_X:
-    graphics->clear();
-    graphics->drawPicture(pic_chicken, { 10,20 });
+    Serial.print("ValueAnimation<Position> ");
+    Serial.println(sizeof(ValueAnimation<Position>));
+    Serial.print("FrameAnimation ");
+    Serial.println(sizeof(FrameAnimation));
     break;
   case Controller::BUTTON_Y:
     break;

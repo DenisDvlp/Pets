@@ -17,6 +17,7 @@ public:
   void drawPixel(Position pos);
   void drawHLine(Position startPos, int size);
   void drawVLine(Position startPos, int size);
+  void drawLine(Position startPos, Position endPos);
   void drawPicture(Picture pic, Position pos, bool transparent = false);
   void drawText(String text, Position pos, const Font& font);
   int calculateTextWidth(String text, const Font& font);

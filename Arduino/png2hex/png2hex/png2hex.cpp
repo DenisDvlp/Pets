@@ -2,7 +2,7 @@
 //
 #include "DImage.h"
 #include "DString.h"
-#include "ArrayOfExtendedByte.h"
+#include "ExtIntArray.h"
 #include <iostream>
 #include <bitset>
 #include <sstream>
@@ -18,7 +18,7 @@ class FontInfo {
 public:
   static constexpr int8_t OFFSET_BITS = 10;
   FontInfo() : offsets(offsetsData) {}
-  ArrayOfExtendedByte<int, OFFSET_BITS> offsets;
+  ExtIntArray<int, OFFSET_BITS> offsets;
   int offsetsSize = 0;
   DBiArray<unsigned char> output;
   unsigned char offsetsData[2000] = {};
@@ -87,7 +87,7 @@ string getStringArray(const unsigned char* output, size_t size, string name) {
   }
 
   std::stringstream ss;
-  ss << "static const uint8_t " << name << "[" << size << "] PROGMEM = {";
+  ss << "static const uint8_t " << name << "[" << size << "]\n#ifdef ARDUINO\nPROGMEM\n#endif\n= {";
   for (size_t i = 0; i < size; ++i)
   {
     if (i % HEX_IN_ROW == 0) {
@@ -219,8 +219,13 @@ imglist.txt flags:
 
   includes = "#include \"";
   includes += filesystem::path(headerName.data()).filename().string();
-  includes += "\"\n";
-  includes += "#include <avr/pgmspace.h>\n\n";
+  includes += '"';
+  includes += R"(
+#ifdef ARDUINO
+#include <avr/pgmspace.h>
+#endif
+
+)";
   appendToFile(cppName.data(), includes);
 
   size_t totalNumberOfBytes = 0;
@@ -258,7 +263,7 @@ imglist.txt flags:
       DString offsetName = "font_offsets_" + command;
       string offsetsArray = getStringArray(fi.offsetsData, fi.offsetsSize, offsetName.data());
       stringstream ss;
-      ss << "// Each offset value contains " << int(FontInfo::OFFSET_BITS) << " bits. Use `ArrayOfExtendedByte` to read.\n" << offsetsArray;
+      ss << "// Each offset value contains " << int(FontInfo::OFFSET_BITS) << " bits. Use `ExtIntArray` to read.\n" << offsetsArray;
       offsetsArray = std::move(ss.str());
       if (!appendToFile(cppName.data(), offsetsArray)) {
         cout << "Unable to write to file `" << cppName.data() << "`." << endl;

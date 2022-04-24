@@ -152,33 +152,33 @@ void Core::init(Controller& c, Graphics& g)
   // init buttons
   c.init({ this, &Core::pressDown });
 }
-
-  static Wolf w;
-  static Chicken c1, c2;
-  static Barn b;
-  static Text text;
-  static EggRolling egg;
 void Stage(Graphics* graphics)
 {
+  //static Wolf w;
+  //static Chicken c1, c2;
+  //static Barn b;
+  //static Text text;
+  //static EggRolling egg;
 
-  milliseconds now = millis();
+  //milliseconds now = millis();
 
-  text.text = "Счёт: 123";
-  text.pos = { 70, 0 };
-  text.draw(graphics);
+  //text.text = "Счёт: 123";
+  //text.pos = { 70, 0 };
+  //text.draw(graphics);
 
-  c2.pos.y = 19;
-  c2.start(now);
-  c2.update(now);
-  c2.draw(graphics);
+  //c2.pos.y = 19;
+  //c2.start(now);
+  //c2.update(now);
+  //c2.draw(graphics);
 
-  b.draw(graphics);
+  //b.draw(graphics);
 
-  w.pos = { 32, 10 };
-  w.draw(graphics);
+  //w.pos = { 32, 10 };
+  //w.draw(graphics);
 
-  egg.update(now);
-  egg.draw(graphics);
+  //egg.update(now);
+  //egg.draw(graphics);
+  graphics->drawLine({ 0,10 }, { 5, 0 });
 }
 
 void Core::update()
@@ -191,7 +191,6 @@ void Core::pressDown(uint8_t button)
 {
   switch (button) {
   case Controller::BUTTON_X:
-    egg.restart(millis());
     break;
   case Controller::BUTTON_Y:
     break;

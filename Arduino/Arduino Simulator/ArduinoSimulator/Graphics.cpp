@@ -90,6 +90,86 @@ void Graphics::drawVLine(Position startPos, int size)
   }
 }
 
+void Graphics::drawLine(Position startPos, Position endPos)
+{
+  if (startPos.x > endPos.x)
+  {
+    std::swap(startPos, endPos);
+  }
+
+  auto draw = [&](const int step, const int length, const int times, int& x, int& y,
+    void (Graphics::* line)(Position, int)) {
+    const int size = length / times;
+    const float tail = length % times;
+    int extraPixels = 0;
+    int i = 0;
+    while (i < times)
+    {
+      const int extraPixel = (++i * tail / times + 0.5f) - extraPixels;
+      extraPixels += extraPixel;
+      (this->*line)(startPos, size + extraPixel);
+      x += size + extraPixel;
+      y += step;
+    }
+  };
+
+  const int length = endPos.x - startPos.x + 1;
+  const int times = endPos.y - startPos.y + 1;
+  uint8_t* b = bufferOffset(startPos);
+  if (length > times)
+  {
+    if (times < 0)
+    {
+      //     **
+      //   **
+      // **
+      const int size = length / times;
+      const float tail = length % times;
+      int extraPixels = 0;
+      int i = 0;
+      while (i < times)
+      {
+        const int extraPixel = (++i * tail / times + 0.5f) - extraPixels;
+        extraPixels += extraPixel;
+
+        int sz = size + extraPixel;
+        const uint8_t mask = 1 << startPos.y % BITS_IN_BYTE;
+        while (sz--)
+        {
+          *b |= mask;
+          ++b;
+        }
+        startPos.x += size + extraPixel;
+        startPos.y += 1;
+      }
+    }
+    else
+    {
+      // **
+      //   **
+      //     **
+      draw(1, length, times, startPos.x, startPos.y, &Graphics::drawHLine);
+    }
+  }
+  else
+  {
+    if (times < 0)
+    {
+      //   *
+      //  *
+      // *
+      draw(-1, -times, length, startPos.x, startPos.y, &Graphics::drawHLine);
+    }
+    else
+    {
+      // *
+      //  *
+      //   *
+      draw(1, times, length, startPos.x, startPos.y, &Graphics::drawHLine);
+    }
+  }
+}
+
 // return `false` if it is no sense to draw, because the picture is out of screen bound,
 // return `true` otherwise.
 bool adjustSize(int& picPos, int& picSize, int& bufPos, int bufSize)
@@ -176,10 +256,10 @@ void readUTF8string(const String text, F func)
   // 4 byte 11110XXX 10XXXXXX 10XXXXXX 10XXXXXX
   static constexpr char auxMask = 0b00111111;
   static constexpr char masks[] = {
-    0b10000000,
-    0b11100000,
-    0b11110000,
-    0b11111000
+    char(0b10000000),
+    char(0b11100000),
+    char(0b11110000),
+    char(0b11111000)
   };
 
   const char* it = &*text.begin();

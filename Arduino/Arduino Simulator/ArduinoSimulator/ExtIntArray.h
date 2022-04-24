@@ -1,24 +1,24 @@
 #pragma once
 
-// ArrayOfExtendedByte allows to read a plain bytes
+// ExtIntArray allows to read a plain bytes
 // as if there was an arbitrary number of bits in each value.
 // This allows to reduce occupied place. If you know the values wouldn't be larger
 // then, say, 2000, which exactly fit in 11 bits, then you haven't to use regular 16 bits of `short`,
 // you can represent the bytes as 11-bit-numbers instead.
 //E.g.:
-//   ArrayOfExtendedByte<short, 11> exBytes(bytes);
-//                        // ^ get and set the values as `short`
+//   ExtIntArray<short> exBytes(bytes, 11);
+//              // ^ get and set the values as `short`
 //   // 4th element starts from the 2nd bit of 5th byte (offset is 3 * 11 = 33 bits).
 //   exBytes[4] = 1999;
 //   short x = exBytes[4]; // return 1999
 template<typename T>
-class ArrayOfExtendedByte {
+class ExtIntArray {
   static constexpr byte BITS_IN_BYTE = 8;
   const uint8_t* const bytes;
   const byte bitsInByte;
 
 public:
-  ArrayOfExtendedByte(const uint8_t* const bytes, byte bitsInByte) :
+  ExtIntArray(const uint8_t* const bytes, byte bitsInByte) :
     bytes(bytes), bitsInByte(bitsInByte) {}
 
   T operator[](size_t offset) const {

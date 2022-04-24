@@ -160,7 +160,11 @@
     </PreBuildEvent>
     <PostBuildEvent>
       <Command>copy $(ProjectDir)kit\Picture.h $(ProjectDir)..\..\main\ /Y
-copy $(TargetPath) $(ProjectDir)..\..\main\img\$(TargetFileName) /Y</Command>
+copy $(ProjectDir)kit\ExtIntArray.h $(ProjectDir)..\..\main\ /Y
+copy $(TargetPath) $(ProjectDir)..\..\main\img\$(TargetFileName) /Y
+copy $(ProjectDir)kit\Picture.h "$(ProjectDir)..\..\Arduino Simulator\ArduinoSimulator\" /Y
+copy $(ProjectDir)kit\ExtIntArray.h "$(ProjectDir)..\..\Arduino Simulator\ArduinoSimulator\" /Y
+copy $(TargetPath) "$(ProjectDir)..\..\Arduino Simulator\ArduinoSimulator\img\$(TargetFileName)" /Y</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
@@ -199,7 +203,7 @@ copy $(TargetPath) $(ProjectDir)..\..\main\img\$(TargetFileName) /Y</Command>
     <ClCompile Include="zlib\zutil.c" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="ArrayOfExtendedByte.h" />
+    <ClInclude Include="ExtIntArray.h" />
     <ClInclude Include="DBiArray.h" />
     <ClInclude Include="DColor.h" />
     <ClInclude Include="DContainerT.h" />

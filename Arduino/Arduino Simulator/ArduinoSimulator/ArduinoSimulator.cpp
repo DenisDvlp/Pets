@@ -202,44 +202,49 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 extern bool buttons[20] = {};
 
+static constexpr WPARAM BUTTON_1 = 0x41; //A
+static constexpr WPARAM BUTTON_2 = 0x44; //D
+static constexpr WPARAM BUTTON_3 = 0x53; //S
+static constexpr WPARAM BUTTON_4 = 0x57; //W
+
 //VK_A - VK_Z are the same as ASCII 'A' - 'Z' (0x41 - 0x5A)
 void keyDown(HWND hwnd, WPARAM wParam) {
   //X
-  if (wParam == 0x41) //A
+  if (wParam == BUTTON_1) //A
   {
     buttons[0] = true;
   }
   //Y
-  if (wParam == 0x44) //D
+  if (wParam == BUTTON_2) //D
   {
     buttons[1] = true;
   }
   //A
-  if (wParam == 0x53) //S
+  if (wParam == BUTTON_3) //S
   {
     buttons[2] = true;
   }
   //B
-  if (wParam == 0x57) //W
+  if (wParam == BUTTON_4) //W
   {
     buttons[3] = true;
   }
 }
 //VK_A - VK_Z are the same as ASCII 'A' - 'Z' (0x41 - 0x5A)
 void keyUp(HWND hwnd, WPARAM wParam) {
-  if (wParam == 0x41) //A
+  if (wParam == BUTTON_1) //A
   {
     buttons[0] = false;
   }
-  if (wParam == 0x44) //D
+  if (wParam == BUTTON_2) //D
   {
     buttons[1] = false;
   }
-  if (wParam == 0x53) //S
+  if (wParam == BUTTON_3) //S
   {
     buttons[2] = false;
   }
-  if (wParam == 0x57) //W
+  if (wParam == BUTTON_4) //W
   {
     buttons[3] = false;
   }
