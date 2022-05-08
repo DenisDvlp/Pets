@@ -178,7 +178,14 @@ void Stage(Graphics* graphics)
 
   //egg.update(now);
   //egg.draw(graphics);
-  graphics->drawLine({ 0,10 }, { 5, 0 });
+  static Position start = { 30, 30 };
+  static int R = 25;
+  static int A = 19;
+  Position end = { start.x + static_cast<int>(cos(A * 3.14 / 180) * R), start.y + static_cast<int>(sin(A * 3.14 / 180) * R) };
+  A += 1;
+  if (A == 360) A = 0;
+  graphics->drawLine(start, end);
+  graphics->drawLine({ 20,0 }, { 11,11 });
 }
 
 void Core::update()

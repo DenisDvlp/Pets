@@ -156,6 +156,7 @@
     <ClInclude Include="Picture.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="Sprite.h" />
+    <ClInclude Include="stl.h" />
     <ClInclude Include="targetver.h" />
   </ItemGroup>
   <ItemGroup>

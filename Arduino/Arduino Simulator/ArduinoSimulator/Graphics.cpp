@@ -1,4 +1,5 @@
 #include "Graphics.h"
+#include "stl.h"
 #ifdef ARDUINO
 #include "Function.h"
 #endif
@@ -94,11 +95,15 @@ void Graphics::drawLine(Position startPos, Position endPos)
 {
   if (startPos.x > endPos.x)
   {
-    std::swap(startPos, endPos);
+    swap(startPos, endPos);
   }
 
   auto draw = [&](const int step, const int length, const int times, int& x, int& y,
     void (Graphics::* line)(Position, int)) {
+    if (!times) {
+      (this->*line)(startPos, length);
+      return;
+    }
     const int size = length / times;
     const float tail = length % times;
     int extraPixels = 0;
@@ -107,67 +112,41 @@ void Graphics::drawLine(Position startPos, Position endPos)
     {
       const int extraPixel = (++i * tail / times + 0.5f) - extraPixels;
       extraPixels += extraPixel;
-      (this->*line)(startPos, size + extraPixel);
-      x += size + extraPixel;
-      y += step;
+      const int len = size + extraPixel;
+      (this->*line)(startPos, len);
+      x += step;
+      y += len;
     }
   };
 
-  const int length = endPos.x - startPos.x + 1;
-  const int times = endPos.y - startPos.y + 1;
-  uint8_t* b = bufferOffset(startPos);
-  if (length > times)
+  int xLength = endPos.x - startPos.x + 1;
+  int yLength = endPos.y - startPos.y + 1;
+  int step = 1;
+  const bool up = (yLength <= 0);
+  if (up)
   {
-    if (times < 0)
+    yLength -= 2;
+    step = -1;
+  }
+  yLength = abs(yLength);
+  const bool vertical = (xLength < yLength);
+  auto lineFunc = &Graphics::drawHLine;
+  int* x = &startPos.y;
+  int* y = &startPos.x;
+  if (vertical)
+  {
+    lineFunc = &Graphics::drawVLine;
+    x = &startPos.x;
+    y = &startPos.y;
+    swap(xLength, yLength);
+    if (up)
     {
-      //     **
-      //   **
-      // **
-      const int size = length / times;
-      const float tail = length % times;
-      int extraPixels = 0;
-      int i = 0;
-      while (i < times)
-      {
-        const int extraPixel = (++i * tail / times + 0.5f) - extraPixels;
-        extraPixels += extraPixel;
+      startPos = endPos;
+    }
+  }
 
-        int sz = size + extraPixel;
-        const uint8_t mask = 1 << startPos.y % BITS_IN_BYTE;
-        while (sz--)
-        {
-          *b |= mask;
-          ++b;
-        }
-        startPos.x += size + extraPixel;
-        startPos.y += 1;
-      }
-    }
-    else
-    {
-      // **
-      //   **
-      //     **
-      draw(1, length, times, startPos.x, startPos.y, &Graphics::drawHLine);
-    }
-  }
-  else
-  {
-    if (times < 0)
-    {
-      //   *
-      //  *
-      // *
-      draw(-1, -times, length, startPos.x, startPos.y, &Graphics::drawHLine);
-    }
-    else
-    {
-      // *
-      //  *
-      //   *
-      draw(1, times, length, startPos.x, startPos.y, &Graphics::drawHLine);
-    }
-  }
+  draw(step, xLength, yLength, *x, *y, lineFunc);
+
 }
 
 // return `false` if it is no sense to draw, because the picture is out of screen bound,

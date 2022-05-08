@@ -257,7 +257,7 @@ void DisplaySimulator(HDC hdc) {
   SelectObject(hdcMemory, hbmp);
 
   // Turn in on to see inactive pixels.
-  constexpr bool drawInactivePixels = false;
+  constexpr bool drawInactivePixels = true;
 
   static const RECT bgR = { 0, 0, width, height };
   static const HBRUSH brushBkg = CreateSolidBrush(drawInactivePixels ? RGB(50, 50, 50) : RGB(50, 50, 255));
