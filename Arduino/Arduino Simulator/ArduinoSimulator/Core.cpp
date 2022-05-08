@@ -3,6 +3,7 @@
 #include "Images.h"
 #include "Sprite.h"
 #include "Animation.h"
+#include "stl.h"
 
 template<typename T, int S>
 constexpr int size(T(&)[S]) { return S; }
@@ -178,14 +179,16 @@ void Stage(Graphics* graphics)
 
   //egg.update(now);
   //egg.draw(graphics);
-  static Position start = { 30, 30 };
-  static int R = 25;
-  static int A = 19;
-  Position end = { start.x + static_cast<int>(cos(A * 3.14 / 180) * R), start.y + static_cast<int>(sin(A * 3.14 / 180) * R) };
-  A += 1;
-  if (A == 360) A = 0;
+  static Position start = { 60, 30 };
+  static int R = 200;
+  static int A = 0;
+  float radian = A * PI<float> / 180;
+  Position end = { start.x + static_cast<int>(cos(radian) * R), start.y + static_cast<int>(sin(radian) * R) };
   graphics->drawLine(start, end);
   graphics->drawLine({ 20,0 }, { 11,11 });
+  graphics->drawCircle({ 60, 30 }, A);
+  A += 1;
+  if (A >= 360) A = 0;
 }
 
 void Core::update()

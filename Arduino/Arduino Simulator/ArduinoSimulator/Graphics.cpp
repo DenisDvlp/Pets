@@ -16,10 +16,10 @@ void Graphics::clear()
   memset(buf.data, 0, (buf.width * buf.height / BITS_IN_BYTE));
 }
 
-// [min, max]
+// [min, max)
 static bool isOutOfRange(int what, int min, int max)
 {
-  return what < min || what > max;
+  return what < min || what >= max;
 }
 
 static bool isOutOfSize(Position what, Size size)
@@ -98,37 +98,15 @@ void Graphics::drawLine(Position startPos, Position endPos)
     swap(startPos, endPos);
   }
 
-  auto draw = [&](const int step, const int length, const int times, int& x, int& y,
-    void (Graphics::* line)(Position, int)) {
-    if (!times) {
-      (this->*line)(startPos, length);
-      return;
-    }
-    const int size = length / times;
-    const float tail = length % times;
-    int extraPixels = 0;
-    int i = 0;
-    while (i < times)
-    {
-      const int extraPixel = (++i * tail / times + 0.5f) - extraPixels;
-      extraPixels += extraPixel;
-      const int len = size + extraPixel;
-      (this->*line)(startPos, len);
-      x += step;
-      y += len;
-    }
-  };
-
   int xLength = endPos.x - startPos.x + 1;
   int yLength = endPos.y - startPos.y + 1;
   int step = 1;
   const bool up = (yLength <= 0);
   if (up)
   {
-    yLength -= 2;
+    yLength = 2 - yLength;
     step = -1;
   }
-  yLength = abs(yLength);
   const bool vertical = (xLength < yLength);
   auto lineFunc = &Graphics::drawHLine;
   int* x = &startPos.y;
@@ -145,8 +123,39 @@ void Graphics::drawLine(Position startPos, Position endPos)
     }
   }
 
+  auto draw = [&](const int step, const int length, const int times, int& x, int& y,
+    void (Graphics::* line)(Position, int)) {
+      if (!times) {
+        (this->*line)(startPos, length);
+        return;
+      }
+      const int size = length / times;
+      const float tail = length % times;
+      int extraPixels = 0;
+      int i = 0;
+      while (i < times)
+      {
+        const int extraPixel = (++i * tail / times + 0.5f) - extraPixels;
+        extraPixels += extraPixel;
+        const int len = size + extraPixel;
+        (this->*line)(startPos, len);
+        x += step;
+        y += len;
+      }
+  };
+
   draw(step, xLength, yLength, *x, *y, lineFunc);
 
+}
+
+void Graphics::drawCircle(Position centerPos, int raduis)
+{
+  for (float i = 0; i < 360; ++i)
+  {
+    const float radian = degToRad(static_cast<float>(i));
+    Position pos = { centerPos.x + static_cast<int>(cos(radian) * raduis + 0.5f), centerPos.y + static_cast<int>(sin(radian) * raduis + 0.5f) };
+    drawPixel(pos);
+  }
 }
 
 // return `false` if it is no sense to draw, because the picture is out of screen bound,
