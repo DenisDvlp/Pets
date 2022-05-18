@@ -36,7 +36,7 @@ void Graphics::drawPixel(Position pos)
 {
   if (isOutOfSize(pos, buf))
     return;
-  const char mask = 1 << pos.y % BITS_IN_BYTE;
+  const uint8_t mask = 1 << pos.y % BITS_IN_BYTE;
   *bufferOffset(pos) |= mask;
 }
 
@@ -123,38 +123,40 @@ void Graphics::drawLine(Position startPos, Position endPos)
     }
   }
 
-  auto draw = [&](const int step, const int length, const int times, int& x, int& y,
-    void (Graphics::* line)(Position, int)) {
-      if (!times) {
-        (this->*line)(startPos, length);
-        return;
-      }
-      const int size = length / times;
-      const float tail = length % times;
-      int extraPixels = 0;
-      int i = 0;
-      while (i < times)
-      {
-        const int extraPixel = (++i * tail / times + 0.5f) - extraPixels;
-        extraPixels += extraPixel;
-        const int len = size + extraPixel;
-        (this->*line)(startPos, len);
-        x += step;
-        y += len;
-      }
-  };
+  if (yLength == 1)
+  {
+    (this->*lineFunc)(startPos, xLength);
+    return;
+  }
 
-  draw(step, xLength, yLength, *x, *y, lineFunc);
-
+  const int size = xLength / yLength;
+  const float tail = xLength % yLength;
+  int extraPixels = 0;
+  int i = 0;
+  while (i < yLength)
+  {
+    const int extraPixel = (++i * tail / yLength + 0.5f) - extraPixels;
+    extraPixels += extraPixel;
+    const int len = size + extraPixel;
+    (this->*lineFunc)(startPos, len);
+    *x += step;
+    *y += len;
+  }
 }
+
 
 void Graphics::drawCircle(Position centerPos, int raduis)
 {
-  for (float i = 0; i < 360; ++i)
+  Position operator+(const Position& l, const Position& r);
+  for (float i = 0; i < 90; i+=1)
   {
-    const float radian = degToRad(static_cast<float>(i));
-    Position pos = { centerPos.x + static_cast<int>(cos(radian) * raduis + 0.5f), centerPos.y + static_cast<int>(sin(radian) * raduis + 0.5f) };
-    drawPixel(pos);
+    const float radian = degToRad(i);
+    int x = static_cast<int>(cos(radian) * raduis + 0.5f);
+    int y = static_cast<int>(sin(radian) * raduis + 0.5f);
+    drawPixel(centerPos + Position{x, y});
+    drawPixel(centerPos + Position{-x, y});
+    drawPixel(centerPos + Position{x, -y});
+    drawPixel(centerPos + Position{-x, -y});
   }
 }
 

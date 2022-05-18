@@ -182,11 +182,13 @@ void Stage(Graphics* graphics)
   static Position start = { 60, 30 };
   static int R = 200;
   static int A = 0;
-  float radian = A * PI<float> / 180;
+  float radian = degToRad<float>(A);
   Position end = { start.x + static_cast<int>(cos(radian) * R), start.y + static_cast<int>(sin(radian) * R) };
   graphics->drawLine(start, end);
-  graphics->drawLine({ 20,0 }, { 11,11 });
-  graphics->drawCircle({ 60, 30 }, A);
+  graphics->drawLine({ 20,40 }, { 20,20 });
+  graphics->drawCircle({ 60, 30 }, A % 100);
+  graphics->drawCircle({ 60, 30 }, A % 20);
+  graphics->drawCircle({ 60, 30 }, A % 40);
   A += 1;
   if (A >= 360) A = 0;
 }

@@ -11,6 +11,7 @@ call :CopySource FontCirillic.cpp
 call :CopySource Graphics.h
 call :CopySource Graphics.cpp
 call :CopySource Sprite.h
+call :CopySource stl.h
 
 pause
 exit /b 0
