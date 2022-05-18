@@ -2,16 +2,15 @@
 #include "Position.h"
 #include "QuadricPtr.h"
 
-using GLuint = unsigned int;
-
-class Table
+class Lamp
 {
+  static unsigned int lastLightId;
+  const unsigned int lightId;
   QuadricPtr quadric;
   Position pos;
-
-  GLuint  textures[3];
 public:
-  void init();
+  Lamp() :lightId (lastLightId++) {}
+  ~Lamp() { --lastLightId; }
   void position(float x, float y, float z);
   void draw();
 };

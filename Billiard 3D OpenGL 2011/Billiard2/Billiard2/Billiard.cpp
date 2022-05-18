@@ -1,66 +1,76 @@
-﻿#define _WIN32_WINDOWS 0x0410
-#include <windows.h>
+﻿#include <windows.h>
 #include <iostream>
-#include <math.h>
-#include <stdio.h>
-#include "table.h"
+#include <cmath>
+#include <chrono>
+#include "Core.h"
+#include "table2.h"
 #include <gl/gl.h>
 #include <gl/glu.h>
 #include "glaux.h"
+#include "Position.h"
+#include "Size.h"
 #pragma comment (lib, "legacy_stdio_definitions.lib")
 #pragma comment (lib, "glaux.lib")
 #pragma comment (lib, "glu32.lib")
 #pragma comment (lib, "opengl32.lib")
-static	HGLRC hRC;
-static	HDC hDC;
+static  HGLRC hRC;
+static  HDC hDC;
+static Core core;
+
+template<typename T>
+static constexpr T pi_v = static_cast<T>(3.14159265358979323846);
+static constexpr float pi = pi_v<float>;
 
 
-struct Ball
+struct Ball1
 {
   double x, z; //координаты
   int angle; //угол (направление)
   float acceleration; //начальное ускорение
 };
-double animation[29][2] =
+
+static constexpr float animation[29][2] =
 {
-  0.004,-1.932,
-  0.008,-1.932,
-  0.012,-1.932,
-  0.016,-1.932,
-  0.020,-1.932,
-  0.024,-1.932,
-  0.028,-1.932,
-  0.032,-1.932,
-  0.036,-1.932,
-  0.040,-1.932,
-  0.044,-1.932,
-  0.048,-1.932,
-  0.052,-1.932,
-  0.056,-1.932,
-  0.058,-1.933,
-  0.069,-1.936,
-  0.080,-1.941,
-  0.090,-1.948,
-  0.098,-1.956,
-  0.105,-1.966,
-  0.110,-1.978,
-  0.113,-1.988,
-  0.114,-2.000,
-  0.114,-2.011,
-  0.114,-2.023,
-  0.114,-2.034,
-  0.114,-2.045,
-  0.114,-2.056,
-  0.114,-2.068
+  0.004f,-1.932f,
+  0.008f,-1.932f,
+  0.012f,-1.932f,
+  0.016f,-1.932f,
+  0.020f,-1.932f,
+  0.024f,-1.932f,
+  0.028f,-1.932f,
+  0.032f,-1.932f,
+  0.036f,-1.932f,
+  0.040f,-1.932f,
+  0.044f,-1.932f,
+  0.048f,-1.932f,
+  0.052f,-1.932f,
+  0.056f,-1.932f,
+  0.058f,-1.933f,
+  0.069f,-1.936f,
+  0.080f,-1.941f,
+  0.090f,-1.948f,
+  0.098f,-1.956f,
+  0.105f,-1.966f,
+  0.110f,-1.978f,
+  0.113f,-1.988f,
+  0.114f,-2.000f,
+  0.114f,-2.011f,
+  0.114f,-2.023f,
+  0.114f,-2.034f,
+  0.114f,-2.045f,
+  0.114f,-2.056f,
+  0.114f,-2.068f
 };
-Ball ball[16];
-POINT xm;
+Ball1 ball[16];
+POINT pos;
 int wheel, selected, inc, Anim[6], score;
-int newx, newy, RotateY, RotateX;//угол камеры
-double x, z, Aa, Bb, xi, yi, xj, yj, force, scale; //координаты камеры
+int RotateY, RotateX;//угол камеры
+float x, z, Aa, Bb, xi, yi, xj, yj, force, scale; //координаты камеры
 bool menu1, menu2, menu3, new1, cont, exit1, yes, no, menu11, menu22, menu33;
-GLuint	texture[6];
+GLuint  texture[6];
 bool ifcross[120], showball[16], overforce, ifblack[6], rkm, LKM, lkm, blw, bls, bla, bld;
+Size screenSize;
+Position screenCenter;
 
 GLuint  base;
 GLYPHMETRICSFLOAT gmf[256];
@@ -69,7 +79,6 @@ GLfloat LightPosition[] = { 0.0f, 4.0f, -3.2f, 0.0f };
 GLfloat LightDirection[] = { 0.0f, 0.0f, 0.0f, 0.0f };
 
 LRESULT CALLBACK WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
-GLvoid Resize(GLsizei Width, GLsizei Height);
 GLvoid Draw();
 void DefaultPosition();
 
@@ -111,15 +120,10 @@ GLvoid KillFont(GLvoid)
   glDeleteLists(base, 96);
 }
 
-GLvoid glPrint(const char* fmt, ...)
+GLvoid glPrint(const char* text)
 {
-  char    text[256];
-  va_list    ap;
-  if (fmt == NULL)
+  if (!text)
     return;
-  va_start(ap, fmt);
-  vsprintf_s(text, fmt, ap);
-  va_end(ap);
   glPushAttrib(GL_LIST_BIT);
   glListBase(base);
   glCallLists(strlen(text), GL_UNSIGNED_BYTE, text);
@@ -183,7 +187,7 @@ void DefaultPosition()
   RotateX = 0;
 }
 
-inline GLvoid BallPosition(double x, double z)
+inline GLvoid BallPosition(GLfloat x, GLfloat z)
 {
   glTranslatef(x, -1.932f, z);
   gluSphere(quadratic, 0.068f, 24, 24);
@@ -197,31 +201,31 @@ inline GLvoid Animation(int N)
 {
   if (N == 0)
   {
-    glTranslatef(1.532, 0, -3.2);
+    glTranslatef(1.532f, 0, -3.2f);
   }
   if (N == 1)
   {
-    glTranslatef(1.532, 0, -0.068);
+    glTranslatef(1.532f, 0, -0.068f);
     glRotatef(315, 0, 1, 0);
   }
   if (N == 2)
   {
-    glTranslatef(-1.532, 0, -0.068);
+    glTranslatef(-1.532f, 0, -0.068f);
     glRotatef(225, 0, 1, 0);
   }
   if (N == 3)
   {
-    glTranslatef(-1.532, 0, -3.2);
+    glTranslatef(-1.532f, 0, -3.2f);
     glRotatef(180, 0, 1, 0);
   }
   if (N == 4)
   {
-    glTranslatef(-1.532, 0, -6.332);
+    glTranslatef(-1.532f, 0, -6.332f);
     glRotatef(135, 0, 1, 0);
   }
   if (N == 5)
   {
-    glTranslatef(1.532, 0, -6.332);
+    glTranslatef(1.532f, 0, -6.332f);
     glRotatef(45, 0, 1, 0);
   }
   glTranslatef(animation[Anim[N]][0], animation[Anim[N]][1], 0);
@@ -233,13 +237,13 @@ inline GLvoid Animation(int N)
   Anim[N]++;
 }
 
-inline GLvoid CameraPosition(double x, double z)
+inline GLvoid CameraPosition(float x, float z)
 {
   glLoadIdentity();
-  glTranslatef(0, 0 + scale * 0.3, -2.8 + scale);
+  glTranslatef(0, 0 + scale * 0.3f, -2.8f + scale);
   glRotatef(RotateX, 1, 0, 0);
   glRotatef(RotateY, 0, 1, 0);
-  glTranslatef(x, 0.8, z);
+  glTranslatef(x, 0.8f, z);
 }
 
 GLvoid Initial()
@@ -283,16 +287,9 @@ GLvoid Initial()
 
   glEnable(GL_LIGHTING);
 
-  glClearColor(0.8f, 0.8f, 0.8f, 0.0f);
-  glClearDepth(1.0);
   glDepthFunc(GL_LESS);
   glEnable(GL_DEPTH_TEST);
 
-  glMatrixMode(GL_PROJECTION);
-  glLoadIdentity();
-
-  gluPerspective(150.0f, (GLfloat)Width / (GLfloat)Height, 0.01f, 100.0f);
-  glMatrixMode(GL_MODELVIEW);
   glEnable(GL_COLOR_MATERIAL);
   glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);
   BuildFont();
@@ -334,6 +331,7 @@ GLvoid DrawMenu1()
   glLightfv(GL_LIGHT2, GL_POSITION, LightPosition);
   glLightfv(GL_LIGHT2, GL_SPOT_DIRECTION, LightDirection);
   glEnable(GL_LIGHT2);
+
   glLoadIdentity();
   glColor3f(1.0f, 0.0f, 0.0f);
   if (!new1)
@@ -499,6 +497,9 @@ GLvoid DrawMenu3()
 
 GLvoid Draw()
 {
+  core.draw();
+  return;
+
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
   glLoadIdentity();
   glDisable(GL_LIGHT2);
@@ -586,133 +587,7 @@ GLvoid Draw()
   glColor3f(1.0f, 1.0f, 1.0f);
   Table(texture, quadratic);
 
-  /////////////шарик 1 (чёрный)//////////////
-  if (showball[0])
-  {
-    CameraPosition(x, z);
-    glColor3f(0.5f, 0.3f, 0.3f);
-    BallPosition(ball[0].x, ball[0].z);
-  }
 
-  /////////////шарик 2//////////////
-  if (showball[1])
-  {
-    CameraPosition(x, z);
-    glColor3f(1.0f, 1.0f, 1.0f);
-    BallPosition(ball[1].x, ball[1].z);
-  }
-
-  /////////////шарик 3//////////////
-  if (showball[2])
-  {
-    CameraPosition(x, z);
-    glColor3f(1.0f, 1.0f, 1.0f);
-    BallPosition(ball[2].x, ball[2].z);
-  }
-
-  /////////////шарик 4//////////////
-  if (showball[3])
-  {
-    CameraPosition(x, z);
-    glColor3f(1.0f, 1.0f, 1.0f);
-    BallPosition(ball[3].x, ball[3].z);
-  }
-
-  /////////////шарик 5//////////////
-  if (showball[4])
-  {
-    CameraPosition(x, z);
-    glColor3f(1.0f, 1.0f, 1.0f);
-    BallPosition(ball[4].x, ball[4].z);
-  }
-
-  /////////////шарик 6//////////////
-  if (showball[5])
-  {
-    CameraPosition(x, z);
-    glColor3f(1.0f, 1.0f, 1.0f);
-    BallPosition(ball[5].x, ball[5].z);
-  }
-
-  /////////////шарик 7//////////////
-  if (showball[6])
-  {
-    CameraPosition(x, z);
-    glColor3f(1.0f, 1.0f, 1.0f);
-    BallPosition(ball[6].x, ball[6].z);
-  }
-
-  /////////////шарик 8//////////////
-  if (showball[7])
-  {
-    CameraPosition(x, z);
-    glColor3f(1.0f, 1.0f, 1.0f);
-    BallPosition(ball[7].x, ball[7].z);
-  }
-
-  /////////////шарик 9//////////////
-  if (showball[8])
-  {
-    CameraPosition(x, z);
-    glColor3f(1.0f, 1.0f, 1.0f);
-    BallPosition(ball[8].x, ball[8].z);
-  }
-
-  /////////////шарик 10//////////////
-  if (showball[9])
-  {
-    CameraPosition(x, z);
-    glColor3f(1.0f, 1.0f, 1.0f);
-    BallPosition(ball[9].x, ball[9].z);
-  }
-
-  /////////////шарик 11//////////////
-  if (showball[10])
-  {
-    CameraPosition(x, z);
-    glColor3f(1.0f, 1.0f, 1.0f);
-    BallPosition(ball[10].x, ball[10].z);
-  }
-
-  /////////////шарик 12//////////////
-  if (showball[11])
-  {
-    CameraPosition(x, z);
-    glColor3f(1.0f, 1.0f, 1.0f);
-    BallPosition(ball[11].x, ball[11].z);
-  }
-
-  /////////////шарик 13//////////////
-  if (showball[12])
-  {
-    CameraPosition(x, z);
-    glColor3f(1.0f, 1.0f, 1.0f);
-    BallPosition(ball[12].x, ball[12].z);
-  }
-
-  /////////////шарик 14//////////////
-  if (showball[13])
-  {
-    CameraPosition(x, z);
-    glColor3f(1.0f, 1.0f, 1.0f);
-    BallPosition(ball[13].x, ball[13].z);
-  }
-
-  /////////////шарик 15//////////////
-  if (showball[14])
-  {
-    CameraPosition(x, z);
-    glColor3f(1.0f, 1.0f, 1.0f);
-    BallPosition(ball[14].x, ball[14].z);
-  }
-
-  /////////////шарик 16//////////////
-  if (showball[15])
-  {
-    CameraPosition(x, z);
-    glColor3f(1.0f, 1.0f, 1.0f);
-    BallPosition(ball[15].x, ball[15].z);
-  }
   if (Anim[0] < 29)
   {
     CameraPosition(x, z);
@@ -788,22 +663,22 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
   {
     sizeof(PIXELFORMATDESCRIPTOR),
       1,
-      PFD_DRAW_TO_WINDOW |					// format must support Window
-      PFD_SUPPORT_OPENGL |					// format must support OpenGL
-      PFD_DOUBLEBUFFER,					// must support double buffer
-      PFD_TYPE_RGBA,						// требуется RGBA формат
-      16,									// 16Bit color depth
-      0, 0, 0, 0, 0, 0,					// Color bits ignored ?
-      0,									// No Alpha buffer
-      0,									// shift bit ignored
-      0,									// no accumulation buffer
-      0, 0, 0, 0,							// accumulation buffer bits ignored
-      16,									// 16bit z-buffer (depth buffer)
-      0,									// no stencil buffer
-      0,									// no auxiliary buffer
-      PFD_MAIN_PLANE,						// main drawing layer
-      0,									// reserved
-      0, 0, 0								// layer mask ignored
+      PFD_DRAW_TO_WINDOW |    // format must support Window
+      PFD_SUPPORT_OPENGL |    // format must support OpenGL
+      PFD_DOUBLEBUFFER,       // must support double buffer
+      PFD_TYPE_RGBA,          // требуется RGBA формат
+      32,                     // 32Bit color depth
+      0, 0, 0, 0, 0, 0,       // Color bits ignored ?
+      0,                      // No Alpha buffer
+      0,                      // shift bit ignored
+      0,                      // no accumulation buffer
+      0, 0, 0, 0,             // accumulation buffer bits ignored
+      32,                     // 32bit z-buffer (depth buffer)
+      0,                      // no stencil buffer
+      0,                      // no auxiliary buffer
+      PFD_MAIN_PLANE,         // main drawing layer
+      0,                      // reserved
+      0, 0, 0                 // layer mask ignored
   };
   switch (msg)
   {
@@ -819,11 +694,14 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
     SetPixelFormat(hDC, PixelFormat, &pfd);
     hRC = wglCreateContext(hDC);
     wglMakeCurrent(hDC, hRC);
+    core.init();
+    screenSize.width = GetSystemMetrics(SM_CXSCREEN);
+    screenSize.height = GetSystemMetrics(SM_CYSCREEN);
+    screenCenter.x = screenSize.width / 2;
+    screenCenter.y = screenSize.height / 2;
     Initial();
     break;
   case WM_DESTROY:
-    printf("Why did you do that?! =(");
-    getchar();
     ChangeDisplaySettings(NULL, 0);
     wglMakeCurrent(hDC, NULL);
     wglDeleteContext(hRC);
@@ -866,13 +744,13 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
       }
       break;
     }
-    case 0x44:	//D	
+    case 0x44:  //D  
     { bld = true; break; }
-    case 0x41:	//A
+    case 0x41:  //A
     { bla = true; break; }
-    case 0x57:	//W
+    case 0x57:  //W
     { blw = true; break; }
-    case 0x53:	//S
+    case 0x53:  //S
     { bls = true; break; }
     case VK_RETURN:
     {
@@ -887,7 +765,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
             menu22 = false;
             menu11 = false;
             menu33 = false;
-            DefaultPosition(); break;
+            break;
           }
           else
           {
@@ -963,7 +841,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
               menu22 = false;
               menu11 = false;
               menu33 = false;
-              DefaultPosition(); break;
+              break;
             }
             else
             {
@@ -1102,66 +980,39 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
                  break;
   case WM_KEYUP:
   {
-    if (wParam == 0x57)blw = false;
-    if (wParam == 0x53)bls = false;
-    if (wParam == 0x41)bla = false;
-    if (wParam == 0x44)bld = false;
+    switch (wParam)
+    {
+    case 0x57:
+      blw = false;
+      break;
+    case 0x53:
+      bls = false;
+      break;
+    case 0x41:
+      bla = false;
+      break;
+    case 0x44:
+      bld = false;
+      break;
+    }
     break;
   }
   case WM_MOUSEMOVE:
   {
-    GetCursorPos(&xm);
-    newx = LOWORD(lParam);
-    newy = HIWORD(lParam);
-    if (newx > 720)
-    {
-      if (newy > 450)
-        SetCursorPos(360 + xm.x - newx, 450 + xm.y - newy);
-      else
-        SetCursorPos(360 + xm.x - newx, xm.y);
-      if (newy < 352)
-        SetCursorPos(360 + xm.x - newx, 352 + xm.y - newy);
-      else
-        SetCursorPos(360 + xm.x - newx, xm.y);
-    }
-    else
-    {
-      if (newy > 450)
-        SetCursorPos(xm.x, 450 + xm.y - newy);
-      if (newy < 352)
-        SetCursorPos(xm.x, 352 + xm.y - newy);
-    }
-    if (newx < 360)
-    {
-      if (newy > 450)
-        SetCursorPos(720 + xm.x - newx, 450 + xm.y - newy);
-      else
-        SetCursorPos(720 + xm.x - newx, xm.y);
-      if (newy < 352)
-        SetCursorPos(720 + xm.x - newx, 352 + xm.y - newy);
-      else
-        SetCursorPos(720 + xm.x - newx, xm.y);
-    }
-    else
-    {
-      if (newy > 450)
-        SetCursorPos(xm.x, 450 + xm.y - newy);
-      if (newy < 352)
-        SetCursorPos(xm.x, 352 + xm.y - newy);
-    }
+    static constexpr float mouseSensivity = 0.25f;
+    POINT cursor;
+    GetCursorPos(&cursor);
+    Position angle = core.cameraAngle();
+    angle.x += (cursor.y - screenCenter.y) * mouseSensivity;
+    angle.y += (cursor.x - screenCenter.x) * mouseSensivity;
+    SetCursorPos(screenCenter.x, screenCenter.y);
 
     if (rkm)
     {
-      if (newy > 449)newy = 449;
-      if (newy < 360)newy = 360;
-      newy = newy % 90;
-      scale = (float)newy / 50;
     }
     else
     {
-      RotateY = newx;
-      RotateX = newy;
-      while (RotateY >= 360) RotateY -= 360;
+      core.cameraRotate(angle.x, angle.y);
     }
     break;
   }
@@ -1170,24 +1021,13 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
     if (score)
     {
       wheel = HIWORD(wParam);
-      if (wheel == 120)
+      if (wheel < 65000) // wheel up
       {
-        do {
-          selected++;
-          if (selected > 15)selected = 0;
-          x = -ball[selected].x;
-          z = -ball[selected].z;
-        } while (!showball[selected]);
+        core.nextBall();
       }
-      if (wheel == 65416)
+      else  // wheel down
       {
-
-        do {
-          selected--;
-          if (selected < 0)selected = 15;
-          x = -ball[selected].x;
-          z = -ball[selected].z;
-        } while (!showball[selected]);
+        core.prevBall();
       }
     }
     break;
@@ -1215,33 +1055,36 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
         {
           LKM = true;
           lkm = false;
-          ball[selected].angle = -RotateY;
-          ball[selected].acceleration = force;
+          core.ballPull(force);
           force = 0;
         }
     }
     break;
   }
-  case WM_SIZE: {Resize(LOWORD(lParam), HIWORD(lParam)); break; }
+  case WM_SIZE:
+  {
+    screenSize = { LOWORD(lParam), HIWORD(lParam) };
+    core.cameraResize(screenSize.width, screenSize.height);
+    break;
+  }
   default:return(DefWindowProc(hWnd, msg, wParam, lParam));
   }
   return 0;
 }
 
 using namespace std;
-
-int main(HINSTANCE hInst, HINSTANCE hPrevInst, LPSTR lpCmd, int nShowCmd)
+int WinMain(HINSTANCE hInst, HINSTANCE hPrevInst, LPSTR lpCmd, int nShowCmd)
 {
-
-  double length = 0.08f, movement = 0.03f, deaccel = 0.001f, grad = 3.14159265 / 180, agrad = 180 / 3.14159265, T;
+  float length = 0.08f, movement = 0.03f, grad = pi / 180, agrad = 180 / pi;
   int gamai, gamaj, beta, perfom = 0;
 
-  Sleep(1500);
-  MSG			msg;
-  WNDCLASS	wc;
-  HWND		hWnd;
+  MSG      msg;
+  WNDCLASS  wc;
+  HWND    hWnd;
 
-  wc.style = CS_HREDRAW | CS_VREDRAW | CS_OWNDC;
+  auto className = TEXT("Billiard_Petrov");
+
+  wc.style = 0;
   wc.lpfnWndProc = (WNDPROC)WndProc;
   wc.cbClsExtra = 0;
   wc.cbWndExtra = 0;
@@ -1250,21 +1093,24 @@ int main(HINSTANCE hInst, HINSTANCE hPrevInst, LPSTR lpCmd, int nShowCmd)
   wc.hCursor = LoadCursor(NULL, IDC_ARROW);
   wc.hbrBackground = NULL;
   wc.lpszMenuName = NULL;
-  wc.lpszClassName = TEXT("Billiard_Petrov");
+  wc.lpszClassName = className;
 
   RegisterClass(&wc);
-  hWnd = CreateWindow(TEXT("Billiard_Petrov"), TEXT("Billiard by D. Petrov"), WS_POPUP | WS_OVERLAPPEDWINDOW | WS_CLIPSIBLINGS, -8, -30,
-    GetSystemMetrics(SM_CXSCREEN) + 16, GetSystemMetrics(SM_CYSCREEN) + 8, NULL, NULL, hInst, NULL);
+  hWnd = CreateWindow(
+    className,
+    TEXT("Billiard by D. Petrov 2022"),
+    WS_DLGFRAME | WS_MAXIMIZE | WS_VISIBLE,
+    0, 0, 0, 0,
+    NULL, NULL, hInst, NULL);
 
-  ShowWindow(hWnd, SW_SHOW);
-  UpdateWindow(hWnd);
-  SetFocus(hWnd);
-  SetCursorPos(360, 360);
+#ifdef _DEBUG
+  ShowCursor(true);
+#else
   ShowCursor(false);
+#endif
 
-  while (1)
+  while (true)
   {
-
     while (PeekMessage(&msg, NULL, 0, 0, PM_NOREMOVE))
     {
       if (GetMessage(&msg, NULL, 0, 0))
@@ -1277,410 +1123,389 @@ int main(HINSTANCE hInst, HINSTANCE hPrevInst, LPSTR lpCmd, int nShowCmd)
         return TRUE;
       }
     }
-    if (menu1)
+
+    /*if (menu1)
       DrawMenu1();
-    else
-      if (menu2)
-        DrawMenu2();
-      else
-        if (menu3)
-          DrawMenu3();
-        else
+    else if (menu2)
+      DrawMenu2();
+    else if (menu3)
+      DrawMenu3();
+    else*/
+    {
+      ///вычисления///
+      if (blw) {
+        core.cameraMoveForward();
+      }
+      if (bls) {
+        core.cameraMoveBackward();
+      }
+      if (bla) {
+        core.cameraMoveLeft();
+      }
+      if (bld) {
+        core.cameraMoveRight();
+      }
+      if (lkm)
+      {
+
+        if (!overforce)
         {
-          ///вычисления///
-          if (blw) {
-            z += movement * cos(RotateY * 3.14 / 180);
-            if (z < -0.6) { z = -0.6; }
-            if (z > 6.8) { z = 6.8; }
-            x += (-1) * movement * sin(RotateY * 3.14 / 180);
-            if (x < (-2)) { x = (-2); }
-            if (x > 2) { x = 2; }
-          }
-          if (bls) {
-            z -= movement * cos(RotateY * 3.14 / 180);
-            if (z < -0.6) { z = -0.6; }
-            if (z > 6.8) { z = 6.8; }
-            x -= (-1) * movement * sin(RotateY * 3.14 / 180);
-            if (x < (-2)) { x = (-2); }
-            if (x > 2) { x = 2; }
-          }
-          if (bla) {
-            z += movement * sin(RotateY * 3.14 / 180);
-            if (z < -0.6) { z = -0.6; }
-            if (z > 6.8) { z = 6.8; }
-            x += movement * cos(RotateY * 3.14 / 180);
-            if (x < (-2)) { x = (-2); }
-            if (x > 2) { x = 2; }
-          }
-          if (bld) {
-            z -= movement * sin(RotateY * 3.14 / 180);
-            if (z < -0.6) { z = -0.6; }
-            if (z > 6.8) { z = 6.8; }
-            x -= movement * cos(RotateY * 3.14 / 180);
-            if (x < (-2)) { x = (-2); }
-            if (x > 2) { x = 2; }
-          }
-          if (lkm)
-          {
-
-            if (!overforce)
+          force += 0.01;
+          if (force >= 1)
+            overforce = true;
+        }
+        if (overforce)
+        {
+          force -= 0.01;
+          if (force <= 0)
+            overforce = false;
+        }
+      }
+      if (LKM)
+      {
+        if (showball[0]) {
+          ball[0].x -= length * sin(ball[0].angle * grad) * ball[0].acceleration;
+          ball[0].z -= length * cos(ball[0].angle * grad) * ball[0].acceleration;
+        }
+        if (showball[1]) {
+          ball[1].x -= length * sin(ball[1].angle * grad) * ball[1].acceleration;
+          ball[1].z -= length * cos(ball[1].angle * grad) * ball[1].acceleration;
+        }
+        if (showball[2]) {
+          ball[2].x -= length * sin(ball[2].angle * grad) * ball[2].acceleration;
+          ball[2].z -= length * cos(ball[2].angle * grad) * ball[2].acceleration;
+        }
+        if (showball[3]) {
+          ball[3].x -= length * sin(ball[3].angle * grad) * ball[3].acceleration;
+          ball[3].z -= length * cos(ball[3].angle * grad) * ball[3].acceleration;
+        }
+        if (showball[4]) {
+          ball[4].x -= length * sin(ball[4].angle * grad) * ball[4].acceleration;
+          ball[4].z -= length * cos(ball[4].angle * grad) * ball[4].acceleration;
+        }
+        if (showball[5]) {
+          ball[5].x -= length * sin(ball[5].angle * grad) * ball[5].acceleration;
+          ball[5].z -= length * cos(ball[5].angle * grad) * ball[5].acceleration;
+        }
+        if (showball[6]) {
+          ball[6].x -= length * sin(ball[6].angle * grad) * ball[6].acceleration;
+          ball[6].z -= length * cos(ball[6].angle * grad) * ball[6].acceleration;
+        }
+        if (showball[7]) {
+          ball[7].x -= length * sin(ball[7].angle * grad) * ball[7].acceleration;
+          ball[7].z -= length * cos(ball[7].angle * grad) * ball[7].acceleration;
+        }
+        if (showball[8]) {
+          ball[8].x -= length * sin(ball[8].angle * grad) * ball[8].acceleration;
+          ball[8].z -= length * cos(ball[8].angle * grad) * ball[8].acceleration;
+        }
+        if (showball[9]) {
+          ball[9].x -= length * sin(ball[9].angle * grad) * ball[9].acceleration;
+          ball[9].z -= length * cos(ball[9].angle * grad) * ball[9].acceleration;
+        }
+        if (showball[10]) {
+          ball[10].x -= length * sin(ball[10].angle * grad) * ball[10].acceleration;
+          ball[10].z -= length * cos(ball[10].angle * grad) * ball[10].acceleration;
+        }
+        if (showball[11]) {
+          ball[11].x -= length * sin(ball[11].angle * grad) * ball[11].acceleration;
+          ball[11].z -= length * cos(ball[11].angle * grad) * ball[11].acceleration;
+        }
+        if (showball[12]) {
+          ball[12].x -= length * sin(ball[12].angle * grad) * ball[12].acceleration;
+          ball[12].z -= length * cos(ball[12].angle * grad) * ball[12].acceleration;
+        }
+        if (showball[13]) {
+          ball[13].x -= length * sin(ball[13].angle * grad) * ball[13].acceleration;
+          ball[13].z -= length * cos(ball[13].angle * grad) * ball[13].acceleration;
+        }
+        if (showball[14]) {
+          ball[14].x -= length * sin(ball[14].angle * grad) * ball[14].acceleration;
+          ball[14].z -= length * cos(ball[14].angle * grad) * ball[14].acceleration;
+        }
+        if (showball[15]) {
+          ball[15].x -= length * sin(ball[15].angle * grad) * ball[15].acceleration;
+          ball[15].z -= length * cos(ball[15].angle * grad) * ball[15].acceleration;
+        }
+        /////рассчет углов и ускорений при столкновении шара с шаром  
+        inc = 0;
+        for (int i = 0; i < 15; i++)
+        {
+          if (showball[i])
+            for (int j = i + 1; j < 16; j++)
             {
-              force += 0.01;
-              if (force >= 1)
-                overforce = true;
-            }
-            if (overforce)
-            {
-              force -= 0.01;
-              if (force <= 0)
-                overforce = false;
-            }
-          }
-          if (LKM)
-          {
-            if (showball[0]) {
-              ball[0].x -= length * sin(ball[0].angle * grad) * ball[0].acceleration;
-              ball[0].z -= length * cos(ball[0].angle * grad) * ball[0].acceleration;
-            }
-            if (showball[1]) {
-              ball[1].x -= length * sin(ball[1].angle * grad) * ball[1].acceleration;
-              ball[1].z -= length * cos(ball[1].angle * grad) * ball[1].acceleration;
-            }
-            if (showball[2]) {
-              ball[2].x -= length * sin(ball[2].angle * grad) * ball[2].acceleration;
-              ball[2].z -= length * cos(ball[2].angle * grad) * ball[2].acceleration;
-            }
-            if (showball[3]) {
-              ball[3].x -= length * sin(ball[3].angle * grad) * ball[3].acceleration;
-              ball[3].z -= length * cos(ball[3].angle * grad) * ball[3].acceleration;
-            }
-            if (showball[4]) {
-              ball[4].x -= length * sin(ball[4].angle * grad) * ball[4].acceleration;
-              ball[4].z -= length * cos(ball[4].angle * grad) * ball[4].acceleration;
-            }
-            if (showball[5]) {
-              ball[5].x -= length * sin(ball[5].angle * grad) * ball[5].acceleration;
-              ball[5].z -= length * cos(ball[5].angle * grad) * ball[5].acceleration;
-            }
-            if (showball[6]) {
-              ball[6].x -= length * sin(ball[6].angle * grad) * ball[6].acceleration;
-              ball[6].z -= length * cos(ball[6].angle * grad) * ball[6].acceleration;
-            }
-            if (showball[7]) {
-              ball[7].x -= length * sin(ball[7].angle * grad) * ball[7].acceleration;
-              ball[7].z -= length * cos(ball[7].angle * grad) * ball[7].acceleration;
-            }
-            if (showball[8]) {
-              ball[8].x -= length * sin(ball[8].angle * grad) * ball[8].acceleration;
-              ball[8].z -= length * cos(ball[8].angle * grad) * ball[8].acceleration;
-            }
-            if (showball[9]) {
-              ball[9].x -= length * sin(ball[9].angle * grad) * ball[9].acceleration;
-              ball[9].z -= length * cos(ball[9].angle * grad) * ball[9].acceleration;
-            }
-            if (showball[10]) {
-              ball[10].x -= length * sin(ball[10].angle * grad) * ball[10].acceleration;
-              ball[10].z -= length * cos(ball[10].angle * grad) * ball[10].acceleration;
-            }
-            if (showball[11]) {
-              ball[11].x -= length * sin(ball[11].angle * grad) * ball[11].acceleration;
-              ball[11].z -= length * cos(ball[11].angle * grad) * ball[11].acceleration;
-            }
-            if (showball[12]) {
-              ball[12].x -= length * sin(ball[12].angle * grad) * ball[12].acceleration;
-              ball[12].z -= length * cos(ball[12].angle * grad) * ball[12].acceleration;
-            }
-            if (showball[13]) {
-              ball[13].x -= length * sin(ball[13].angle * grad) * ball[13].acceleration;
-              ball[13].z -= length * cos(ball[13].angle * grad) * ball[13].acceleration;
-            }
-            if (showball[14]) {
-              ball[14].x -= length * sin(ball[14].angle * grad) * ball[14].acceleration;
-              ball[14].z -= length * cos(ball[14].angle * grad) * ball[14].acceleration;
-            }
-            if (showball[15]) {
-              ball[15].x -= length * sin(ball[15].angle * grad) * ball[15].acceleration;
-              ball[15].z -= length * cos(ball[15].angle * grad) * ball[15].acceleration;
-            }
-            /////рассчет углов и ускорений при столкновении шара с шаром	
-            inc = 0;
-            for (int i = 0; i < 15; i++)
-            {
-              if (showball[i])
-                for (int j = i + 1; j < 16; j++)
+              if (showball[j])
+                if (pow((ball[i].x - ball[j].x), 2) + pow((ball[i].z - ball[j].z), 2) < 0.018496)
                 {
-                  if (showball[j])
-                    if (pow((ball[i].x - ball[j].x), 2) + pow((ball[i].z - ball[j].z), 2) < 0.018496)
-                    {
-                      if (!ifcross[inc])
-                        if (ball[j].z < ball[i].z)
-                          /*1, 2*/ {
-                          beta = asin((ball[j].x - ball[i].x) / sqrt(pow((ball[j].x - ball[i].x), 2) + pow((ball[j].z - ball[i].z), 2))) * agrad;
-                          gamai = (360 - ball[i].angle - beta + 360) % 360;
-                          gamaj = (360 - ball[j].angle - beta + 360) % 360;
+                  if (!ifcross[inc])
+                    if (ball[j].z < ball[i].z)
+                      /*1, 2*/ {
+                      beta = asin((ball[j].x - ball[i].x) / sqrt(pow((ball[j].x - ball[i].x), 2) + pow((ball[j].z - ball[i].z), 2))) * agrad;
+                      gamai = (360 - ball[i].angle - beta + 360) % 360;
+                      gamaj = (360 - ball[j].angle - beta + 360) % 360;
 
-                          Aa = ball[i].acceleration * cos(gamai * grad);
-                          Bb = -ball[j].acceleration * cos(gamaj * grad);
-                          ////////////////////
-                          if (Aa < 0.0f)
-                          {
-                            xi = Aa - Bb;
-                            yi = ball[i].acceleration * sin(gamai * grad);
-                          }
-                          else
-                          {
-                            xi = -((ball[i].acceleration - Aa) * cos(gamai * grad) + Bb);
-                            yi = (ball[i].acceleration - Aa) * sin(gamai * grad);
-                          }
-
-                          ball[i].acceleration = sqrt(xi * xi + yi * yi);
-                          if (yi < 0.0f)
-                            ball[i].angle = float(acos(xi / (ball[i].acceleration + 0.0000001)) * agrad - beta);
-                          else
-                            ball[i].angle = float(360 - acos(xi / (ball[i].acceleration + 0.0000001)) * agrad - beta);
-                          ///////////////////
-                          if (Bb < 0.0f)
-                          {
-                            xj = Aa - Bb;
-                            yj = ball[j].acceleration * sin(gamaj * grad);
-                          }
-                          else
-                          {
-                            xj = Aa - (ball[j].acceleration - Bb) * cos(gamaj * grad);
-                            yj = (ball[j].acceleration - Bb) * sin(gamaj * grad);
-                          }
-
-                          ball[j].acceleration = sqrt(xj * xj + yj * yj);
-                          if (yj < 0.0f)
-                            ball[j].angle = float(acos(xj / (ball[j].acceleration + 0.0000001)) * agrad - beta);
-                          else
-                            ball[j].angle = float(360 - acos(xj / (ball[j].acceleration + 0.0000001)) * agrad - beta);
-                          ///////////////////
-                        }
-                        else
-                          /*3, 4*/ {
-                          beta = asin((ball[i].x - ball[j].x) / sqrt(pow((ball[j].x - ball[i].x), 2) + pow((ball[j].z - ball[i].z), 2))) * agrad;
-                          gamai = (360 - ball[i].angle - beta + 360) % 360;
-                          gamaj = (360 - ball[j].angle - beta + 360) % 360;
-
-                          Bb = -ball[i].acceleration * cos(gamai * grad);
-                          Aa = ball[j].acceleration * cos(gamaj * grad);
-                          //////////////////
-                          if (Aa < 0.0f)
-                          {
-                            xj = Aa - Bb;
-                            yj = ball[j].acceleration * sin(gamaj * grad);
-                          }
-                          else
-                          {
-                            xj = -((ball[j].acceleration - Aa) * cos(gamaj * grad) + Bb);
-                            yj = (ball[j].acceleration - Aa) * sin(gamaj * grad);
-                          }
-
-                          ball[j].acceleration = sqrt(xj * xj + yj * yj);
-                          if (yj < 0.0f)
-                            ball[j].angle = float(acos(xj / (ball[j].acceleration + 0.0000001)) * agrad - beta);
-                          else
-                            ball[j].angle = float(360 - acos(xj / (ball[j].acceleration + 0.0000001)) * agrad - beta);
-                          /////////////////
-                          if (Bb < 0.0f)
-                          {
-                            xi = Aa - Bb;
-                            yi = ball[i].acceleration * sin(gamai * grad);
-                          }
-                          else
-                          {
-                            xi = Aa - (ball[i].acceleration - Bb) * cos(gamai * grad);
-                            yi = (ball[i].acceleration - Bb) * sin(gamai * grad);
-                          }
-
-                          ball[i].acceleration = sqrt(xi * xi + yi * yi);
-                          if (yi < 0.0f)
-                            ball[i].angle = float(acos(xi / (ball[i].acceleration + 0.0000001)) * agrad - beta);
-                          else
-                            ball[i].angle = float(360 - acos(xi / (ball[i].acceleration + 0.0000001)) * agrad - beta);
-                          ////////////////
-                        }
-                      ifcross[inc] = true;
-                      for (j = j + 1; j < 16; j++)
+                      Aa = ball[i].acceleration * cos(gamai * grad);
+                      Bb = -ball[j].acceleration * cos(gamaj * grad);
+                      ////////////////////
+                      if (Aa < 0.0f)
                       {
-                        inc++;
-                        ifcross[inc] = false;
+                        xi = Aa - Bb;
+                        yi = ball[i].acceleration * sin(gamai * grad);
                       }
-                      //break;
+                      else
+                      {
+                        xi = -((ball[i].acceleration - Aa) * cos(gamai * grad) + Bb);
+                        yi = (ball[i].acceleration - Aa) * sin(gamai * grad);
+                      }
+
+                      ball[i].acceleration = sqrt(xi * xi + yi * yi);
+                      if (yi < 0.0f)
+                        ball[i].angle = float(acos(xi / (ball[i].acceleration + 0.0000001)) * agrad - beta);
+                      else
+                        ball[i].angle = float(360 - acos(xi / (ball[i].acceleration + 0.0000001)) * agrad - beta);
+                      ///////////////////
+                      if (Bb < 0.0f)
+                      {
+                        xj = Aa - Bb;
+                        yj = ball[j].acceleration * sin(gamaj * grad);
+                      }
+                      else
+                      {
+                        xj = Aa - (ball[j].acceleration - Bb) * cos(gamaj * grad);
+                        yj = (ball[j].acceleration - Bb) * sin(gamaj * grad);
+                      }
+
+                      ball[j].acceleration = sqrt(xj * xj + yj * yj);
+                      if (yj < 0.0f)
+                        ball[j].angle = float(acos(xj / (ball[j].acceleration + 0.0000001)) * agrad - beta);
+                      else
+                        ball[j].angle = float(360 - acos(xj / (ball[j].acceleration + 0.0000001)) * agrad - beta);
+                      ///////////////////
                     }
                     else
-                    {
-                      ifcross[inc] = false;
-                      inc++;
+                      /*3, 4*/ {
+                      beta = asin((ball[i].x - ball[j].x) / sqrt(pow((ball[j].x - ball[i].x), 2) + pow((ball[j].z - ball[i].z), 2))) * agrad;
+                      gamai = (360 - ball[i].angle - beta + 360) % 360;
+                      gamaj = (360 - ball[j].angle - beta + 360) % 360;
+
+                      Bb = -ball[i].acceleration * cos(gamai * grad);
+                      Aa = ball[j].acceleration * cos(gamaj * grad);
+                      //////////////////
+                      if (Aa < 0.0f)
+                      {
+                        xj = Aa - Bb;
+                        yj = ball[j].acceleration * sin(gamaj * grad);
+                      }
+                      else
+                      {
+                        xj = -((ball[j].acceleration - Aa) * cos(gamaj * grad) + Bb);
+                        yj = (ball[j].acceleration - Aa) * sin(gamaj * grad);
+                      }
+
+                      ball[j].acceleration = sqrt(xj * xj + yj * yj);
+                      if (yj < 0.0f)
+                        ball[j].angle = float(acos(xj / (ball[j].acceleration + 0.0000001)) * agrad - beta);
+                      else
+                        ball[j].angle = float(360 - acos(xj / (ball[j].acceleration + 0.0000001)) * agrad - beta);
+                      /////////////////
+                      if (Bb < 0.0f)
+                      {
+                        xi = Aa - Bb;
+                        yi = ball[i].acceleration * sin(gamai * grad);
+                      }
+                      else
+                      {
+                        xi = Aa - (ball[i].acceleration - Bb) * cos(gamai * grad);
+                        yi = (ball[i].acceleration - Bb) * sin(gamai * grad);
+                      }
+
+                      ball[i].acceleration = sqrt(xi * xi + yi * yi);
+                      if (yi < 0.0f)
+                        ball[i].angle = float(acos(xi / (ball[i].acceleration + 0.0000001)) * agrad - beta);
+                      else
+                        ball[i].angle = float(360 - acos(xi / (ball[i].acceleration + 0.0000001)) * agrad - beta);
+                      ////////////////
                     }
+                  ifcross[inc] = true;
+                  for (j = j + 1; j < 16; j++)
+                  {
+                    inc++;
+                    ifcross[inc] = false;
+                  }
+                  //break;
                 }
-              else
-                for (int j = i + 1; j < 16; j++)
+                else
                 {
-                  inc++;
                   ifcross[inc] = false;
+                  inc++;
                 }
             }
-            /////столкновение с бортами
-            for (int i = 0; i < 16; i++)
+          else
+            for (int j = i + 1; j < 16; j++)
             {
-              if (!showball[i])continue;
+              inc++;
+              ifcross[inc] = false;
+            }
+        }
+        /////столкновение с бортами
+        for (int i = 0; i < 16; i++)
+        {
+          if (!showball[i])continue;
 
-              if (ball[i].z < -6.332)
+          if (ball[i].z < -6.332)
+          {
+            if (ball[i].x < -1.511)
+            {
+              showball[i] = false;
+              if (i == 0)ifblack[4] = true;
+              ball[i].acceleration = 0;
+              Anim[4] = 0;
+              score--;
+            }
+            else
+              if (ball[i].x > 1.511)
               {
-                if (ball[i].x < -1.511)
+                showball[i] = false;
+                if (i == 0)ifblack[5] = true;
+                ball[i].acceleration = 0;
+                Anim[5] = 0;
+                score--;;
+              }
+              else
+                ball[i].z = -6.332; ball[i].angle = 540 - ball[i].angle;
+          }
+          else
+            if (ball[i].z > -0.068)
+            {
+              if (ball[i].x < -1.511)
+              {
+                showball[i] = false;
+                if (i == 0)ifblack[2] = true;
+                ball[i].acceleration = 0;
+                Anim[2] = 0;
+                score--;
+              }
+              else
+                if (ball[i].x > 1.511)
                 {
                   showball[i] = false;
-                  if (i == 0)ifblack[4] = true;
+                  if (i == 0)ifblack[1] = true;
                   ball[i].acceleration = 0;
-                  Anim[4] = 0;
+                  Anim[1] = 0;
                   score--;
                 }
                 else
-                  if (ball[i].x > 1.511)
-                  {
-                    showball[i] = false;
-                    if (i == 0)ifblack[5] = true;
-                    ball[i].acceleration = 0;
-                    Anim[5] = 0;
-                    score--;;
-                  }
-                  else
-                    ball[i].z = -6.332; ball[i].angle = 540 - ball[i].angle;
-              }
-              else
-                if (ball[i].z > -0.068)
+                  ball[i].z = -0.068; ball[i].angle = 540 - ball[i].angle;
+            }
+            else
+              if (ball[i].x < -1.532)
+              {
+                if (ball[i].z<-3.183 && ball[i].z>-3.217)
                 {
-                  if (ball[i].x < -1.511)
+                  showball[i] = false;
+                  if (i == 0)ifblack[3] = true;
+                  ball[i].acceleration = 0;
+                  Anim[3] = 0;
+                  score--;
+                }
+                else
+                  if (ball[i].z < -6.311)
                   {
                     showball[i] = false;
-                    if (i == 0)ifblack[2] = true;
+                    if (i == 0)ifblack[4] = true;
                     ball[i].acceleration = 0;
-                    Anim[2] = 0;
+                    Anim[4] = 0;
                     score--;
                   }
                   else
-                    if (ball[i].x > 1.511)
+                    if (ball[i].z > -0.021)
                     {
                       showball[i] = false;
-                      if (i == 0)ifblack[1] = true;
+                      if (i == 0)ifblack[2] = true;
                       ball[i].acceleration = 0;
-                      Anim[1] = 0;
+                      Anim[2] = 0;
                       score--;
                     }
                     else
-                      ball[i].z = -0.068; ball[i].angle = 540 - ball[i].angle;
-                }
-                else
-                  if (ball[i].x < -1.532)
-                  {
-                    if (ball[i].z<-3.183 && ball[i].z>-3.217)
-                    {
-                      showball[i] = false;
-                      if (i == 0)ifblack[3] = true;
-                      ball[i].acceleration = 0;
-                      Anim[3] = 0;
-                      score--;
-                    }
-                    else
-                      if (ball[i].z < -6.311)
-                      {
-                        showball[i] = false;
-                        if (i == 0)ifblack[4] = true;
-                        ball[i].acceleration = 0;
-                        Anim[4] = 0;
-                        score--;
-                      }
-                      else
-                        if (ball[i].z > -0.021)
-                        {
-                          showball[i] = false;
-                          if (i == 0)ifblack[2] = true;
-                          ball[i].acceleration = 0;
-                          Anim[2] = 0;
-                          score--;
-                        }
-                        else
-                          ball[i].x = -1.532; ball[i].angle = 360 - ball[i].angle;
+                      ball[i].x = -1.532; ball[i].angle = 360 - ball[i].angle;
 
+              }
+              else
+                if (ball[i].x > 1.532)
+                {
+                  if (ball[i].z<-3.183 && ball[i].z>-3.217)
+                  {
+                    showball[i] = false;
+                    if (i == 0)ifblack[0] = true;
+                    ball[i].acceleration = 0;
+                    Anim[0] = 0;
+                    score--;
                   }
                   else
-                    if (ball[i].x > 1.532)
+                    if (ball[i].z < -6.311)
                     {
-                      if (ball[i].z<-3.183 && ball[i].z>-3.217)
+                      showball[i] = false;
+                      if (i == 0)ifblack[5] = true;
+                      ball[i].acceleration = 0;
+                      Anim[5] = 0;
+                      score--;
+                    }
+                    else
+                      if (ball[i].z > -0.021)
                       {
                         showball[i] = false;
-                        if (i == 0)ifblack[0] = true;
+                        if (i == 0)ifblack[1] = true;
                         ball[i].acceleration = 0;
-                        Anim[0] = 0;
+                        Anim[1] = 0;
                         score--;
                       }
                       else
-                        if (ball[i].z < -6.311)
-                        {
-                          showball[i] = false;
-                          if (i == 0)ifblack[5] = true;
-                          ball[i].acceleration = 0;
-                          Anim[5] = 0;
-                          score--;
-                        }
-                        else
-                          if (ball[i].z > -0.021)
-                          {
-                            showball[i] = false;
-                            if (i == 0)ifblack[1] = true;
-                            ball[i].acceleration = 0;
-                            Anim[1] = 0;
-                            score--;
-                          }
-                          else
-                            ball[i].x = 1.532; ball[i].angle = 360 - ball[i].angle;
-                    }
-              while (ball[i].angle < 0) ball[i].angle += 360;
-              if (ball[i].angle >= 360) ball[i].angle %= 360;
-            }
-            /////постепенное уменьшение скорости
-            for (int i = 0; i < 16; i++)
-            {
-              if (showball[i])
-                if (ball[i].acceleration > 0)
-                {
-                  ball[i].acceleration -= 0.001f;
+                        ball[i].x = 1.532; ball[i].angle = 360 - ball[i].angle;
                 }
-                else
-                {
-                  ball[i].acceleration = 0;
-                }
-            }
-          }
-          /////передача управления ЛКМ после остановки всех шаров на столе
-          if (
-            ball[0].acceleration == 0 &&
-            ball[1].acceleration == 0 &&
-            ball[2].acceleration == 0 &&
-            ball[3].acceleration == 0 &&
-            ball[4].acceleration == 0 &&
-            ball[5].acceleration == 0 &&
-            ball[6].acceleration == 0 &&
-            ball[7].acceleration == 0 &&
-            ball[8].acceleration == 0 &&
-            ball[9].acceleration == 0 &&
-            ball[10].acceleration == 0 &&
-            ball[11].acceleration == 0 &&
-            ball[12].acceleration == 0 &&
-            ball[13].acceleration == 0 &&
-            ball[14].acceleration == 0 &&
-            ball[15].acceleration == 0
-            )
-          {
-            LKM = false;
-          }
-
-
-          Draw();
+          while (ball[i].angle < 0) ball[i].angle += 360;
+          if (ball[i].angle >= 360) ball[i].angle %= 360;
         }
-    Sleep(10);
+        /////постепенное уменьшение скорости
+        for (int i = 0; i < 16; i++)
+        {
+          if (showball[i])
+            if (ball[i].acceleration > 0)
+            {
+              ball[i].acceleration -= 0.001f;
+            }
+            else
+            {
+              ball[i].acceleration = 0;
+            }
+        }
+      }
+      /////передача управления ЛКМ после остановки всех шаров на столе
+      if (
+        ball[0].acceleration == 0 &&
+        ball[1].acceleration == 0 &&
+        ball[2].acceleration == 0 &&
+        ball[3].acceleration == 0 &&
+        ball[4].acceleration == 0 &&
+        ball[5].acceleration == 0 &&
+        ball[6].acceleration == 0 &&
+        ball[7].acceleration == 0 &&
+        ball[8].acceleration == 0 &&
+        ball[9].acceleration == 0 &&
+        ball[10].acceleration == 0 &&
+        ball[11].acceleration == 0 &&
+        ball[12].acceleration == 0 &&
+        ball[13].acceleration == 0 &&
+        ball[14].acceleration == 0 &&
+        ball[15].acceleration == 0
+        )
+      {
+        LKM = false;
+      }
+
+
+      Draw();
+    }
+    //Sleep(10);
     SwapBuffers(hDC);
   }
 }
