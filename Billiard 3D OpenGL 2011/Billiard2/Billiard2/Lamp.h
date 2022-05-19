@@ -9,7 +9,7 @@ class Lamp
   QuadricPtr quadric;
   Position pos;
 public:
-  Lamp() :lightId (lastLightId++) {}
+  Lamp();
   ~Lamp() { --lastLightId; }
   void position(float x, float y, float z);
   void draw();

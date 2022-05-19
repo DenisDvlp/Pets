@@ -62,21 +62,24 @@ void Camera::draw()
   glMatrixMode(GL_PROJECTION);
   glLoadIdentity();
   gluPerspective(65.0f, (GLfloat)size.width / size.height, 0.01f, 100.0f);
-  glMatrixMode(GL_MODELVIEW);
 
+  glMatrixMode(GL_MODELVIEW);
   glLoadIdentity();
-  glTranslatef(0, 2, -2.8f);
+  glTranslatef(0, 1, -2.8f);
   glRotatef(angle.x, 1, 0, 0);
   glRotatef(angle.y, 0, 1, 0);
   glTranslatef(pos.x, 0, pos.y);
 
   glPushMatrix();
   glEnable(GL_LIGHT0);
-  glTranslatef(-pos.x, 0, -pos.y);
   GLfloat sun[] = { 0, 1, 0, 0 }; 
   glLightfv(GL_LIGHT0, GL_POSITION, sun);
-  GLfloat spec[] = { 0, 0, 0, 0 };
+  GLfloat diffuse[] = { 0.8, 0.8, 0.8, 0.0 };
+  glLightfv(GL_LIGHT0, GL_DIFFUSE, diffuse);
+  GLfloat spec[] = { 0.5, 0.5, 0.5, 1 };
   glLightfv(GL_LIGHT0, GL_SPECULAR, spec);
+  GLfloat mat_ambient[] = { 0.2f, 0.2f, 0.2f, 1.0 };
+  glLightfv(GL_LIGHT0, GL_AMBIENT, mat_ambient);
   glPopMatrix();
 
   /*glPushMatrix();
@@ -109,12 +112,12 @@ void Camera::draw()
   glMaterialfv(GL_FRONT, GL_SHININESS, mat_shininess);
   GLfloat x, y;
   glBegin(GL_QUADS);
-  const float d = 0.03f;
+  const float d = 0.5f;
   const float height = -3;
   glNormal3f(0.0, 1.0, 0.0);
-  for (x = -2.0; x < 2.0; x += d)
+  for (x = -5.0; x < 5.0; x += d)
   {
-    for (y = 0.0; y > -5.0; y -= d)
+    for (y = 2.0; y > -10.0; y -= d)
     {
       glVertex3f(x, height, y);
       glVertex3f(x, height, y + d);

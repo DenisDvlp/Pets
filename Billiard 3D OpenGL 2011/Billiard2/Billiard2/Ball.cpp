@@ -68,8 +68,11 @@ void Ball::draw()
     return;
 
   glPushMatrix();
+  glPushAttrib(GL_LIGHTING_BIT);
   // ball
   glColor3ubv(rgb);
+  GLfloat diffuse[] = { 0.0, 0.0, 1.0, 0.0 };
+  glMaterialfv(GL_FRONT, GL_DIFFUSE, diffuse);
   GLfloat mat_specular[] = { 1.0, 1.0, 1.0, 1.0 };
   GLfloat mat_shininess[] = { 128 };
   glMaterialfv(GL_FRONT, GL_SPECULAR, mat_specular);
@@ -85,6 +88,7 @@ void Ball::draw()
   glRotatef(-90, 1, 0, 0);
   glColor3f(0.3f, 0.6f, 0.3f);
   gluDisk(*quadric, 0.0f, 0.055f, 16, 16);
+  glPopAttrib();
 
   glPopMatrix();
 }
