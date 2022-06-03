@@ -1,17 +1,13 @@
 #pragma once
-#include "Position.h"
-#include "QuadricPtr.h"
+#include "Vector4.h"
+#include "Light.h"
+#include "Drawable.h"
 
-class Lamp
+class Lamp : public Drawable
 {
-  static unsigned int lastLightId;
-  const unsigned int lightId;
-  QuadricPtr quadric;
-  Position pos;
+  Light light;
 public:
-  Lamp();
-  ~Lamp() { --lastLightId; }
-  void position(float x, float y, float z);
-  void draw();
+  void onInit() override;
+  void onDraw(GLUquadric* quadric) const override;
 };
 

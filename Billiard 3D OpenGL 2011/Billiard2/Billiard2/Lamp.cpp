@@ -3,47 +3,36 @@
 #include <gl/gl.h>
 #include <gl/glu.h>
 
-unsigned int Lamp::lastLightId = GL_LIGHT0 + 1;
-
-Lamp::Lamp() : lightId(lastLightId++)
+void Lamp::onInit()
 {
-  glEnable(lightId);
+  light.position(0, 0, 0);
+  light.direction(0, -1.0f, 0);
+  light.ambient(0.0f, 0.0f, 0.0f);
+  light.diffusion(0.05f, 0.05f, 0.05f);
+  light.specular(1.0f, 1.0f, 1.0f);
+  light.cutoffAngle(45.0f);
 }
-void Lamp::position(float x, float y, float z)
-{
-  pos = { x, y, z };
-}
 
-void Lamp::draw()
+void Lamp::onDraw(GLUquadric* quadric) const
 {
-  glPushMatrix();
+  light.draw(quadric);
+  
+  glRotatef(-90, 1, 0, 0);
 
   glPushAttrib(GL_LIGHTING_BIT);
-
-  glRotatef(90, 1, 0, 0);
-  glTranslatef(pos.x, pos.y, pos.z);
-
   glColor3f(0.3f, 0.7f, 0.5f);
-  GLfloat spec[] = { 1, 1, 1, 1 };
-  glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, spec);
-  gluCylinder(*quadric, 0.2f, 0.7f, 0.6f, 64, 32);
-
-  GLfloat emm[] = { 1, 1, 1, 1 };
-  glMaterialfv(GL_FRONT, GL_EMISSION, emm);
-  gluCylinder(*quadric, 0.19f, 0.69f, 0.6f, 32, 1);
+  GLfloat spec[] = { 1.0f, 1.0f, 1.0f, 1.0f };
+  glMaterialfv(GL_FRONT, GL_SPECULAR, spec);
+  gluCylinder(quadric, 0.7f, 0.2f, 0.6f, 64, 32);
   glPopAttrib();
 
-  gluSphere(*quadric, 0.068f, 48, 48);
+  glPushAttrib(GL_LIGHTING_BIT);
+  GLfloat emm[] = { 1.0f, 1.0f, 1.0f, 1.0f };
+  glMaterialfv(GL_FRONT, GL_EMISSION, emm);
+  gluCylinder(quadric, 0.69f, 0.19f, 0.59f, 32, 1);
+  glPopAttrib();
 
-  GLfloat spotLight[] = { 0, 0, 0, 1 };
-  glLightfv(lightId, GL_POSITION, spotLight);
-  GLfloat diffuse[] = { 0.1, 0.1, 0.1, 1.0 };
-  glLightfv(lightId, GL_DIFFUSE, diffuse);
-  GLfloat spec2[] = { 1, 1, 1, 0 };
-  glLightfv(lightId, GL_SPECULAR, spec2);
-  GLfloat light_spot_direction[] = { 0.0, 0.0, 1.0 };
-  glLightfv(lightId, GL_SPOT_DIRECTION, light_spot_direction);
-  glLightf(lightId, GL_SPOT_CUTOFF, 45);
+  glTranslatef(0, 0, 0.6f);
+  gluDisk(quadric, 0.1f, 0.2f, 64, 32);
 
-  glPopMatrix();
 }

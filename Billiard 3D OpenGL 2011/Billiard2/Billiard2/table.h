@@ -1,18 +1,14 @@
 #pragma once
-#include "Position.h"
-#include "QuadricPtr.h"
+#include "Vector4.h"
+#include "Drawable.h"
 
 using GLuint = unsigned int;
 
-class Table
+class Table : public Drawable
 {
-  QuadricPtr quadric;
-  Position pos;
-
   GLuint  textures[3];
 public:
-  void init();
-  void position(float x, float y, float z);
-  void draw();
+  void onInit() override;
+  void onDraw(GLUquadric* quadric) const override;
 };
 

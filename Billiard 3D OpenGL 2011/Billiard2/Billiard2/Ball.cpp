@@ -5,11 +5,9 @@
 #include <gl/gl.h>
 #include <gl/glu.h>
 
-void Ball::color(GLubyte r, GLubyte g, GLubyte b)
+void Ball::color(float r, float g, float b)
 {
-  rgb[0] = r;
-  rgb[1] = g;
-  rgb[2] = b;
+  rgb.set(r, g, b);
 }
 
 void Ball::collide(Ball& other)
@@ -24,7 +22,7 @@ void Ball::pull(float acceleration, float angle)
 
 void Ball::update()
 {
-  if (!visible)
+  if (!visible())
     return;
 
   const float radian = degToRad(angle);
@@ -33,28 +31,13 @@ void Ball::update()
     x -= speed * trig(radian) * acceleration;
   };
 
-  decelerate(pos.x, sin);
-  decelerate(pos.y, cos);
-}
-
-const Position& Ball::position() const
-{
-  return pos;
-}
-
-bool Ball::isVisible() const
-{
-  return visible;
+  decelerate(pos.x(), Sin);
+  decelerate(pos.y(), Cos);
 }
 
 void Ball::position(float x, float z)
 {
-  pos = { x, pos.y, z };
-}
-
-void Ball::position(float x, float y, float z)
-{
-  pos = { x, y, z };
+  position(x, -1.932f, z);
 }
 
 bool Ball::isMoving() const
@@ -62,15 +45,11 @@ bool Ball::isMoving() const
   return acceleration > 0;
 }
 
-void Ball::draw()
+void Ball::onDraw(GLUquadric* quadric) const
 {
-  if (!visible)
-    return;
-
-  glPushMatrix();
   glPushAttrib(GL_LIGHTING_BIT);
   // ball
-  glColor3ubv(rgb);
+  glColor4fv(rgb);
   GLfloat diffuse[] = { 0.0, 0.0, 1.0, 0.0 };
   glMaterialfv(GL_FRONT, GL_DIFFUSE, diffuse);
   GLfloat mat_specular[] = { 1.0, 1.0, 1.0, 1.0 };
@@ -78,8 +57,7 @@ void Ball::draw()
   glMaterialfv(GL_FRONT, GL_SPECULAR, mat_specular);
   glMaterialfv(GL_FRONT, GL_SHININESS, mat_shininess);
 
-  glTranslatef(pos.x, pos.y, pos.z);
-  gluSphere(*quadric, 0.068f, 48, 48);
+  gluSphere(quadric, 0.068f, 48, 48);
 
   // shadow
   GLfloat mat_specular2[] = { 0.0, 0.0, 0.0, 1.0 };
@@ -87,8 +65,6 @@ void Ball::draw()
   glTranslatef(0, -0.0678f, 0);
   glRotatef(-90, 1, 0, 0);
   glColor3f(0.3f, 0.6f, 0.3f);
-  gluDisk(*quadric, 0.0f, 0.055f, 16, 16);
+  gluDisk(quadric, 0.0f, 0.055f, 16, 16);
   glPopAttrib();
-
-  glPopMatrix();
 }

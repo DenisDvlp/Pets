@@ -1,11 +1,11 @@
 #pragma once
 #include <xtr1common>
 #include <assert.h>
+#include <cmath>
 
 template<typename T>
 static constexpr T pi_v = static_cast<T>(3.14159265358979323846);
 static constexpr float pi = pi_v<float>;
-
 
 template<typename T>
 inline constexpr T degToRad(T degree) noexcept
@@ -46,3 +46,7 @@ constexpr void adjustInLoop(T min, T& what, T max) noexcept
       while (what > max) what -= max;
   }
 }
+
+float Cos(float angle);
+
+float Sin(float angle);

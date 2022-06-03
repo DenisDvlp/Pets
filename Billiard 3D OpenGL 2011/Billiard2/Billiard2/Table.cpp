@@ -486,10 +486,10 @@ inline void h2()
 {
 	glVertex3f(1.85f, -2.1f, -0.12f);
 }
+
 ///////////////////////////////////////
 
-
-GLvoid drawTable(GLuint* texture, GLUquadricObj* quadratic)
+GLvoid drawTable(const GLuint* texture, GLUquadricObj* quadratic)
 {
 	//крышка стола с бортами
 	glBindTexture(GL_TEXTURE_2D, texture[0]);
@@ -968,23 +968,19 @@ static void loadImage(GLuint texture, const char* filepath)
   glTexImage2D(GL_TEXTURE_2D, 0, 3, image->sizeX, image->sizeY, 0, GL_RGB, GL_UNSIGNED_BYTE, image->data);
 }
 
-void Table::init()
+void Table::onInit()
 {
-  glGenTextures(3, textures);
-  loadImage(textures[0], "table/sukno.bbp");
-  loadImage(textures[1], "table/bort.bbp");
-  loadImage(textures[2], "table/nogi.bbp");
+	glGenTextures(3, textures);
+	loadImage(textures[0], "table/sukno.bbp");
+	loadImage(textures[1], "table/bort.bbp");
+	loadImage(textures[2], "table/nogi.bbp");
 }
 
-void Table::position(float x, float y, float z)
+void Table::onDraw(GLUquadric* quadric) const
 {
-  pos = { x, y, z };
-}
-
-void Table::draw()
-{
-  glLoadIdentity();
+	glPushMatrix();
 	glEnable(GL_TEXTURE_2D);
-	drawTable(textures, *quadric);
-  glDisable(GL_TEXTURE_2D);
+	drawTable(textures, quadric);
+	glDisable(GL_TEXTURE_2D);
+	glPopMatrix();
 }

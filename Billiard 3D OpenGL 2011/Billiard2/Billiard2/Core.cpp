@@ -1,13 +1,11 @@
 #include <algorithm>
 #include "Core.h"
-#include "Drawing.h"
 
-GLuint  txt[6];
 bool Core::hasBallsInGame() const
 {
   // We should have at least two balls to consider game as in progress.
   auto isVisible = [](const Ball& ball) {
-    return ball.isVisible();
+    return ball.visible();
   };
 
   auto it = std::find_if(balls.cbegin(), balls.cend(), isVisible);
@@ -26,15 +24,30 @@ bool Core::areBallsMoving() const
 
 void Core::init()
 {
+  sunLight.enable(true);
+  sunLight.position(0.0f, 1.0f, 0.0f);
+  sunLight.ambient(0.1f, 0.1f, 0.1f);
+  sunLight.diffusion(0.5f, 0.5f, 0.5f);
+  sunLight.specular(0.3f, 0.3f, 0.3f);
+
   table.init();
+  table.visible(false);
   lamps.resize(4);
   balls.resize(16);
   // set black color to the first ball
-  balls[0].color(127, 85, 85);
+  balls[0].color(127 / 255.0f, 85 / 255.0f, 85 / 255.0f);
   setBallsPositions();
   setLampsPositions();
 
-  initScene();
+  scene.setCamera(camera);
+  scene.addDrawable(sunLight);
+  scene.addDrawable(table);
+  scene.addDrawable(plate);
+  scene.addDrawables(lamps);
+  scene.addDrawables(balls);
+
+  scene.init();
+
 }
 
 void Core::setBallsPositions()
@@ -78,7 +91,7 @@ void Core::setLampsPositions()
   size_t i = 0;
   for (auto& lamp : lamps)
   {
-    lamp.position(0, defaultPos[i], 0);
+    lamp.position(0, 0, defaultPos[i]);
     ++i;
   }
 }
@@ -89,7 +102,7 @@ void Core::nextBall()
     ++activeBallIndex;
     activeBallIndex %= balls.size();
     camera.setBall(balls[activeBallIndex]);
-  } while (!balls[activeBallIndex].isVisible());
+  } while (!balls[activeBallIndex].visible());
 }
 
 void Core::prevBall()
@@ -100,7 +113,7 @@ void Core::prevBall()
     else
       --activeBallIndex;
     camera.setBall(balls[activeBallIndex]);
-  } while (!balls[activeBallIndex].isVisible());
+  } while (!balls[activeBallIndex].visible());
 }
 
 void Core::cameraMoveForward()
@@ -123,7 +136,7 @@ void Core::cameraMoveRight()
   camera.moveRight();
 }
 
-Camera::Angle Core::cameraAngle() const
+Angle Core::cameraAngle() const
 {
   return camera.viewAngle();
 }
@@ -133,27 +146,21 @@ void Core::cameraRotate(float angleX, float angleY)
   camera.rotate(angleX, angleY);
 }
 
-void Core::cameraResize(int width, int height)
+void Core::sceneResize(int width, int height)
 {
-  camera.resize(width, height);
+  scene.resize(width, height);
 }
 
 void Core::ballPull(float acceleration)
 {
-  balls[activeBallIndex].pull(acceleration, -camera.viewAngle().x);
+  balls[activeBallIndex].pull(acceleration, -camera.viewAngle().x());
+}
+
+void Core::update()
+{
 }
 
 void Core::draw()
 {
-  clearScene();
-
-  camera.draw();
-
-  //table.draw();
-
-  for (auto& lamp : lamps)
-    lamp.draw();
-
-  for (auto& ball : balls)
-    ball.draw();
+  scene.draw();
 }

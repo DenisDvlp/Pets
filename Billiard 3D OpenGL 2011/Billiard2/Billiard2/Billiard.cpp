@@ -7,19 +7,15 @@
 #include <gl/gl.h>
 #include <gl/glu.h>
 #include "glaux.h"
-#include "Position.h"
 #include "Size.h"
+#include "Utils.h"
 #pragma comment (lib, "legacy_stdio_definitions.lib")
 #pragma comment (lib, "glaux.lib")
 #pragma comment (lib, "glu32.lib")
 #pragma comment (lib, "opengl32.lib")
-static  HGLRC hRC;
-static  HDC hDC;
+static HGLRC hRC;
+static HDC hDC;
 static Core core;
-
-template<typename T>
-static constexpr T pi_v = static_cast<T>(3.14159265358979323846);
-static constexpr float pi = pi_v<float>;
 
 
 struct Ball1
@@ -585,7 +581,7 @@ GLvoid Draw()
   ///////////стол///////////
   CameraPosition(x, z);
   glColor3f(1.0f, 1.0f, 1.0f);
-  Table(texture, quadratic);
+  Table2(texture, quadratic);
 
 
   if (Anim[0] < 29)
@@ -697,8 +693,8 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
     core.init();
     screenSize.width = GetSystemMetrics(SM_CXSCREEN);
     screenSize.height = GetSystemMetrics(SM_CYSCREEN);
-    screenCenter.x = screenSize.width / 2;
-    screenCenter.y = screenSize.height / 2;
+    screenCenter.x() = screenSize.width / 2;
+    screenCenter.y() = screenSize.height / 2;
     Initial();
     break;
   case WM_DESTROY:
@@ -1003,16 +999,16 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
     POINT cursor;
     GetCursorPos(&cursor);
     Position angle = core.cameraAngle();
-    angle.x += (cursor.y - screenCenter.y) * mouseSensivity;
-    angle.y += (cursor.x - screenCenter.x) * mouseSensivity;
-    SetCursorPos(screenCenter.x, screenCenter.y);
+    angle.x() += (cursor.y - screenCenter.y()) * mouseSensivity;
+    angle.y() += (cursor.x - screenCenter.x()) * mouseSensivity;
+    SetCursorPos(screenCenter.x(), screenCenter.y());
 
     if (rkm)
     {
     }
     else
     {
-      core.cameraRotate(angle.x, angle.y);
+      core.cameraRotate(angle.x(), angle.y());
     }
     break;
   }
@@ -1064,7 +1060,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
   case WM_SIZE:
   {
     screenSize = { LOWORD(lParam), HIWORD(lParam) };
-    core.cameraResize(screenSize.width, screenSize.height);
+    core.sceneResize(screenSize.width, screenSize.height);
     break;
   }
   default:return(DefWindowProc(hWnd, msg, wParam, lParam));
@@ -1164,68 +1160,68 @@ int WinMain(HINSTANCE hInst, HINSTANCE hPrevInst, LPSTR lpCmd, int nShowCmd)
       if (LKM)
       {
         if (showball[0]) {
-          ball[0].x -= length * sin(ball[0].angle * grad) * ball[0].acceleration;
-          ball[0].z -= length * cos(ball[0].angle * grad) * ball[0].acceleration;
+          ball[0].x -= length * Sin(ball[0].angle * grad) * ball[0].acceleration;
+          ball[0].z -= length * Cos(ball[0].angle * grad) * ball[0].acceleration;
         }
         if (showball[1]) {
-          ball[1].x -= length * sin(ball[1].angle * grad) * ball[1].acceleration;
-          ball[1].z -= length * cos(ball[1].angle * grad) * ball[1].acceleration;
+          ball[1].x -= length * Sin(ball[1].angle * grad) * ball[1].acceleration;
+          ball[1].z -= length * Cos(ball[1].angle * grad) * ball[1].acceleration;
         }
         if (showball[2]) {
-          ball[2].x -= length * sin(ball[2].angle * grad) * ball[2].acceleration;
-          ball[2].z -= length * cos(ball[2].angle * grad) * ball[2].acceleration;
+          ball[2].x -= length * Sin(ball[2].angle * grad) * ball[2].acceleration;
+          ball[2].z -= length * Cos(ball[2].angle * grad) * ball[2].acceleration;
         }
         if (showball[3]) {
-          ball[3].x -= length * sin(ball[3].angle * grad) * ball[3].acceleration;
-          ball[3].z -= length * cos(ball[3].angle * grad) * ball[3].acceleration;
+          ball[3].x -= length * Sin(ball[3].angle * grad) * ball[3].acceleration;
+          ball[3].z -= length * Cos(ball[3].angle * grad) * ball[3].acceleration;
         }
         if (showball[4]) {
-          ball[4].x -= length * sin(ball[4].angle * grad) * ball[4].acceleration;
-          ball[4].z -= length * cos(ball[4].angle * grad) * ball[4].acceleration;
+          ball[4].x -= length * Sin(ball[4].angle * grad) * ball[4].acceleration;
+          ball[4].z -= length * Cos(ball[4].angle * grad) * ball[4].acceleration;
         }
         if (showball[5]) {
-          ball[5].x -= length * sin(ball[5].angle * grad) * ball[5].acceleration;
-          ball[5].z -= length * cos(ball[5].angle * grad) * ball[5].acceleration;
+          ball[5].x -= length * Sin(ball[5].angle * grad) * ball[5].acceleration;
+          ball[5].z -= length * Cos(ball[5].angle * grad) * ball[5].acceleration;
         }
         if (showball[6]) {
-          ball[6].x -= length * sin(ball[6].angle * grad) * ball[6].acceleration;
-          ball[6].z -= length * cos(ball[6].angle * grad) * ball[6].acceleration;
+          ball[6].x -= length * Sin(ball[6].angle * grad) * ball[6].acceleration;
+          ball[6].z -= length * Cos(ball[6].angle * grad) * ball[6].acceleration;
         }
         if (showball[7]) {
-          ball[7].x -= length * sin(ball[7].angle * grad) * ball[7].acceleration;
-          ball[7].z -= length * cos(ball[7].angle * grad) * ball[7].acceleration;
+          ball[7].x -= length * Sin(ball[7].angle * grad) * ball[7].acceleration;
+          ball[7].z -= length * Cos(ball[7].angle * grad) * ball[7].acceleration;
         }
         if (showball[8]) {
-          ball[8].x -= length * sin(ball[8].angle * grad) * ball[8].acceleration;
-          ball[8].z -= length * cos(ball[8].angle * grad) * ball[8].acceleration;
+          ball[8].x -= length * Sin(ball[8].angle * grad) * ball[8].acceleration;
+          ball[8].z -= length * Cos(ball[8].angle * grad) * ball[8].acceleration;
         }
         if (showball[9]) {
-          ball[9].x -= length * sin(ball[9].angle * grad) * ball[9].acceleration;
-          ball[9].z -= length * cos(ball[9].angle * grad) * ball[9].acceleration;
+          ball[9].x -= length * Sin(ball[9].angle * grad) * ball[9].acceleration;
+          ball[9].z -= length * Cos(ball[9].angle * grad) * ball[9].acceleration;
         }
         if (showball[10]) {
-          ball[10].x -= length * sin(ball[10].angle * grad) * ball[10].acceleration;
-          ball[10].z -= length * cos(ball[10].angle * grad) * ball[10].acceleration;
+          ball[10].x -= length * Sin(ball[10].angle * grad) * ball[10].acceleration;
+          ball[10].z -= length * Cos(ball[10].angle * grad) * ball[10].acceleration;
         }
         if (showball[11]) {
-          ball[11].x -= length * sin(ball[11].angle * grad) * ball[11].acceleration;
-          ball[11].z -= length * cos(ball[11].angle * grad) * ball[11].acceleration;
+          ball[11].x -= length * Sin(ball[11].angle * grad) * ball[11].acceleration;
+          ball[11].z -= length * Cos(ball[11].angle * grad) * ball[11].acceleration;
         }
         if (showball[12]) {
-          ball[12].x -= length * sin(ball[12].angle * grad) * ball[12].acceleration;
-          ball[12].z -= length * cos(ball[12].angle * grad) * ball[12].acceleration;
+          ball[12].x -= length * Sin(ball[12].angle * grad) * ball[12].acceleration;
+          ball[12].z -= length * Cos(ball[12].angle * grad) * ball[12].acceleration;
         }
         if (showball[13]) {
-          ball[13].x -= length * sin(ball[13].angle * grad) * ball[13].acceleration;
-          ball[13].z -= length * cos(ball[13].angle * grad) * ball[13].acceleration;
+          ball[13].x -= length * Sin(ball[13].angle * grad) * ball[13].acceleration;
+          ball[13].z -= length * Cos(ball[13].angle * grad) * ball[13].acceleration;
         }
         if (showball[14]) {
-          ball[14].x -= length * sin(ball[14].angle * grad) * ball[14].acceleration;
-          ball[14].z -= length * cos(ball[14].angle * grad) * ball[14].acceleration;
+          ball[14].x -= length * Sin(ball[14].angle * grad) * ball[14].acceleration;
+          ball[14].z -= length * Cos(ball[14].angle * grad) * ball[14].acceleration;
         }
         if (showball[15]) {
-          ball[15].x -= length * sin(ball[15].angle * grad) * ball[15].acceleration;
-          ball[15].z -= length * cos(ball[15].angle * grad) * ball[15].acceleration;
+          ball[15].x -= length * Sin(ball[15].angle * grad) * ball[15].acceleration;
+          ball[15].z -= length * Cos(ball[15].angle * grad) * ball[15].acceleration;
         }
         /////рассчет углов и ускорений при столкновении шара с шаром  
         inc = 0;
@@ -1244,18 +1240,18 @@ int WinMain(HINSTANCE hInst, HINSTANCE hPrevInst, LPSTR lpCmd, int nShowCmd)
                       gamai = (360 - ball[i].angle - beta + 360) % 360;
                       gamaj = (360 - ball[j].angle - beta + 360) % 360;
 
-                      Aa = ball[i].acceleration * cos(gamai * grad);
-                      Bb = -ball[j].acceleration * cos(gamaj * grad);
+                      Aa = ball[i].acceleration * Cos(gamai * grad);
+                      Bb = -ball[j].acceleration * Cos(gamaj * grad);
                       ////////////////////
                       if (Aa < 0.0f)
                       {
                         xi = Aa - Bb;
-                        yi = ball[i].acceleration * sin(gamai * grad);
+                        yi = ball[i].acceleration * Sin(gamai * grad);
                       }
                       else
                       {
-                        xi = -((ball[i].acceleration - Aa) * cos(gamai * grad) + Bb);
-                        yi = (ball[i].acceleration - Aa) * sin(gamai * grad);
+                        xi = -((ball[i].acceleration - Aa) * Cos(gamai * grad) + Bb);
+                        yi = (ball[i].acceleration - Aa) * Sin(gamai * grad);
                       }
 
                       ball[i].acceleration = sqrt(xi * xi + yi * yi);
@@ -1267,12 +1263,12 @@ int WinMain(HINSTANCE hInst, HINSTANCE hPrevInst, LPSTR lpCmd, int nShowCmd)
                       if (Bb < 0.0f)
                       {
                         xj = Aa - Bb;
-                        yj = ball[j].acceleration * sin(gamaj * grad);
+                        yj = ball[j].acceleration * Sin(gamaj * grad);
                       }
                       else
                       {
-                        xj = Aa - (ball[j].acceleration - Bb) * cos(gamaj * grad);
-                        yj = (ball[j].acceleration - Bb) * sin(gamaj * grad);
+                        xj = Aa - (ball[j].acceleration - Bb) * Cos(gamaj * grad);
+                        yj = (ball[j].acceleration - Bb) * Sin(gamaj * grad);
                       }
 
                       ball[j].acceleration = sqrt(xj * xj + yj * yj);
@@ -1288,18 +1284,18 @@ int WinMain(HINSTANCE hInst, HINSTANCE hPrevInst, LPSTR lpCmd, int nShowCmd)
                       gamai = (360 - ball[i].angle - beta + 360) % 360;
                       gamaj = (360 - ball[j].angle - beta + 360) % 360;
 
-                      Bb = -ball[i].acceleration * cos(gamai * grad);
-                      Aa = ball[j].acceleration * cos(gamaj * grad);
+                      Bb = -ball[i].acceleration * Cos(gamai * grad);
+                      Aa = ball[j].acceleration * Cos(gamaj * grad);
                       //////////////////
                       if (Aa < 0.0f)
                       {
                         xj = Aa - Bb;
-                        yj = ball[j].acceleration * sin(gamaj * grad);
+                        yj = ball[j].acceleration * Sin(gamaj * grad);
                       }
                       else
                       {
-                        xj = -((ball[j].acceleration - Aa) * cos(gamaj * grad) + Bb);
-                        yj = (ball[j].acceleration - Aa) * sin(gamaj * grad);
+                        xj = -((ball[j].acceleration - Aa) * Cos(gamaj * grad) + Bb);
+                        yj = (ball[j].acceleration - Aa) * Sin(gamaj * grad);
                       }
 
                       ball[j].acceleration = sqrt(xj * xj + yj * yj);
@@ -1311,12 +1307,12 @@ int WinMain(HINSTANCE hInst, HINSTANCE hPrevInst, LPSTR lpCmd, int nShowCmd)
                       if (Bb < 0.0f)
                       {
                         xi = Aa - Bb;
-                        yi = ball[i].acceleration * sin(gamai * grad);
+                        yi = ball[i].acceleration * Sin(gamai * grad);
                       }
                       else
                       {
-                        xi = Aa - (ball[i].acceleration - Bb) * cos(gamai * grad);
-                        yi = (ball[i].acceleration - Bb) * sin(gamai * grad);
+                        xi = Aa - (ball[i].acceleration - Bb) * Cos(gamai * grad);
+                        yi = (ball[i].acceleration - Bb) * Sin(gamai * grad);
                       }
 
                       ball[i].acceleration = sqrt(xi * xi + yi * yi);
@@ -1503,7 +1499,8 @@ int WinMain(HINSTANCE hInst, HINSTANCE hPrevInst, LPSTR lpCmd, int nShowCmd)
       }
 
 
-      Draw();
+      core.update();
+      core.draw();
     }
     //Sleep(10);
     SwapBuffers(hDC);

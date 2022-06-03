@@ -8,6 +8,6 @@ class QuadricPtr final
 public:
   QuadricPtr();
   ~QuadricPtr();
-  GLUquadric* operator*();
+  GLUquadric* operator*() const;
 };
 

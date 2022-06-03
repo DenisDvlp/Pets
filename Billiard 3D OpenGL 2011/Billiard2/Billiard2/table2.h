@@ -486,7 +486,7 @@ inline void h2()
 ///////////////////////////////////////
 
 
-GLvoid Table(GLuint	*texture, GLUquadricObj *quadratic)
+GLvoid Table2(GLuint	*texture, GLUquadricObj *quadratic)
 {
 
 	//крышка стола с бортами

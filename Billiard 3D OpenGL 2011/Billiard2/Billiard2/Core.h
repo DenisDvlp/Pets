@@ -4,6 +4,8 @@
 #include "Camera.h"
 #include "Lamp.h"
 #include "Table.h"
+#include "Plate.h"
+#include "Scene.h"
 
 class Core
 {
@@ -11,7 +13,10 @@ class Core
   std::vector<Lamp> lamps;
   Camera camera;
   Table table;
+  Plate plate;
   size_t activeBallIndex;
+  Scene scene;
+  Light sunLight = false;
 public:
   bool hasBallsInGame() const;
   bool areBallsMoving() const;
@@ -24,10 +29,11 @@ public:
   void cameraMoveBackward();
   void cameraMoveLeft();
   void cameraMoveRight();
-  Camera::Angle cameraAngle() const;
+  Angle cameraAngle() const;
   void cameraRotate(float angleX, float angleY);
-  void cameraResize(int width, int height);
+  void sceneResize(int width, int height);
   void ballPull(float acceleration);
+  void update();
   void draw();
 };
 

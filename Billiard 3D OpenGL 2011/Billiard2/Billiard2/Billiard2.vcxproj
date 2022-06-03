@@ -21,11 +21,14 @@
   <ItemGroup>
     <ClInclude Include="Ball.h" />
     <ClInclude Include="Camera.h" />
+    <ClInclude Include="Drawable.h" />
+    <ClInclude Include="Plate.h" />
+    <ClInclude Include="Scene.h" />
+    <ClInclude Include="Vector4.h" />
     <ClInclude Include="Core.h" />
-    <ClInclude Include="Drawing.h" />
     <ClInclude Include="glaux.h" />
     <ClInclude Include="Lamp.h" />
-    <ClInclude Include="Position.h" />
+    <ClInclude Include="Light.h" />
     <ClInclude Include="QuadricPtr.h" />
     <ClInclude Include="Size.h" />
     <ClInclude Include="Table.h" />
@@ -37,11 +40,14 @@
     <ClCompile Include="Billiard.cpp" />
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="Core.cpp" />
-    <ClCompile Include="Drawing.cpp" />
+    <ClCompile Include="Drawable.cpp" />
     <ClCompile Include="Lamp.cpp" />
-    <ClCompile Include="Position.cpp" />
+    <ClCompile Include="Light.cpp" />
+    <ClCompile Include="Plate.cpp" />
     <ClCompile Include="QuadricPtr.cpp" />
+    <ClCompile Include="Scene.cpp" />
     <ClCompile Include="Table.cpp" />
+    <ClCompile Include="Utils.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>

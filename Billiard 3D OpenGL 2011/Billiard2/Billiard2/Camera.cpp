@@ -7,16 +7,7 @@
 
 void Camera::setBall(const Ball& ball)
 {
-  pos = ball.position();
-}
-
-void Camera::move(int direction1, int direction2, float(*trig1)(float), float(*trig2)(float))
-{
-  const float radian = degToRad(angle.y);
-  pos.x += direction1 * speed * trig1(radian);
-  pos.y += direction2 * speed * trig2(radian);
-  adjustInRange<float>(-5, pos.x, 5);
-  adjustInRange<float>(-10.0f, pos.y, 10.0f);
+  pos = -ball.position();
 }
 
 void Camera::moveForward()
@@ -43,88 +34,27 @@ void Camera::rotate(float angleX, float angleY)
 {
   adjustInRange<float>(-30, angleX, 90);
   adjustInLoop<float>(0, angleY, 360);
-  angle = { angleX, angleY, angle.z };
+  angle.set(angleX, angleY);
 }
 
-void Camera::resize(size_t width, size_t height)
-{
-  size = { width, height };
-  glViewport(0, 0, width, height);
-}
-
-Camera::Angle Camera::viewAngle() const
+Angle Camera::viewAngle() const
 {
   return angle;
 }
 
-void Camera::draw()
+void Camera::draw() const
 {
-  glMatrixMode(GL_PROJECTION);
-  glLoadIdentity();
-  gluPerspective(65.0f, (GLfloat)size.width / size.height, 0.01f, 100.0f);
-
-  glMatrixMode(GL_MODELVIEW);
-  glLoadIdentity();
   glTranslatef(0, 1, -2.8f);
-  glRotatef(angle.x, 1, 0, 0);
-  glRotatef(angle.y, 0, 1, 0);
-  glTranslatef(pos.x, 0, pos.y);
+  glRotatef(angle.x(), 1, 0, 0);
+  glRotatef(angle.y(), 0, 1, 0);
+  glTranslatef(pos.x(), pos.y(), pos.z());
+}
 
-  glPushMatrix();
-  glEnable(GL_LIGHT0);
-  GLfloat sun[] = { 0, 1, 0, 0 }; 
-  glLightfv(GL_LIGHT0, GL_POSITION, sun);
-  GLfloat diffuse[] = { 0.8, 0.8, 0.8, 0.0 };
-  glLightfv(GL_LIGHT0, GL_DIFFUSE, diffuse);
-  GLfloat spec[] = { 0.5, 0.5, 0.5, 1 };
-  glLightfv(GL_LIGHT0, GL_SPECULAR, spec);
-  GLfloat mat_ambient[] = { 0.2f, 0.2f, 0.2f, 1.0 };
-  glLightfv(GL_LIGHT0, GL_AMBIENT, mat_ambient);
-  glPopMatrix();
-
-  /*glPushMatrix();
-  glEnable(GL_LIGHT1);
-  glTranslatef(0, 1, -4);
-
-  gluSphere(*quadric, 0.068f, 32, 32);
-
-  GLfloat spotLight[] = { 0, 0, 0, 1 };
-  glLightfv(GL_LIGHT1, GL_POSITION, spotLight);
-  GLfloat diffuse[] = { 0, 0, 0, 0 };
-  glLightfv(GL_LIGHT1, GL_DIFFUSE, diffuse);
-  GLfloat spec2[] = { 1, 1, 1, 0 };
-  glLightfv(GL_LIGHT1, GL_SPECULAR, spec2);
-  glPopMatrix();*/
-
-  
-
-  // прожектор
-  // убывание интенсивности с расстоянием
-  // отключено (по умолчанию)
-  // половина угла при вершине 30 градусов
-  // направление на центр плоскости
-  ////draw sample square below
-  //glLoadIdentity();
-  glPushMatrix();
-  GLfloat mat_specular[] = { 1.0, 1.0, 1.0, 1.0 };
-  GLfloat mat_shininess[] = { 128 };
-  glMaterialfv(GL_FRONT, GL_SPECULAR, mat_specular);
-  glMaterialfv(GL_FRONT, GL_SHININESS, mat_shininess);
-  GLfloat x, y;
-  glBegin(GL_QUADS);
-  const float d = 0.5f;
-  const float height = -3;
-  glNormal3f(0.0, 1.0, 0.0);
-  for (x = -5.0; x < 5.0; x += d)
-  {
-    for (y = 2.0; y > -10.0; y -= d)
-    {
-      glVertex3f(x, height, y);
-      glVertex3f(x, height, y + d);
-      glVertex3f(x + d, height, y + d);
-      glVertex3f(x + d, height, y);
-    }
-  }
-  glEnd();
-  glPopMatrix();
+void Camera::move(int direction1, int direction2, float(*trig1)(float), float(*trig2)(float))
+{
+  const float radian = degToRad(angle.y());
+  pos.x() += direction1 * speed * trig1(radian);
+  pos.z() += direction2 * speed * trig2(radian);
+  adjustInRange<float>(-5, pos.x(), 5);
+  adjustInRange<float>(-10.0f, pos.z(), 10.0f);
 }

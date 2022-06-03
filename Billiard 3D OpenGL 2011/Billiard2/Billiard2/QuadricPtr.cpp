@@ -14,7 +14,7 @@ QuadricPtr::~QuadricPtr()
   gluDeleteQuadric(ptr);
 }
 
-GLUquadric* QuadricPtr::operator*()
+GLUquadric* QuadricPtr::operator*() const
 {
   return ptr;
 }
