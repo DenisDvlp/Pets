@@ -4,15 +4,16 @@
 
 class Light : public Drawable
 {
-  const unsigned int lightId;
+  const unsigned int id;
+  const bool isSpot;
   Direction spotDirection;
 public:
   Light(bool isSpot = true);
   ~Light();
-  void enable(bool);
-  void ambient(float r, float g, float b);
-  void diffusion(float r, float g, float b);
-  void specular(float r, float g, float b);
+  void enable(bool enabled);
+  void ambient(float intensity);
+  void diffusion(float intensity);
+  void specular(float intensity);
   void direction(float x, float y, float z);
   void cutoffAngle(float angle);
   void onDraw(GLUquadric* quadric) const override;

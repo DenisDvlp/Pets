@@ -1,9 +1,7 @@
 #include "Ball.h"
 #include "Utils.h"
+#include "Drawing.h"
 #include <cmath>
-#include <windows.h>
-#include <gl/gl.h>
-#include <gl/glu.h>
 
 void Ball::color(float r, float g, float b)
 {
@@ -47,24 +45,18 @@ bool Ball::isMoving() const
 
 void Ball::onDraw(GLUquadric* quadric) const
 {
-  glPushAttrib(GL_LIGHTING_BIT);
   // ball
   glColor4fv(rgb);
-  GLfloat diffuse[] = { 0.0, 0.0, 1.0, 0.0 };
-  glMaterialfv(GL_FRONT, GL_DIFFUSE, diffuse);
-  GLfloat mat_specular[] = { 1.0, 1.0, 1.0, 1.0 };
-  GLfloat mat_shininess[] = { 128 };
-  glMaterialfv(GL_FRONT, GL_SPECULAR, mat_specular);
-  glMaterialfv(GL_FRONT, GL_SHININESS, mat_shininess);
-
-  gluSphere(quadric, 0.068f, 48, 48);
+  {
+    materialBlock;
+    materialReflection(1.0f, 1.0f);
+    materialDiffusion(1.0f);
+    gluSphere(quadric, 0.068f, 48, 48);
+  }
 
   // shadow
-  GLfloat mat_specular2[] = { 0.0, 0.0, 0.0, 1.0 };
-  glMaterialfv(GL_FRONT, GL_SPECULAR, mat_specular2);
+  glColor3f(0.3f, 0.6f, 0.3f);
   glTranslatef(0, -0.0678f, 0);
   glRotatef(-90, 1, 0, 0);
-  glColor3f(0.3f, 0.6f, 0.3f);
   gluDisk(quadric, 0.0f, 0.055f, 16, 16);
-  glPopAttrib();
 }

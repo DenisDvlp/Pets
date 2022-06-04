@@ -1,6 +1,16 @@
 #include <algorithm>
 #include "Core.h"
 
+Core::Core()
+{
+  scene.setCamera(camera);
+  scene.addDrawable(sunLight);
+  scene.addDrawable(table);
+  scene.addDrawables(lamps);
+  scene.addDrawables(balls);
+  //scene.addDrawable(plate);
+}
+
 bool Core::hasBallsInGame() const
 {
   // We should have at least two balls to consider game as in progress.
@@ -24,30 +34,18 @@ bool Core::areBallsMoving() const
 
 void Core::init()
 {
-  sunLight.enable(true);
-  sunLight.position(0.0f, 1.0f, 0.0f);
-  sunLight.ambient(0.1f, 0.1f, 0.1f);
-  sunLight.diffusion(0.5f, 0.5f, 0.5f);
-  sunLight.specular(0.3f, 0.3f, 0.3f);
+  scene.init();
 
-  table.init();
-  table.visible(false);
-  lamps.resize(4);
-  balls.resize(16);
   // set black color to the first ball
-  balls[0].color(127 / 255.0f, 85 / 255.0f, 85 / 255.0f);
+  balls[0].color(0.5f, 0.33f, 0.33f);
   setBallsPositions();
   setLampsPositions();
 
-  scene.setCamera(camera);
-  scene.addDrawable(sunLight);
-  scene.addDrawable(table);
-  scene.addDrawable(plate);
-  scene.addDrawables(lamps);
-  scene.addDrawables(balls);
-
-  scene.init();
-
+  sunLight.enable(true);
+  sunLight.direction(0, -1.0f, 0);
+  sunLight.ambient(0.15f);
+  sunLight.diffusion(0.3f);
+  sunLight.specular(0.6f);
 }
 
 void Core::setBallsPositions()
@@ -81,17 +79,12 @@ void Core::setBallsPositions()
 
 void Core::setLampsPositions()
 {
-  const float defaultPos[4] = {
-    { -0.2f },
-    { -1.7f },
-    { -3.2f },
-    { -4.7f },
-  };
-
   size_t i = 0;
+  float distance = -1.0f;
   for (auto& lamp : lamps)
   {
-    lamp.position(0, 0, defaultPos[i]);
+    lamp.position(0, 0, distance);
+    distance -= 1.7f;
     ++i;
   }
 }

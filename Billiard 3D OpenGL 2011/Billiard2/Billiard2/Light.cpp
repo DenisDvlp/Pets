@@ -1,15 +1,11 @@
 #include "Light.h"
-#include <windows.h>
-#include <gl/gl.h>
-#include <gl/glu.h>
+#include "Drawing.h"
 
 static auto lastLightId = GL_LIGHT0;
 
-Light::Light(bool isSpot /*= true*/) : lightId(lastLightId++)
-{
-  pos.a() = float(isSpot);
-  enable(true);
-}
+Light::Light(bool isSpot /*= true*/) :
+  id(lastLightId++), isSpot(isSpot)
+{}
 
 Light::~Light()
 {
@@ -18,41 +14,38 @@ Light::~Light()
 
 void Light::enable(bool enabled)
 {
-  enabled ? glEnable(lightId) : glDisable(lightId);
+  lightTurn(id, enabled);
 }
 
-void Light::ambient(float r, float g, float b)
+void Light::ambient(float intensity)
 {
-  GLfloat ambientColor[] = { r, g, b, 1.0f };
-  glLightfv(lightId, GL_AMBIENT, ambientColor);
+  lightAmbient(id, intensity);
 }
 
-void Light::diffusion(float r, float g, float b)
+void Light::diffusion(float intensity)
 {
-  GLfloat diffusionColor[] = { r, g, b, 1.0f };
-  glLightfv(lightId, GL_DIFFUSE, diffusionColor);
+  lightDiffusion(id, intensity);
 }
 
-void Light::specular(float r, float g, float b)
+void Light::specular(float intensity)
 {
-  GLfloat specularColor[] = { r, g, b, 1.0f };
-  glLightfv(lightId, GL_SPECULAR, specularColor);
+  lightReflection(id, intensity);
 }
 
 void Light::direction(float x, float y, float z)
 {
-  spotDirection.set(x, y, z);
-  glLightfv(lightId, GL_SPOT_DIRECTION, spotDirection);
+  if (isSpot)
+    spotDirection.set(x, y, z);
+  else
+    spotDirection.set(-x, -y, -z, 0); // Last param is a hack. See ::lightDirection.
 }
 
 void Light::cutoffAngle(float angle)
 {
-  glLightf(lightId, GL_SPOT_CUTOFF, angle);
+  lightSpotAngle(id, angle);
 }
 
 void Light::onDraw(GLUquadric* quadric) const
 {
-  glTranslatef(-pos.x(), -pos.y(), -pos.z());
-  glLightfv(lightId, GL_POSITION, pos);
-  glLightfv(lightId, GL_SPOT_DIRECTION, spotDirection);
+  lightDirection(id, spotDirection, isSpot);
 }

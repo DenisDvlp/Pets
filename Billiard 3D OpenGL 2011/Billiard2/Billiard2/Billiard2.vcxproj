@@ -22,6 +22,7 @@
     <ClInclude Include="Ball.h" />
     <ClInclude Include="Camera.h" />
     <ClInclude Include="Drawable.h" />
+    <ClInclude Include="Drawing.h" />
     <ClInclude Include="Plate.h" />
     <ClInclude Include="Scene.h" />
     <ClInclude Include="Vector4.h" />
@@ -41,6 +42,7 @@
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="Core.cpp" />
     <ClCompile Include="Drawable.cpp" />
+    <ClCompile Include="Drawing.cpp" />
     <ClCompile Include="Lamp.cpp" />
     <ClCompile Include="Light.cpp" />
     <ClCompile Include="Plate.cpp" />

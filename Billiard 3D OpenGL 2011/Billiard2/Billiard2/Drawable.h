@@ -21,4 +21,3 @@ public:
   virtual void onInit() {};
   void draw(GLUquadric* quadric) const;
 };
-

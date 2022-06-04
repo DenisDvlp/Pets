@@ -30,6 +30,7 @@ void Scene::init()
   glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);
   glClearColor(clearColor.r(), clearColor.g(), clearColor.b(), clearColor.a());
   glLightModeli(GL_LIGHT_MODEL_LOCAL_VIEWER, GL_TRUE);
+  glLightModeli(GL_LIGHT_MODEL_TWO_SIDE, GL_TRUE);
   glLightModelfv(GL_LIGHT_MODEL_AMBIENT, ambient);
   glEnable(GL_LIGHTING);
   glEnable(GL_COLOR_MATERIAL);

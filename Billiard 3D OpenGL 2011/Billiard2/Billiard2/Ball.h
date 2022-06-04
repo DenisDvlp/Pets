@@ -9,7 +9,7 @@ class Ball : public Drawable
 
   float angle = 0;
   float acceleration = 0;
-  Color rgb = { 1.0f, 1.0f, 1.0f };
+  Color rgb = { 0.925f, 0.937f, 0.855f };
 public:
   void color(float r, float g, float b);
   void collide(Ball& other);

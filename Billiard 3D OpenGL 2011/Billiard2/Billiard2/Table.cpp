@@ -1,7 +1,5 @@
 #include "Table.h"
-#include <windows.h>
-#include <gl/gl.h>
-#include <gl/glu.h>
+#include "Drawing.h"
 #include "glaux.h"
 
 ////////////////пол//////////////////
@@ -489,17 +487,39 @@ inline void h2()
 
 ///////////////////////////////////////
 
-GLvoid drawTable(const GLuint* texture, GLUquadricObj* quadratic)
+void drawTable(const GLuint* texture, GLUquadricObj* quadratic)
 {
+	glColor3f(1.0f, 1.0f, 1.0f);
+
 	//крышка стола с бортами
-	glBindTexture(GL_TEXTURE_2D, texture[0]);
-	glBegin(GL_QUADS);
-	//glColor3f(0.153f, 0.588f, 0.392f);
-	glTexCoord2f(1.0f, 1.0f); A();
-	glTexCoord2f(1.0f, 0.0f); B();
-	glTexCoord2f(0.0f, 0.0f); D();
-	glTexCoord2f(0.0f, 1.0f); C();
-	glEnd();
+	{
+		materialBlock;
+		materialReflection(1.0f, 1.0f);
+		glBindTexture(GL_TEXTURE_2D, texture[0]);
+		const float d = 0.5f;
+		const float height = -2.1f;
+		glBegin(GL_QUADS);
+		glNormal3f(0.0, 1.0, 0.0);
+		for (float x = -5.0; x < 5.0; x += d)
+		{
+			for (float y = 2.0; y > -10.0; y -= d)
+			{
+				glTexCoord2f(0.0f, 0.0f);glVertex3f(x, height, y);
+				glTexCoord2f(0.0f, 1.0f);glVertex3f(x, height, y + d);
+				glTexCoord2f(1.0f, 1.0f);glVertex3f(x + d, height, y + d);
+				glTexCoord2f(1.0f, 0.0f);glVertex3f(x + d, height, y);
+			}
+		}
+		glEnd();
+		/*glBegin(GL_QUADS);w
+		glNormal3f(0.0, -1.0, 0.0);
+		glTexCoord2f(0.0f, 0.0f); glVertex3f(-1.8f, -2.0f, -7.2f);
+		glTexCoord2f(0.0f, 1.0f); glVertex3f(1.8f, -2.0f, -7.2f);
+		glTexCoord2f(1.0f, 1.0f); glVertex3f(1.8f, -2.0f, 0.0f);
+		glTexCoord2f(1.0f, 0.0f); glVertex3f(-1.8f, -2.0f, 0.0f);
+		glEnd();*/
+	}
+	return;
 
 	//горизонтальные края
 	glBindTexture(GL_TEXTURE_2D, texture[1]);
@@ -971,16 +991,15 @@ static void loadImage(GLuint texture, const char* filepath)
 void Table::onInit()
 {
 	glGenTextures(3, textures);
-	loadImage(textures[0], "table/sukno.bbp");
+	loadImage(textures[0], "table/cloth.bmp");
 	loadImage(textures[1], "table/bort.bbp");
 	loadImage(textures[2], "table/nogi.bbp");
 }
 
 void Table::onDraw(GLUquadric* quadric) const
 {
-	glPushMatrix();
+	glNormal3f(0.0, -1.0, 0.0);
 	glEnable(GL_TEXTURE_2D);
 	drawTable(textures, quadric);
 	glDisable(GL_TEXTURE_2D);
-	glPopMatrix();
 }

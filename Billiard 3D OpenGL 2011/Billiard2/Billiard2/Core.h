@@ -9,8 +9,8 @@
 
 class Core
 {
-  std::vector<Ball> balls;
-  std::vector<Lamp> lamps;
+  std::vector<Ball> balls{16};
+  std::vector<Lamp> lamps{4};
   Camera camera;
   Table table;
   Plate plate;
@@ -18,6 +18,7 @@ class Core
   Scene scene;
   Light sunLight = false;
 public:
+  Core();
   bool hasBallsInGame() const;
   bool areBallsMoving() const;
   void init();

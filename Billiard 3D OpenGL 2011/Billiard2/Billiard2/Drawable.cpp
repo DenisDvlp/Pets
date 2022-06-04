@@ -1,7 +1,5 @@
 #include "Drawable.h"
-#include <windows.h>
-#include <gl/gl.h>
-#include <gl/glu.h>
+#include "Drawing.h"
 
 void Drawable::visible(bool isVisible)
 {
@@ -43,8 +41,7 @@ void Drawable::draw(GLUquadric* quadric) const
   if (!isVisible)
     return;
 
-  glPushMatrix();
-  glTranslatef(pos.x(), pos.y(), pos.z());
+  positionBlock;
+  ::position(pos);
   onDraw(quadric);
-  glPopMatrix();
 }
