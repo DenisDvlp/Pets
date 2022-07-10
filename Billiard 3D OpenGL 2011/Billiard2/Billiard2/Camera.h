@@ -8,7 +8,7 @@
 class Camera
 {
 private:
-  static constexpr float speed = 0.008f;
+  static constexpr float velocity = 0.008f;
 
   Position pos; //координаты
   Angle angle;  //угол камеры

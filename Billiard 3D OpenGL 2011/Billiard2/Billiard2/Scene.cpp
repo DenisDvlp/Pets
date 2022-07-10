@@ -1,7 +1,5 @@
 #include "Scene.h"
-#include <windows.h>
-#include <gl/gl.h>
-#include <gl/glu.h>
+#include "Drawing.h"
 #include "Vector4.h"
 #include "Camera.h"
 #include "Drawable.h"

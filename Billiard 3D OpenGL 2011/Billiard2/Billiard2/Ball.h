@@ -1,20 +1,24 @@
 #pragma once
 #include "Vector4.h"
 #include "Drawable.h"
+#include <chrono>
+
+using namespace std::chrono;
+using namespace std::chrono_literals;
 
 class Ball : public Drawable
 {
-  static constexpr float speed = 0.08f;
-  static constexpr float deceleration = 0.001f;
+  static constexpr float deceleration = -0.15f;
 
   float angle = 0;
-  float acceleration = 0;
+  float velocity = 0;
   Color rgb = { 0.925f, 0.937f, 0.855f };
 public:
   void color(float r, float g, float b);
   void collide(Ball& other);
-  void pull(float acceleration, float angle);
-  void update();
+  void pull(float velocity, float angle);
+  void collide(float angle);
+  void update(milliseconds ms);
   using Drawable::position;
   void position(float x, float z);
   bool isMoving() const;

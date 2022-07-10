@@ -31,12 +31,6 @@ void lightTurn(int id, bool On)
   On ? glEnable(id) : glDisable(id);
 }
 
-void lightSpot(int id)
-{
-  const float xyzs[] = { 0, 0, 0, 1.0f };
-  glLightfv(id, GL_POSITION, xyzs);
-}
-
 void lightAmbient(int id, float intensity)
 {
   const float color[] = { intensity, intensity, intensity, 1.0f };
@@ -75,4 +69,24 @@ void lightDirection(int id, const float* xyz, bool isSpot)
 void position(const float* xyz)
 {
   glTranslatef(xyz[0], xyz[1], xyz[2]);
+}
+
+void position(float x, float y, float z)
+{
+  glTranslatef(x, y, z);
+}
+
+void rotationX(const float angle)
+{
+  glRotatef(angle, 1, 0, 0);
+}
+
+void rotationY(const float angle)
+{
+  glRotatef(angle, 0, 1, 0);
+}
+
+void rotationZ(const float angle)
+{
+  glRotatef(angle, 0, 0, 1);
 }

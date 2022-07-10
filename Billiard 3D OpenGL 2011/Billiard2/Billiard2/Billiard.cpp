@@ -1068,8 +1068,18 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
   return 0;
 }
 
+milliseconds getTimeFromLastFrame()
+{
+  const duration time = steady_clock::now().time_since_epoch();
+  static auto last = duration_cast<milliseconds>(time);
+  auto now = duration_cast<milliseconds>(time);
+  const milliseconds span = now - last;
+  last = now;
+  return span;
+}
+
 using namespace std;
-int WinMain(HINSTANCE hInst, HINSTANCE hPrevInst, LPSTR lpCmd, int nShowCmd)
+int APIENTRY WinMain(_In_ HINSTANCE hInst, _In_opt_ HINSTANCE hPrevInst, _In_ LPSTR lpCmd, _In_ int nShowCmd)
 {
   float length = 0.08f, movement = 0.03f, grad = pi / 180, agrad = 180 / pi;
   int gamai, gamaj, beta, perfom = 0;
@@ -1497,12 +1507,9 @@ int WinMain(HINSTANCE hInst, HINSTANCE hPrevInst, LPSTR lpCmd, int nShowCmd)
       {
         LKM = false;
       }
-
-
-      core.update();
-      core.draw();
     }
-    //Sleep(10);
+    core.update(getTimeFromLastFrame());
+    core.draw();
     SwapBuffers(hDC);
   }
 }

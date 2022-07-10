@@ -1,5 +1,6 @@
 #include <algorithm>
 #include "Core.h"
+#include "Utils.h"
 
 Core::Core()
 {
@@ -44,7 +45,7 @@ void Core::init()
   sunLight.enable(true);
   sunLight.direction(0, -1.0f, 0);
   sunLight.ambient(0.15f);
-  sunLight.diffusion(0.3f);
+  sunLight.diffusion(0.5f);
   sunLight.specular(0.6f);
 }
 
@@ -70,43 +71,34 @@ void Core::setBallsPositions()
   };
 
   size_t i = 0;
+  float angle = 10;
   for (auto& ball : balls)
   {
     ball.position(defaultPos[i][0], defaultPos[i][1]);
+    ball.pull(1.0f, angle);
+    angle += 10;
     ++i;
   }
 }
 
 void Core::setLampsPositions()
 {
-  size_t i = 0;
-  float distance = -1.0f;
+  float distance = -1.05f;
   for (auto& lamp : lamps)
   {
     lamp.position(0, 0, distance);
     distance -= 1.7f;
-    ++i;
   }
 }
 
 void Core::nextBall()
 {
-  do {
-    ++activeBallIndex;
-    activeBallIndex %= balls.size();
-    camera.setBall(balls[activeBallIndex]);
-  } while (!balls[activeBallIndex].visible());
+  changeBall(true);
 }
 
 void Core::prevBall()
 {
-  do {
-    if (activeBallIndex == 0)
-      activeBallIndex = balls.size() - 1;
-    else
-      --activeBallIndex;
-    camera.setBall(balls[activeBallIndex]);
-  } while (!balls[activeBallIndex].visible());
+  changeBall(false);
 }
 
 void Core::cameraMoveForward()
@@ -149,11 +141,25 @@ void Core::ballPull(float acceleration)
   balls[activeBallIndex].pull(acceleration, -camera.viewAngle().x());
 }
 
-void Core::update()
+void Core::update(milliseconds ms)
 {
+  for (auto& ball : balls)
+  {
+    ball.update(ms);
+  }  
 }
 
 void Core::draw()
 {
   scene.draw();
+}
+
+// isNext - `true` for the next and `false` for the previous ball.
+void Core::changeBall(bool isNext)
+{
+  do {
+    activeBallIndex += (isNext ? 1 : -1);
+    adjustInLoop<size_t>(0, activeBallIndex, balls.size() - 1);
+    camera.setBall(balls[activeBallIndex]);
+  } while (!balls[activeBallIndex].visible());
 }

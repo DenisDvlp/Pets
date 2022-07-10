@@ -4,12 +4,12 @@
 void Lamp::onInit()
 {
   light.enable(true);
-  light.position(0, 0.5f, 0);
+  light.position(0, 0.2f, 0);
   light.direction(0, -1.0f, 0);
   light.ambient(0.0f);
-  light.diffusion(0.3f);
+  light.diffusion(0.2f);
   light.specular(1.0f);
-  light.cutoffAngle(45.0f);
+  light.cutoffAngle(70.0f);
 }
 
 void Lamp::onDraw(GLUquadric* quadric) const

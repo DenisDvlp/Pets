@@ -5,7 +5,7 @@
 
 class Lamp : public Drawable
 {
-  Light light;
+  mutable Light light;
 public:
   void onInit() override;
   void onDraw(GLUquadric* quadric) const override;

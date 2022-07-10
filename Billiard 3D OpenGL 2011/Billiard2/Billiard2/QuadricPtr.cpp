@@ -1,7 +1,5 @@
 #include "QuadricPtr.h"
-#include <windows.h>
-#include <gl/gl.h>
-#include <gl/glu.h>
+#include "Drawing.h"
 
 QuadricPtr::QuadricPtr() : ptr(gluNewQuadric())
 {

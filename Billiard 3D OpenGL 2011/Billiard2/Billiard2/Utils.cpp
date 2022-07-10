@@ -1,6 +1,6 @@
 #include "Utils.h"
 
-template<size_t N>
+template<size_t N, int>
 struct TrigLookup
 {
   TrigLookup(float(*trig)(float))
@@ -14,20 +14,21 @@ struct TrigLookup
   float table[N];
 };
 
+template<int Version>
 inline float trigFunc(float angle, float(*trig)(float))
 {
   static constexpr size_t N = 36000;
-  static const TrigLookup<N> lookup(trig);
+  static const TrigLookup<N, Version> lookup(trig);
   static constexpr float Koef = N / 360.0f;
   return lookup.table[static_cast<int>(Koef * angle)];
 }
 
 float Cos(float angle)
 {
-  return trigFunc(angle, cos);
+  return trigFunc<1>(angle, cos);
 }
 
 float Sin(float angle)
 {
-  return trigFunc(angle, sin);
+  return trigFunc<2>(angle, sin);
 }

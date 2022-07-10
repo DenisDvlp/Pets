@@ -36,14 +36,12 @@ constexpr void adjustInLoop(T min, T& what, T max) noexcept
     if (what < min)
       what = max - (min - what) % (max - min);
     else if (what > max)
-      what = what % (max - min) + min;
+      what = what % (max - min + 1) + min;
   }
   else
   {
-    if (what < min)
-      while (what < min) what += 360;
-    else if (what > max)
-      while (what > max) what -= max;
+    while (what < min) what += max;
+    while (what > max) what -= max;
   }
 }
 

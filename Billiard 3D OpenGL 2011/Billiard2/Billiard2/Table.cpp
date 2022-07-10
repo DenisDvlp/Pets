@@ -487,16 +487,85 @@ inline void h2()
 
 ///////////////////////////////////////
 
-void drawTable(const GLuint* texture, GLUquadricObj* quadratic)
+
+void drawTextureRect(GLuint texture, float x, float y, float width, float height, float side)
+{
+	size_t partsX = static_cast<size_t>(width / side);
+	size_t partsY = static_cast<size_t>(height / side);
+	float partX = 1.0f / partsX;
+	float partY = 1.0f / partsY;
+	for (size_t by = 0; by < partsY; ++by)
+	{
+		const float y1 = by * side + y;
+		const float y2 = y1 + side;
+		const float ty1 = by * partY;
+		const float ty2 = ty1 + partY;
+		for (size_t bx = 0; bx < partsX; ++bx)
+		{
+			const float x1 = bx * side + x;
+			const float x2 = x1 + side;
+			const float tx1 = bx * partX;
+			const float tx2 = tx1 + partX;
+
+			glTexCoord2f(tx1, ty1); glVertex2f(x1, y1);
+			glTexCoord2f(tx1, ty2); glVertex2f(x1, y2);
+			glTexCoord2f(tx2, ty2); glVertex2f(x2, y2);
+			glTexCoord2f(tx2, ty1); glVertex2f(x2, y1);
+		}
+	}
+}
+
+void drawTextureTiles(GLuint texture, float x, float y, size_t partsX, size_t partsY, float side, float cell)
+{
+	glNormal3f(0.0, 0.0, -1.0);
+	glBindTexture(GL_TEXTURE_2D, texture);
+	glBegin(GL_QUADS);
+	for (size_t i = 0; i < partsY; ++i)
+	{
+		const float y1 = i * side + y;
+		for (size_t j = 0; j < partsX; ++j)
+		{
+			const float x1 = j * side + x;
+			drawTextureRect(texture, x1, y1, side, side, cell);
+		}
+	}
+	glEnd();
+}
+
+void Table::createTable(GLuint texture)
+{
+	tableList = glGenLists(1);
+	glNewList(tableList, GL_COMPILE);
+	drawTextureTiles(texture, 0.0f, 0.0f, 9, 18, 0.4f, 0.4f);
+	glEndList();
+}
+
+void Table::drawTable(const GLuint* texture, GLUquadricObj* quadric) const
 {
 	glColor3f(1.0f, 1.0f, 1.0f);
+	::position(-1.8f, -2.0f, 0);
+	glRotatef(-90, 1, 0, 0);
 
 	//крышка стола с бортами
 	{
 		materialBlock;
-		materialReflection(1.0f, 1.0f);
-		glBindTexture(GL_TEXTURE_2D, texture[0]);
-		const float d = 0.5f;
+		materialReflection(0.1f, 0.1f);
+		glCallList(tableList);
+		//drawTextureRect(texture[0], 0.0f, 0.0f, 3.6f, 7.2f, 0.05f);
+		/*glBindTexture(GL_TEXTURE_2D, texture[0]);
+
+		glBegin(GL_QUAD_STRIP);
+		glVertex2f(-0.25, 0.5);
+		glVertex2f(-0.25, -0.25);
+		glVertex2f(0.0, 0.0);
+		glVertex2f(0.0, -0.25);
+		glVertex2f(0.25, 0.5);
+		glVertex2f(0.25, -0.25);
+		glEnd();*/
+
+		/*drawTextureRect(texture[0])
+
+		const float d = 0.2f;
 		const float height = -2.1f;
 		glBegin(GL_QUADS);
 		glNormal3f(0.0, 1.0, 0.0);
@@ -510,7 +579,7 @@ void drawTable(const GLuint* texture, GLUquadricObj* quadratic)
 				glTexCoord2f(1.0f, 0.0f);glVertex3f(x + d, height, y);
 			}
 		}
-		glEnd();
+		glEnd();*/
 		/*glBegin(GL_QUADS);w
 		glNormal3f(0.0, -1.0, 0.0);
 		glTexCoord2f(0.0f, 0.0f); glVertex3f(-1.8f, -2.0f, -7.2f);
@@ -915,22 +984,22 @@ void drawTable(const GLuint* texture, GLUquadricObj* quadratic)
 	glColor3f(0.0f, 0.0f, 0.0f);
 	glTranslatef(-1.6f, -1.998f, 0.0f);
 	glRotatef(90, 1, 0, 0);
-	gluDisk(quadratic, 0.0f, 0.1f, 12, 4);
+	gluDisk(quadric, 0.0f, 0.1f, 12, 4);
 
 	glTranslatef(0.0f, -6.4f, 0.0f);
-	gluDisk(quadratic, 0.0f, 0.1f, 12, 4);
+	gluDisk(quadric, 0.0f, 0.1f, 12, 4);
 
 	glTranslatef(3.2f, 0.0f, 0.0f);
-	gluDisk(quadratic, 0.0f, 0.1f, 12, 4);
+	gluDisk(quadric, 0.0f, 0.1f, 12, 4);
 
 	glTranslatef(0.0f, 6.4f, 0.0f);
-	gluDisk(quadratic, 0.0f, 0.1f, 12, 4);
+	gluDisk(quadric, 0.0f, 0.1f, 12, 4);
 
 	glTranslatef(0.05f, -3.2f, 0.0f);
-	gluDisk(quadratic, 0.0f, 0.1f, 12, 4);
+	gluDisk(quadric, 0.0f, 0.1f, 12, 4);
 
 	glTranslatef(-3.3f, 0.0f, 0.0f);
-	gluDisk(quadratic, 0.0f, 0.1f, 12, 4);
+	gluDisk(quadric, 0.0f, 0.1f, 12, 4);
 	glRotatef(-90, 1, 0, 0);
 
 	glTranslatef(0.35f, -0.502f, 2.9f);
@@ -938,46 +1007,46 @@ void drawTable(const GLuint* texture, GLUquadricObj* quadratic)
 	glColor3f(1.0f, 1.0f, 1.0f);
 
 	glBindTexture(GL_TEXTURE_2D, texture[2]);
-	gluCylinder(quadratic, 0.3f, 0.15f, 0.2f, 16, 16);
+	gluCylinder(quadric, 0.3f, 0.15f, 0.2f, 16, 16);
 	glTranslatef(0.0f, 0.0f, 0.2f);
-	gluCylinder(quadratic, 0.15f, 0.3f, 0.2f, 16, 16);
+	gluCylinder(quadric, 0.15f, 0.3f, 0.2f, 16, 16);
 	glTranslatef(0.0f, 0.0f, 0.2f);
-	gluCylinder(quadratic, 0.3f, 0.15f, 0.35f, 16, 16);
+	gluCylinder(quadric, 0.3f, 0.15f, 0.35f, 16, 16);
 
 	glTranslatef(0.0f, -2.9f, -0.4f);
-	gluCylinder(quadratic, 0.3f, 0.15f, 0.2f, 16, 16);
+	gluCylinder(quadric, 0.3f, 0.15f, 0.2f, 16, 16);
 	glTranslatef(0.0f, 0.0f, 0.2f);
-	gluCylinder(quadratic, 0.15f, 0.3f, 0.2f, 16, 16);
+	gluCylinder(quadric, 0.15f, 0.3f, 0.2f, 16, 16);
 	glTranslatef(0.0f, 0.0f, 0.2f);
-	gluCylinder(quadratic, 0.3f, 0.15f, 0.35f, 16, 16);
+	gluCylinder(quadric, 0.3f, 0.15f, 0.35f, 16, 16);
 
 	glTranslatef(0.0f, -2.9f, -0.4f);
-	gluCylinder(quadratic, 0.3f, 0.15f, 0.2f, 16, 16);
+	gluCylinder(quadric, 0.3f, 0.15f, 0.2f, 16, 16);
 	glTranslatef(0.0f, 0.0f, 0.2f);
-	gluCylinder(quadratic, 0.15f, 0.3f, 0.2f, 16, 16);
+	gluCylinder(quadric, 0.15f, 0.3f, 0.2f, 16, 16);
 	glTranslatef(0.0f, 0.0f, 0.2f);
-	gluCylinder(quadratic, 0.3f, 0.15f, 0.35f, 16, 16);
+	gluCylinder(quadric, 0.3f, 0.15f, 0.35f, 16, 16);
 
 	glTranslatef(2.6f, 0.0f, -0.4f);
-	gluCylinder(quadratic, 0.3f, 0.15f, 0.2f, 16, 16);
+	gluCylinder(quadric, 0.3f, 0.15f, 0.2f, 16, 16);
 	glTranslatef(0.0f, 0.0f, 0.2f);
-	gluCylinder(quadratic, 0.15f, 0.3f, 0.2f, 16, 16);
+	gluCylinder(quadric, 0.15f, 0.3f, 0.2f, 16, 16);
 	glTranslatef(0.0f, 0.0f, 0.2f);
-	gluCylinder(quadratic, 0.3f, 0.15f, 0.35f, 16, 16);
+	gluCylinder(quadric, 0.3f, 0.15f, 0.35f, 16, 16);
 
 	glTranslatef(0.0f, 2.9f, -0.4f);
-	gluCylinder(quadratic, 0.3f, 0.15f, 0.2f, 16, 16);
+	gluCylinder(quadric, 0.3f, 0.15f, 0.2f, 16, 16);
 	glTranslatef(0.0f, 0.0f, 0.2f);
-	gluCylinder(quadratic, 0.15f, 0.3f, 0.2f, 16, 16);
+	gluCylinder(quadric, 0.15f, 0.3f, 0.2f, 16, 16);
 	glTranslatef(0.0f, 0.0f, 0.2f);
-	gluCylinder(quadratic, 0.3f, 0.15f, 0.35f, 16, 16);
+	gluCylinder(quadric, 0.3f, 0.15f, 0.35f, 16, 16);
 
 	glTranslatef(0.0f, 2.9f, -0.4f);
-	gluCylinder(quadratic, 0.3f, 0.15f, 0.2f, 16, 16);
+	gluCylinder(quadric, 0.3f, 0.15f, 0.2f, 16, 16);
 	glTranslatef(0.0f, 0.0f, 0.2f);
-	gluCylinder(quadratic, 0.15f, 0.3f, 0.2f, 16, 16);
+	gluCylinder(quadric, 0.15f, 0.3f, 0.2f, 16, 16);
 	glTranslatef(0.0f, 0.0f, 0.2f);
-	gluCylinder(quadratic, 0.3f, 0.15f, 0.35f, 16, 16);
+	gluCylinder(quadric, 0.3f, 0.15f, 0.35f, 16, 16);
 }
 
 static void loadImage(GLuint texture, const char* filepath)
@@ -991,9 +1060,11 @@ static void loadImage(GLuint texture, const char* filepath)
 void Table::onInit()
 {
 	glGenTextures(3, textures);
-	loadImage(textures[0], "table/cloth.bmp");
+	loadImage(textures[0], "table/cloth_tile1.bmp");
 	loadImage(textures[1], "table/bort.bbp");
 	loadImage(textures[2], "table/nogi.bbp");
+
+	createTable(textures[0]);
 }
 
 void Table::onDraw(GLUquadric* quadric) const

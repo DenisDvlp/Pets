@@ -12,25 +12,33 @@ void Ball::collide(Ball& other)
 {
 }
 
-void Ball::pull(float acceleration, float angle)
+void Ball::pull(float velocity, float angle)
 {
-  this->acceleration = acceleration;
+  this->velocity = velocity;
   this->angle = angle;
 }
 
-void Ball::update()
+void Ball::collide(float angle)
 {
-  if (!visible())
+  this->angle = angle * 2 - this->angle;
+}
+
+void Ball::update(milliseconds ms)
+{
+  if (!visible() || velocity <= 0)
     return;
 
-  const float radian = degToRad(angle);
-  auto decelerate = [&](float&x, float(*trig)(float))
+  auto decelerate = [angle = this->angle](float&x, float path, float(*trig)(float))
   {
-    x -= speed * trig(radian) * acceleration;
+    x -= path * trig(angle);
   };
 
-  decelerate(pos.x(), Sin);
-  decelerate(pos.y(), Cos);
+  const float partOfSecond = ms.count() / 1000.0f;
+  const float path = partOfSecond * (velocity + deceleration * partOfSecond / 2);
+  velocity = velocity + deceleration * partOfSecond;
+
+  decelerate(pos.x(), path, Sin);
+  decelerate(pos.z(), path, Cos);
 }
 
 void Ball::position(float x, float z)
@@ -40,23 +48,25 @@ void Ball::position(float x, float z)
 
 bool Ball::isMoving() const
 {
-  return acceleration > 0;
+  return velocity > 0;
 }
 
 void Ball::onDraw(GLUquadric* quadric) const
 {
   // ball
   glColor4fv(rgb);
+
   {
     materialBlock;
     materialReflection(1.0f, 1.0f);
     materialDiffusion(1.0f);
-    gluSphere(quadric, 0.068f, 48, 48);
+    materialAmbient(0.0f);
+    gluSphere(quadric, 0.068f, 64, 64);
   }
 
   // shadow
-  glColor3f(0.3f, 0.6f, 0.3f);
-  glTranslatef(0, -0.0678f, 0);
+  glColor3i(0, 91, 63);
+  ::position(0, -0.0678f, 0);
   glRotatef(-90, 1, 0, 0);
   gluDisk(quadric, 0.0f, 0.055f, 16, 16);
 }

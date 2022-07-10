@@ -34,7 +34,9 @@ public:
   void cameraRotate(float angleX, float angleY);
   void sceneResize(int width, int height);
   void ballPull(float acceleration);
-  void update();
+  void update(milliseconds ms);
   void draw();
+private:
+  void changeBall(bool isNext);
 };
 
