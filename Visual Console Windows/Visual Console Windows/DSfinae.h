@@ -47,6 +47,13 @@ template<typename... T> using Void = void;
 
 // feature detector
 
+template<template<typename...>typename, typename... Args>
+constexpr bool is_feature_detector_impl = false;
+template<template<typename...>typename F, typename... Args>
+constexpr bool is_feature_detector_impl<F, Void<F<Args...>>, Args...> = true;
+template<template<typename...>typename F, typename... Args>
+constexpr bool is_feature_detected = is_feature_detector_impl<F, void, Args...>;
+
 template<template<typename...>typename T, typename, typename... Args>
 struct feature_detector_impl : False {};
 template<template<typename...>typename T, typename... Args>
