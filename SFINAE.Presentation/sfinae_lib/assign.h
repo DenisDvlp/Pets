@@ -56,5 +56,18 @@ template<typename T> constexpr bool is_set_v = is_associative_container_v<T> && 
 template<typename T> constexpr bool is_map_v = is_associative_container_v<T> && has_map_container_traits_v<T>;
 template<typename T> constexpr bool is_ordered_set_container_v = is_ordered_associative_container_v<T> && !has_map_container_traits_v<T>;
 template<typename T> constexpr bool is_ordered_map_container_v = is_ordered_associative_container_v<T> && has_map_container_traits_v<T>;
+
+
+namespace details {
+template<typename T, typename A> struct forward_member_helper { using type = traits::remove_const_reference_t<A>&&; };
+template<typename T, typename A> struct forward_member_helper<T&, A> { using type = traits::remove_const_reference_t<A>&; };
+template<typename T, typename A> struct forward_member_helper<const T&, A> { using type = const traits::remove_const_reference_t<A>&; };
+template<typename T, typename A> using forward_member_helper_t = typename forward_member_helper<T, A>::type;
+}
+template<typename T, typename A>
+decltype(auto) forward_member(A&& another) {
+    return static_cast<details::forward_member_helper_t<T, A>>(another);
+}
+
 template<typename T> constexpr bool is_unordered_set_container_v = is_unordered_associative_container_v<T> && !has_map_container_traits_v<T>;
 template<typename T> constexpr bool is_unordered_map_container_v = is_unordered_associative_container_v<T> && has_map_container_traits_v<T>;
