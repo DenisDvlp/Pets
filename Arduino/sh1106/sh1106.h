@@ -4,7 +4,7 @@
   * @author  Petrov Denys
   * @version 1.0
   * @date    21-June-2021
-  * @brief   This file includes the OLED driver for SH1106 display moudle
+  * @brief   This file includes the OLED driver for SH1106 display module
   ******************************************************************************
   * @attention
   * Difference between SSD1306 and SH1106:

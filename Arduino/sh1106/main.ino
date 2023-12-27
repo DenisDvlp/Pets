@@ -1,16 +1,3 @@
-﻿/*****************************************************************************
-*
-* File                : oled.ino
-* Hardware Environment: Arduino UNO
-* Build Environment   : Arduino
-* Version             : V1.0.7
-*
-*                 (c) Copyright 2005-2017, WaveShare
-*                      http://www.waveshare.com
-*                      http://www.waveshare.net
-*                         All Rights Reserved
-*
-*****************************************************************************/
 #include "sh1106.h"
 
 uint8_t oled_buf[WIDTH * HEIGHT / 8];

@@ -387,4 +387,3 @@ MigrationBackup/
 *.tlog
 
 build/
-.vscode/
