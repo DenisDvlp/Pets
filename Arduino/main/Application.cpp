@@ -15,6 +15,7 @@ void turnOffOledOnBoard()
   // We need this delay to give the board some time to calm.
   delay(500);
   digitalWrite(LED_BUILTIN_RX, HIGH);
+  delay(500);
   digitalWrite(LED_BUILTIN_TX, HIGH);
 }
 
@@ -33,7 +34,7 @@ void Application::init()
   controller.init({ this, &Application::pressDown });
 
   // init game core
-  core.init(controller, graphics);
+  //core.init(controller, graphics);
 
   // init port for logs
   Serial.begin(9600);
@@ -42,10 +43,16 @@ void Application::init()
   graphics.clear();
   display.update();
 }
-
+int x = 0;
 void Application::update()
 {
-  core.update();
+  delay(200);
+  graphics.drawPixel({10 + x,20 + x} );
+  ++x;
+  if(x == 15){
+    graphics.drawText("Жёлтая кнопка", {10,10}, FontCirillic{});
+  }
+  // core.update();
   controller.update();
   display.update();
 }
@@ -55,14 +62,13 @@ constexpr size_t size(T(&)[S]) { return S; }
 
 void Application::pressDown(uint8_t button)
 {
-  graphics.clear();
   FontCirillic font;
   font.isBold = false;
   Position pos = { (Display::WIDTH - graphics.calculateTextWidth("Ну Погоди", font)) / 2, 20 };
   switch (button) {
-  case Controller::BUTTON_X: graphics.drawText("Жёлтая кнопка", {10,10}, font); break;
-  case Controller::BUTTON_Y: graphics.drawText("Синяя кнопка", {20,20}, font); break;
-  case Controller::BUTTON_A: graphics.drawText("Красная кнопка", {30,30}, font); break;
-  case Controller::BUTTON_B: graphics.drawText("Зелёная кнопка", {40,40}, font); break;
+  case Controller::BUTTON_X: log("BUTTON_X"); break;
+  case Controller::BUTTON_Y: log("BUTTON_Y"); break;
+  case Controller::BUTTON_A: log("BUTTON_A"); break;
+  case Controller::BUTTON_B: log("BUTTON_B"); break;
   }
 }

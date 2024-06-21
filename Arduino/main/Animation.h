@@ -184,7 +184,7 @@ public:
 class SequenceAnimation : public Animation {
 protected:
   Animation** animations;
-  milliseconds lastNow = 0;
+  milliseconds lastNow;
   const unsigned size = 0;
   unsigned current = 0;
   const unsigned times = 0;

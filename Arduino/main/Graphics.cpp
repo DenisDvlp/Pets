@@ -1,4 +1,5 @@
 #include "Graphics.h"
+#include "stl.h"
 #ifdef ARDUINO
 #include "Function.h"
 #endif
@@ -15,10 +16,10 @@ void Graphics::clear()
   memset(buf.data, 0, (buf.width * buf.height / BITS_IN_BYTE));
 }
 
-// [min, max]
+// [min, max)
 static bool isOutOfRange(int what, int min, int max)
 {
-  return what < min || what > max;
+  return what < min || what >= max;
 }
 
 static bool isOutOfSize(Position what, Size size)
@@ -35,7 +36,7 @@ void Graphics::drawPixel(Position pos)
 {
   if (isOutOfSize(pos, buf))
     return;
-  const char mask = 1 << pos.y % BITS_IN_BYTE;
+  const uint8_t mask = 1 << pos.y % BITS_IN_BYTE;
   *bufferOffset(pos) |= mask;
 }
 
@@ -87,6 +88,75 @@ void Graphics::drawVLine(Position startPos, int size)
       mask = 1;
       b += buf.width;
     }
+  }
+}
+
+void Graphics::drawLine(Position startPos, Position endPos)
+{
+  if (startPos.x > endPos.x)
+  {
+    swap(startPos, endPos);
+  }
+
+  int xLength = endPos.x - startPos.x + 1;
+  int yLength = endPos.y - startPos.y + 1;
+  int step = 1;
+  const bool up = (yLength <= 0);
+  if (up)
+  {
+    yLength = 2 - yLength;
+    step = -1;
+  }
+  const bool vertical = (xLength < yLength);
+  auto lineFunc = &Graphics::drawHLine;
+  int* x = &startPos.y;
+  int* y = &startPos.x;
+  if (vertical)
+  {
+    lineFunc = &Graphics::drawVLine;
+    x = &startPos.x;
+    y = &startPos.y;
+    swap(xLength, yLength);
+    if (up)
+    {
+      startPos = endPos;
+    }
+  }
+
+  if (yLength == 1)
+  {
+    (this->*lineFunc)(startPos, xLength);
+    return;
+  }
+
+  const int size = xLength / yLength;
+  const float tail = xLength % yLength;
+  int extraPixels = 0;
+  int i = 0;
+  while (i < yLength)
+  {
+    const int extraPixel = (++i * tail / yLength + 0.5f) - extraPixels;
+    extraPixels += extraPixel;
+    const int len = size + extraPixel;
+    (this->*lineFunc)(startPos, len);
+    *x += step;
+    *y += len;
+  }
+}
+
+
+void Graphics::drawCircle(Position centerPos, int raduis)
+{
+  Position operator+(const Position& l, const Position& r);
+  for (float i = 0; i < 90; i+=1)
+  {
+    const float radian = degToRad(i);
+    int x = static_cast<int>(cos(radian) * raduis + 0.5f);
+    int y = static_cast<int>(sin(radian) * raduis + 0.5f);
+    drawPixel(centerPos + Position{x, y});
+    drawPixel(centerPos + Position{-x, y});
+    drawPixel(centerPos + Position{x, -y});
+    drawPixel(centerPos + Position{-x, -y});
   }
 }
 
@@ -176,10 +246,10 @@ void readUTF8string(const String text, F func)
   // 4 byte 11110XXX 10XXXXXX 10XXXXXX 10XXXXXX
   static constexpr char auxMask = 0b00111111;
   static constexpr char masks[] = {
-    0b10000000,
-    0b11100000,
-    0b11110000,
-    0b11111000
+    char(0b10000000),
+    char(0b11100000),
+    char(0b11110000),
+    char(0b11111000)
   };
 
   const char* it = &*text.begin();

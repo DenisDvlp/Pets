@@ -3,6 +3,7 @@
 #include "Images.h"
 #include "Sprite.h"
 #include "Animation.h"
+#include "stl.h"
 
 template<typename T, int S>
 constexpr int size(T(&)[S]) { return S; }
@@ -152,33 +153,44 @@ void Core::init(Controller& c, Graphics& g)
   // init buttons
   c.init({ this, &Core::pressDown });
 }
-
-//static EggRolling egg;
 void Stage(Graphics* graphics)
 {
   //static Wolf w;
-  //static Chicken c2;
-  static Barn b;
-  static Text text;
+  //static Chicken c1, c2;
+  //static Barn b;
+  //static Text text;
+  //static EggRolling egg;
 
-  milliseconds now = millis();
+  //milliseconds now = millis();
 
-  text.text = "Счёт: 123";
-  text.pos = { 70, 0 };
-  text.draw(graphics);
+  //text.text = "Счёт: 123";
+  //text.pos = { 70, 0 };
+  //text.draw(graphics);
 
   //c2.pos.y = 19;
   //c2.start(now);
   //c2.update(now);
   //c2.draw(graphics);
 
-  b.draw(graphics); 
+  //b.draw(graphics);
 
   //w.pos = { 32, 10 };
   //w.draw(graphics);
 
   //egg.update(now);
   //egg.draw(graphics);
+  static Position start = { 60, 30 };
+  static int R = 200;
+  static int A = 0;
+  float radian = degToRad<float>(A);
+  Position end = { start.x + static_cast<int>(cos(radian) * R), start.y + static_cast<int>(sin(radian) * R) };
+  graphics->drawLine(start, end);
+  graphics->drawLine({ 20,40 }, { 20,20 });
+  graphics->drawCircle({ 60, 30 }, A % 100);
+  graphics->drawCircle({ 60, 30 }, A % 20);
+  graphics->drawCircle({ 60, 30 }, A % 40);
+  A += 1;
+  if (A >= 360) A = 0;
 }
 
 void Core::update()
@@ -191,10 +203,6 @@ void Core::pressDown(uint8_t button)
 {
   switch (button) {
   case Controller::BUTTON_X:
-    Serial.print("ValueAnimation<Position> ");
-    Serial.println(sizeof(ValueAnimation<Position>));
-    Serial.print("FrameAnimation ");
-    Serial.println(sizeof(FrameAnimation));
     break;
   case Controller::BUTTON_Y:
     break;
