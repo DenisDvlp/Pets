@@ -10,14 +10,14 @@
 #pragma comment (lib,"opengl32.lib")
 #pragma comment (lib,"glu32.lib")
 #pragma comment (lib,"glaux.lib")
-static	HGLRC hRC;		
-static	HDC hDC;	
+static	HGLRC hRC;
+static	HDC hDC;
 
 struct Ball
 {
-	double x,z; //координаты
-	int angle; //угол (направление)
-	float acceleration; //начальное ускорение
+	double x,z; //РєРѕРѕСЂРґРёРЅР°С‚С‹
+	int angle; //СѓРіРѕР» (РЅР°РїСЂР°РІР»РµРЅРёРµ)
+	float acceleration; //РЅР°С‡Р°Р»СЊРЅРѕРµ СѓСЃРєРѕСЂРµРЅРёРµ
 };
 double animation[29][2]=
 		{
@@ -53,17 +53,17 @@ double animation[29][2]=
 		};
 Ball ball[16];
 POINT xm;
-int wheel,selected, inc, Anim[6],score; 
-int newx, newy,RotateY,RotateX;//угол камеры
-double x,z,Aa,Bb,xi,yi,xj,yj,force,scale; //координаты камеры
+int wheel,selected, inc, Anim[6],score;
+int newx, newy,RotateY,RotateX;//СѓРіРѕР» РєР°РјРµСЂС‹
+double x,z,Aa,Bb,xi,yi,xj,yj,force,scale; //РєРѕРѕСЂРґРёРЅР°С‚С‹ РєР°РјРµСЂС‹
 bool menu1,menu2,menu3,new1,cont,exit1,yes,no,menu11,menu22,menu33;
 GLuint	texture[6];
-bool ifcross[120],showball[16],overforce,ifblack[6],rkm,LKM,lkm,blw,bls,bla,bld; 
+bool ifcross[120],showball[16],overforce,ifblack[6],rkm,LKM,lkm,blw,bls,bla,bld;
 
-GLuint  base;    
+GLuint  base;
 GLYPHMETRICSFLOAT gmf[256];
 GLfloat LightDiffuse[]= { 0.8f, 0.8f, 0.8f, 0.0f };
-GLfloat LightPosition[]= { 0.0f, 4.0f, -3.2f, 0.0f }; 
+GLfloat LightPosition[]= { 0.0f, 4.0f, -3.2f, 0.0f };
 GLfloat LightDirection[]= { 0.0f, 0.0f, 0.0f, 0.0f };
 
 GLvoid Initial(GLsizei Width, GLsizei Height);
@@ -75,54 +75,54 @@ void DefaultPosition();
 GLsizei Width, Height;
 GLUquadricObj *quadratic;
 
-GLvoid BuildFont(GLvoid)  
+GLvoid BuildFont(GLvoid)
 {
-	HFONT  font;         
-	base = glGenLists(96); 
-	font = CreateFont(  -200,        // Высота фонта
-						0,        // Ширина фонта
-						0,        // Угол отношения
-						0,        // Угол наклона
-						1000,      // Ширина шрифта
-						FALSE,        // Курсив
-						FALSE,        // Подчеркивание
-						FALSE,        // Перечеркивание
-						RUSSIAN_CHARSET,      // Идентификатор набора символов
-						OUT_TT_PRECIS,      // Точность вывода
-						CLIP_DEFAULT_PRECIS,    
-						ANTIALIASED_QUALITY,   
-						FF_DONTCARE|DEFAULT_PITCH,  // Семейство и шаг
-							L"Times New Roman");      // Имя шрифта
+	HFONT  font;
+	base = glGenLists(96);
+	font = CreateFont(  -200,        // Р’С‹СЃРѕС‚Р° С„РѕРЅС‚Р°
+						0,        // РЁРёСЂРёРЅР° С„РѕРЅС‚Р°
+						0,        // РЈРіРѕР» РѕС‚РЅРѕС€РµРЅРёСЏ
+						0,        // РЈРіРѕР» РЅР°РєР»РѕРЅР°
+						1000,      // РЁРёСЂРёРЅР° С€СЂРёС„С‚Р°
+						FALSE,        // РљСѓСЂСЃРёРІ
+						FALSE,        // РџРѕРґС‡РµСЂРєРёРІР°РЅРёРµ
+						FALSE,        // РџРµСЂРµС‡РµСЂРєРёРІР°РЅРёРµ
+						RUSSIAN_CHARSET,      // РРґРµРЅС‚РёС„РёРєР°С‚РѕСЂ РЅР°Р±РѕСЂР° СЃРёРјРІРѕР»РѕРІ
+						OUT_TT_PRECIS,      // РўРѕС‡РЅРѕСЃС‚СЊ РІС‹РІРѕРґР°
+						CLIP_DEFAULT_PRECIS,
+						ANTIALIASED_QUALITY,
+						FF_DONTCARE|DEFAULT_PITCH,  // РЎРµРјРµР№СЃС‚РІРѕ Рё С€Р°Рі
+							L"Times New Roman");      // РРјСЏ С€СЂРёС„С‚Р°
 
-  SelectObject(hDC, font);      
-  wglUseFontOutlines( hDC,      
-						0,       
-						256,        
-						base,        
-						0.0f,      
-						0.3f,       //Толщина шрифта по оси Z
-						WGL_FONT_POLYGONS,      
-						gmf);     
+  SelectObject(hDC, font);
+  wglUseFontOutlines( hDC,
+						0,
+						256,
+						base,
+						0.0f,
+						0.3f,       //РўРѕР»С‰РёРЅР° С€СЂРёС„С‚Р° РїРѕ РѕСЃРё Z
+						WGL_FONT_POLYGONS,
+						gmf);
 }
 
-GLvoid KillFont(GLvoid)           
+GLvoid KillFont(GLvoid)
 {
-   glDeleteLists(base, 96);        
+   glDeleteLists(base, 96);
 }
 
-GLvoid glPrint(const char *fmt, ...)      
+GLvoid glPrint(const char *fmt, ...)
 {
-	char    text[256];    
-	va_list    ap;       
-	if (fmt == NULL)     
-	return;          
-	va_start(ap, fmt);         
-	vsprintf(text, fmt, ap); 
-	va_end(ap);                
-	glPushAttrib(GL_LIST_BIT);    
-	glListBase(base);         
+	char    text[256];
+	va_list    ap;
+	if (fmt == NULL)
+	return;
+	va_start(ap, fmt);
+	vsprintf(text, fmt, ap);
+	va_end(ap);
+	glPushAttrib(GL_LIST_BIT);
+	glListBase(base);
 	glCallLists(strlen(text), GL_UNSIGNED_BYTE, text);
-	glPopAttrib(); 
+	glPopAttrib();
 }
 
 void DefaultPosition()
@@ -174,7 +174,7 @@ void DefaultPosition()
 		ball[14].z=-5.275f;
 		ball[15].x=0.274f;
 		ball[15].z=-5.275f;
-		
+
 		selected=0;
 		x=-ball[0].x;
 		z=-ball[0].z;
@@ -242,7 +242,7 @@ inline GLvoid CameraPosition(double x, double z)
 }
 
 GLvoid Initial()
-{ 
+{
 	AUX_RGBImageRec *texture1;
 	glGenTextures(5, &texture[0]);
 
@@ -276,12 +276,12 @@ GLvoid Initial()
 	glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_NEAREST);
 	glTexImage2D(GL_TEXTURE_2D, 0, 3, texture1->sizeX, texture1->sizeY, 0, GL_RGB, GL_UNSIGNED_BYTE, texture1->data);
 
-	quadratic=gluNewQuadric();    
-    gluQuadricNormals(quadratic, GLU_SMOOTH); 
-    gluQuadricTexture(quadratic, GL_TRUE);    
+	quadratic=gluNewQuadric();
+    gluQuadricNormals(quadratic, GLU_SMOOTH);
+    gluQuadricTexture(quadratic, GL_TRUE);
 
 	glEnable(GL_LIGHTING);
-	
+
 	glClearColor(0.8f, 0.8f, 0.8f, 0.0f);
 	glClearDepth(1.0);
 	glDepthFunc(GL_LESS);
@@ -294,7 +294,7 @@ GLvoid Initial()
 	glMatrixMode(GL_MODELVIEW);
 	glEnable(GL_COLOR_MATERIAL);
 	 glHint( GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST );
-	BuildFont(); 
+	BuildFont();
 }
 
 GLvoid Resize(GLsizei Width, GLsizei Height)
@@ -323,7 +323,7 @@ GLvoid DrawMenu1()
 	glLightfv(GL_LIGHT1, GL_POSITION, LightPosition);
 	glLightfv(GL_LIGHT1,GL_SPOT_DIRECTION, LightDirection);
 	glEnable(GL_LIGHT1);
-	
+
 	glLoadIdentity();
 	LightPosition[0]=  0.0f;
 	LightPosition[1]=  0.0f;
@@ -339,7 +339,7 @@ GLvoid DrawMenu1()
 	{glTranslatef(-2.3f,0.0f,-2.95f);glColor3f(0.9f, 0.65f, 0.0f);}
 	else
 	glTranslatef(-2.3f,0.0f,-2.7f);
-	glPrint ("новая игра");
+	glPrint ("РЅРѕРІР°СЏ РёРіСЂР°");
 
 	glLoadIdentity();
 	glColor3f(1.0f, 0.0f, 0.0f);
@@ -347,7 +347,7 @@ GLvoid DrawMenu1()
 	{glTranslatef(-1.3f,-0.8f,-2.95f);glColor3f(0.9f, 0.65f, 0.0f);}
 	else
 	glTranslatef(-1.3f,-0.8f,-2.7f);
-	glPrint ("выход");
+	glPrint ("РІС‹С…РѕРґ");
 
 	glLoadIdentity();
 	glColor3f(1.0f, 1.0f, 1.0f);
@@ -375,7 +375,7 @@ GLvoid DrawMenu2()
 	glLightfv(GL_LIGHT1, GL_POSITION, LightPosition);
 	glLightfv(GL_LIGHT1,GL_SPOT_DIRECTION, LightDirection);
 	glEnable(GL_LIGHT1);
-	
+
 	glLoadIdentity();
 	LightPosition[0]=  0.0f;
 	LightPosition[1]=  0.0f;
@@ -385,14 +385,14 @@ GLvoid DrawMenu2()
 	glLightfv(GL_LIGHT2, GL_POSITION, LightPosition);
 	glLightfv(GL_LIGHT2,GL_SPOT_DIRECTION, LightDirection);
 	glEnable(GL_LIGHT2);
-	
+
 	glLoadIdentity();
 	glColor3f(1.0f, 0.0f, 0.0f);
 	if(!cont)
 	{glTranslatef(-2.5f,0.8f,-2.95f);glColor3f(0.9f, 0.65f, 0.0f);}
 	else
 	glTranslatef(-2.5f,0.8f,-2.7f);
-	glPrint ("продолжить");
+	glPrint ("РїСЂРѕРґРѕР»Р¶РёС‚СЊ");
 
 	glLoadIdentity();
 	glColor3f(1.0f, 0.0f, 0.0f);
@@ -400,7 +400,7 @@ GLvoid DrawMenu2()
 	{glTranslatef(-2.3f,0.0f,-2.95f);glColor3f(0.9f, 0.65f, 0.0f);}
 	else
 	glTranslatef(-2.3f,0.0f,-2.7f);
-	glPrint ("новая игра");
+	glPrint ("РЅРѕРІР°СЏ РёРіСЂР°");
 
 	glLoadIdentity();
 	glColor3f(1.0f, 0.0f, 0.0f);
@@ -408,7 +408,7 @@ GLvoid DrawMenu2()
 	{glTranslatef(-1.3f,-0.8f,-2.95f);glColor3f(0.9f, 0.65f, 0.0f);}
 	else
 	glTranslatef(-1.3f,-0.8f,-2.7f);
-	glPrint ("выход");
+	glPrint ("РІС‹С…РѕРґ");
 
 	glLoadIdentity();
 	glColor3f(1.0f, 1.0f, 1.0f);
@@ -436,7 +436,7 @@ GLvoid DrawMenu3()
 	glLightfv(GL_LIGHT1, GL_POSITION, LightPosition);
 	glLightfv(GL_LIGHT1,GL_SPOT_DIRECTION, LightDirection);
 	glEnable(GL_LIGHT1);
-	
+
 	glLoadIdentity();
 	LightPosition[0]=  0.0f;
 	LightPosition[1]=  0.0f;
@@ -446,11 +446,11 @@ GLvoid DrawMenu3()
 	glLightfv(GL_LIGHT2, GL_POSITION, LightPosition);
 	glLightfv(GL_LIGHT2,GL_SPOT_DIRECTION, LightDirection);
 	glEnable(GL_LIGHT2);
-	
+
 	glLoadIdentity();
 	glColor3f(0.9f, 0.65f, 0.0f);
 	glTranslatef(-1.6f,0.8f,-2.95f);
-	glPrint ("Уверен?");
+	glPrint ("РЈРІРµСЂРµРЅ?");
 
 	glLoadIdentity();
 	glColor3f(1.0f, 0.0f, 0.0f);
@@ -458,7 +458,7 @@ GLvoid DrawMenu3()
 	{glTranslatef(-0.6f,-0.8f,-2.95f);glColor3f(0.9f, 0.65f, 0.0f);}
 	else
 	glTranslatef(-0.6f,-0.8f,-2.7f);
-	glPrint ("нет");
+	glPrint ("РЅРµС‚");
 
 	glLoadIdentity();
 	glColor3f(1.0f, 0.0f, 0.0f);
@@ -466,7 +466,7 @@ GLvoid DrawMenu3()
 	{glTranslatef(-0.4f,0.0f,-2.95f);glColor3f(0.9f, 0.65f, 0.0f);}
 	else
 	glTranslatef(-0.4f,0.0f,-2.7f);
-	glPrint ("да");
+	glPrint ("РґР°");
 
 	glLoadIdentity();
 	glColor3f(1.0f, 1.0f, 1.0f);
@@ -484,7 +484,7 @@ GLvoid DrawMenu3()
 
 GLvoid Draw()
 {
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);	
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	glLoadIdentity();
 	glDisable(GL_LIGHT2);
 	CameraPosition(x, z);
@@ -496,12 +496,12 @@ GLvoid Draw()
 	else
 	LightPosition[2]=  -2.5f;
 	LightPosition[3]=  0.3f;
-	//glLightfv(GL_LIGHT1, GL_DIFFUSE, LightDiffuse);//отсвечивание
-	glLightfv(GL_LIGHT1, GL_POSITION, LightPosition);//положение
-	glLightfv(GL_LIGHT1,GL_SPOT_DIRECTION, LightDirection);//направление
+	//glLightfv(GL_LIGHT1, GL_DIFFUSE, LightDiffuse);//РѕС‚СЃРІРµС‡РёРІР°РЅРёРµ
+	glLightfv(GL_LIGHT1, GL_POSITION, LightPosition);//РїРѕР»РѕР¶РµРЅРёРµ
+	glLightfv(GL_LIGHT1,GL_SPOT_DIRECTION, LightDirection);//РЅР°РїСЂР°РІР»РµРЅРёРµ
 	glEnable(GL_LIGHT1);
 
-	////////индикатор силы/////
+	////////РёРЅРґРёРєР°С‚РѕСЂ СЃРёР»С‹/////
 	glLoadIdentity();
 	glEnable(GL_LIGHT2);
 	glTranslatef(0,0,-0.3);
@@ -517,7 +517,7 @@ GLvoid Draw()
 		glVertex3f( 0.17f,-0.15f, 0.0f);
 
 	glEnd();
-	////кий//////
+	////РєРёР№//////
 	CameraPosition(x, z);
 	glTranslatef(0-x,-1.932, 0-z);
 	glRotatef(-RotateY, 0, 1, 0);
@@ -526,10 +526,10 @@ GLvoid Draw()
 	glColor3f(0.737f, 0.353f, 0.094f);
 	gluCylinder(quadratic,0.015f,0.03f,3.5,16,16);
 	glDisable(GL_LIGHT2);
-		/////////лампы/////////
+		/////////Р»Р°РјРїС‹/////////
 	if(RotateX<375)
 	{CameraPosition(x, z);
-	//крепление
+	//РєСЂРµРїР»РµРЅРёРµ
 
 	glTranslatef(0,0.5,-0.75);
 	glRotatef(180,1,0,0);
@@ -537,8 +537,8 @@ GLvoid Draw()
 	gluCylinder(quadratic,0.03f,0.03f,4.9,4,4);
 	glRotatef(180,1,0,0);
 
-	//светильники
-	
+	//СЃРІРµС‚РёР»СЊРЅРёРєРё
+
 	glRotatef(90,1,0,0);
 
 	glTranslatef(0,-4.7f,0);
@@ -564,20 +564,20 @@ GLvoid Draw()
 	gluCylinder(quadratic,0.2f,0.7f,0.6f,16,16);
 	glColor3f(1.0f, 1.0f, 1.0f);
 	gluCylinder(quadratic,0.19f,0.69f,0.6f,16,16);}
-	///////////стол///////////
+	///////////СЃС‚РѕР»///////////
 	CameraPosition(x, z);
 	glColor3f(1.0f, 1.0f, 1.0f);
 	Table(texture, quadratic);
 
-	/////////////шарик 1 (чёрный)//////////////
+	/////////////С€Р°СЂРёРє 1 (С‡С‘СЂРЅС‹Р№)//////////////
 	if(showball[0])
 	{
 		CameraPosition(x, z);
 		glColor3f(0.5f, 0.3f, 0.3f);
 		BallPosition(ball[0].x,ball[0].z);
 	}
-	
-	/////////////шарик 2//////////////
+
+	/////////////С€Р°СЂРёРє 2//////////////
 	if(showball[1])
 	{
 		CameraPosition(x, z);
@@ -585,39 +585,39 @@ GLvoid Draw()
 		BallPosition(ball[1].x,ball[1].z);
 	}
 
-	/////////////шарик 3//////////////
+	/////////////С€Р°СЂРёРє 3//////////////
 	if(showball[2])
 	{
 		CameraPosition(x, z);
 		glColor3f(1.0f, 1.0f, 1.0f);
 		BallPosition(ball[2].x,ball[2].z);
 	}
-	
-	/////////////шарик 4//////////////
+
+	/////////////С€Р°СЂРёРє 4//////////////
 	if(showball[3])
 	{
 		CameraPosition(x, z);
 		glColor3f(1.0f, 1.0f, 1.0f);
 		BallPosition(ball[3].x,ball[3].z);
 	}
-	
-	/////////////шарик 5//////////////
+
+	/////////////С€Р°СЂРёРє 5//////////////
 	if(showball[4])
 	{
 		CameraPosition(x, z);
 		glColor3f(1.0f, 1.0f, 1.0f);
 		BallPosition(ball[4].x,ball[4].z);
 	}
-	
-	/////////////шарик 6//////////////
+
+	/////////////С€Р°СЂРёРє 6//////////////
 	if(showball[5])
 	{
 		CameraPosition(x, z);
 		glColor3f(1.0f, 1.0f, 1.0f);
 		BallPosition(ball[5].x,ball[5].z);
 	}
-	
-	/////////////шарик 7//////////////
+
+	/////////////С€Р°СЂРёРє 7//////////////
 	if(showball[6])
 	{
 		CameraPosition(x, z);
@@ -625,7 +625,7 @@ GLvoid Draw()
 		BallPosition(ball[6].x,ball[6].z);
 	}
 
-	/////////////шарик 8//////////////
+	/////////////С€Р°СЂРёРє 8//////////////
 	if(showball[7])
 	{
 		CameraPosition(x, z);
@@ -633,7 +633,7 @@ GLvoid Draw()
 		BallPosition(ball[7].x,ball[7].z);
 	}
 
-	/////////////шарик 9//////////////
+	/////////////С€Р°СЂРёРє 9//////////////
 	if(showball[8])
 	{
 		CameraPosition(x, z);
@@ -641,7 +641,7 @@ GLvoid Draw()
 		BallPosition(ball[8].x,ball[8].z);
 	}
 
-	/////////////шарик 10//////////////
+	/////////////С€Р°СЂРёРє 10//////////////
 	if(showball[9])
 	{
 		CameraPosition(x, z);
@@ -649,7 +649,7 @@ GLvoid Draw()
 		BallPosition(ball[9].x,ball[9].z);
 	}
 
-	/////////////шарик 11//////////////
+	/////////////С€Р°СЂРёРє 11//////////////
 	if(showball[10])
 	{
 		CameraPosition(x, z);
@@ -657,7 +657,7 @@ GLvoid Draw()
 		BallPosition(ball[10].x,ball[10].z);
 	}
 
-	/////////////шарик 12//////////////
+	/////////////С€Р°СЂРёРє 12//////////////
 	if(showball[11])
 	{
 		CameraPosition(x, z);
@@ -665,7 +665,7 @@ GLvoid Draw()
 		BallPosition(ball[11].x,ball[11].z);
 	}
 
-	/////////////шарик 13//////////////
+	/////////////С€Р°СЂРёРє 13//////////////
 	if(showball[12])
 	{
 		CameraPosition(x, z);
@@ -673,7 +673,7 @@ GLvoid Draw()
 		BallPosition(ball[12].x,ball[12].z);
 	}
 
-	/////////////шарик 14//////////////
+	/////////////С€Р°СЂРёРє 14//////////////
 	if(showball[13])
 	{
 		CameraPosition(x, z);
@@ -681,7 +681,7 @@ GLvoid Draw()
 		BallPosition(ball[13].x,ball[13].z);
 	}
 
-	/////////////шарик 15//////////////
+	/////////////С€Р°СЂРёРє 15//////////////
 	if(showball[14])
 	{
 		CameraPosition(x, z);
@@ -689,7 +689,7 @@ GLvoid Draw()
 		BallPosition(ball[14].x,ball[14].z);
 	}
 
-	/////////////шарик 16//////////////
+	/////////////С€Р°СЂРёРє 16//////////////
 	if(showball[15])
 	{
 		CameraPosition(x, z);
@@ -769,12 +769,12 @@ LRESULT CALLBACK WndProc( HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
 	GLuint PixelFormat;
 	static PIXELFORMATDESCRIPTOR pfd =
 	{
-		sizeof(PIXELFORMATDESCRIPTOR),		
-			1,									
+		sizeof(PIXELFORMATDESCRIPTOR),
+			1,
 			PFD_DRAW_TO_WINDOW|					// format must support Window
 			PFD_SUPPORT_OPENGL|					// format must support OpenGL
 			PFD_DOUBLEBUFFER,					// must support double buffer
-			PFD_TYPE_RGBA,						// требуется RGBA формат
+			PFD_TYPE_RGBA,						// С‚СЂРµР±СѓРµС‚СЃСЏ RGBA С„РѕСЂРјР°С‚
 			16,									// 16Bit color depth
 			0, 0, 0, 0, 0, 0,					// Color bits ignored ?
 			0,									// No Alpha buffer
@@ -849,7 +849,7 @@ LRESULT CALLBACK WndProc( HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
 					}
 					break;
 				}
-			case 0x44:	//D	
+			case 0x44:	//D
 				{ bld=true; break; }
 			case 0x41:	//A
 				{ bla=true; break; }
@@ -857,7 +857,7 @@ LRESULT CALLBACK WndProc( HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
 				{ blw=true; break; }
 			case 0x53:	//S
 				{ bls=true; break; }
-			case VK_RETURN:		
+			case VK_RETURN:
 				{
 					if(menu1 || menu2 || menu3)
 					{
@@ -985,7 +985,7 @@ LRESULT CALLBACK WndProc( HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
 					break;
 				}
 			case VK_UP:
-				{	
+				{
 					if(menu1)
 						if(new1)
 						{
@@ -1033,7 +1033,7 @@ LRESULT CALLBACK WndProc( HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
 					break;
 				}
 			case VK_DOWN:
-				{ 
+				{
 					if(menu1)
 						if(new1)
 						{
@@ -1084,7 +1084,7 @@ LRESULT CALLBACK WndProc( HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
 		}
 		break;
 		case WM_KEYUP:
-			{	
+			{
 				if(wParam==0x57)blw=false;
 				if(wParam==0x53)bls=false;
 				if(wParam==0x41)bla=false;
@@ -1132,7 +1132,7 @@ LRESULT CALLBACK WndProc( HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
 				if(newy<352)
 				SetCursorPos(xm.x, 352+xm.y-newy);
 			}
-			
+
 			if(rkm)
 			{
 				if(newy>449)newy=449;
@@ -1164,7 +1164,7 @@ LRESULT CALLBACK WndProc( HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
 				}
 				if(wheel==65416)
 				{
-					
+
 					do{
 						selected--;
 						if(selected<0)selected=15;
@@ -1180,7 +1180,7 @@ LRESULT CALLBACK WndProc( HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
 		case WM_RBUTTONUP:
 		{ rkm=false; break; }
 		case WM_LBUTTONDOWN:
-		{	
+		{
 			if(showball[selected])
 			if(!LKM)
 			{
@@ -1238,7 +1238,7 @@ int main( HINSTANCE hInst, HINSTANCE hPrevInst, LPSTR lpCmd, int nShowCmd)
 	if(T<2 && T>=1.5)cout<<"\tMedium perfomance"<<endl;
 	if(T<1.5 && T>1.05)cout<<"\tGood perfomance"<<endl;
 	if(T<=1.05)cout<<"\tExcellent perfomance"<<endl;
-	
+
 	Sleep(1500);
 	MSG			msg;
 	WNDCLASS	wc;
@@ -1255,8 +1255,8 @@ int main( HINSTANCE hInst, HINSTANCE hPrevInst, LPSTR lpCmd, int nShowCmd)
 	wc.lpszMenuName		= NULL;
 	wc.lpszClassName	= L"Billiard_Petrov";
 
-	RegisterClass(&wc); 
-	hWnd = CreateWindow(L"Billiard_Petrov",L"Billiard by D. Petrov",WS_POPUP |WS_OVERLAPPEDWINDOW |WS_CLIPSIBLINGS, -8, -30, 
+	RegisterClass(&wc);
+	hWnd = CreateWindow(L"Billiard_Petrov",L"Billiard by D. Petrov",WS_POPUP |WS_OVERLAPPEDWINDOW |WS_CLIPSIBLINGS, -8, -30,
 						GetSystemMetrics(SM_CXSCREEN)+16, GetSystemMetrics(SM_CYSCREEN)+8, NULL, NULL, hInst, NULL);
 
 	ShowWindow(hWnd, SW_SHOW);
@@ -1267,7 +1267,7 @@ int main( HINSTANCE hInst, HINSTANCE hPrevInst, LPSTR lpCmd, int nShowCmd)
 
 	while(1)
 	{
-		
+
 		while(PeekMessage(&msg, NULL, 0, 0, PM_NOREMOVE))
 		{
 			if(GetMessage(&msg, NULL, 0, 0))
@@ -1290,8 +1290,8 @@ int main( HINSTANCE hInst, HINSTANCE hPrevInst, LPSTR lpCmd, int nShowCmd)
 		DrawMenu3();
 	else
 	{
-///вычисления///
-			if(blw)	{	
+///РІС‹С‡РёСЃР»РµРЅРёСЏ///
+			if(blw)	{
 					z+=movement*cos(RotateY*3.14/180);
 					if(z < -0.6) {z=-0.6;}
 					if(z > 6.8) {z=6.8;}
@@ -1306,7 +1306,7 @@ int main( HINSTANCE hInst, HINSTANCE hPrevInst, LPSTR lpCmd, int nShowCmd)
 					x-=(-1)*movement*sin(RotateY*3.14/180);
 					if(x < (-2)){x=(-2);}
 					if(x > 2) {x=2;}
-					}			
+					}
 			if(bla)	{
 					z+=movement*sin(RotateY*3.14/180);
 					if(z < -0.6) {z=-0.6;}
@@ -1325,7 +1325,7 @@ int main( HINSTANCE hInst, HINSTANCE hPrevInst, LPSTR lpCmd, int nShowCmd)
 					}
 	if(lkm)
 	{
-		
+
 		if(!overforce)
 		{
 			force+=0.01;
@@ -1389,23 +1389,23 @@ int main( HINSTANCE hInst, HINSTANCE hPrevInst, LPSTR lpCmd, int nShowCmd)
 		if(showball[15]){
 		ball[15].x-=length*sin(ball[15].angle*grad)*ball[15].acceleration;
 		ball[15].z-=length*cos(ball[15].angle*grad)*ball[15].acceleration;}
-		/////рассчет углов и ускорений при столкновении шара с шаром	
+		/////СЂР°СЃСЃС‡РµС‚ СѓРіР»РѕРІ Рё СѓСЃРєРѕСЂРµРЅРёР№ РїСЂРё СЃС‚РѕР»РєРЅРѕРІРµРЅРёРё С€Р°СЂР° СЃ С€Р°СЂРѕРј
 		inc=0;
 		for(int i=0 ; i<15 ; i++)
 		{
 			if(showball[i])
 			for(int j=i+1 ; j<16 ; j++)
-			{	
+			{
 				if(showball[j])
 				if(pow((ball[i].x-ball[j].x),2)+pow((ball[i].z-ball[j].z),2) < 0.018496)
-				{	
+				{
 					if(!ifcross[inc])
 						if(ball[j].z<ball[i].z)
 			/*1, 2*/	{
 							beta=asin((ball[j].x-ball[i].x)/sqrt(pow((ball[j].x-ball[i].x),2)+pow((ball[j].z-ball[i].z),2)))*agrad;
 							gamai=(360-ball[i].angle-beta+360)%360;
 							gamaj=(360-ball[j].angle-beta+360)%360;
-							
+
 							Aa=ball[i].acceleration*cos(gamai*grad);
 							Bb=-ball[j].acceleration*cos(gamaj*grad);
 							////////////////////
@@ -1449,7 +1449,7 @@ int main( HINSTANCE hInst, HINSTANCE hPrevInst, LPSTR lpCmd, int nShowCmd)
 							beta=asin((ball[i].x-ball[j].x)/sqrt(pow((ball[j].x-ball[i].x),2)+pow((ball[j].z-ball[i].z),2)))*agrad;
 							gamai=(360-ball[i].angle-beta+360)%360;
 							gamaj=(360-ball[j].angle-beta+360)%360;
-						
+
 							Bb=-ball[i].acceleration*cos(gamai*grad);
 							Aa=ball[j].acceleration*cos(gamaj*grad);
 							//////////////////
@@ -1476,7 +1476,7 @@ int main( HINSTANCE hInst, HINSTANCE hPrevInst, LPSTR lpCmd, int nShowCmd)
 								yi=ball[i].acceleration*sin(gamai*grad);
 							}
 							else
-							{	
+							{
 								xi=Aa-(ball[i].acceleration-Bb)*cos(gamai*grad);
 								yi=(ball[i].acceleration-Bb)*sin(gamai*grad);
 							}
@@ -1509,7 +1509,7 @@ int main( HINSTANCE hInst, HINSTANCE hPrevInst, LPSTR lpCmd, int nShowCmd)
 				ifcross[inc]=false;
 			}
 		}
-		/////столкновение с бортами
+		/////СЃС‚РѕР»РєРЅРѕРІРµРЅРёРµ СЃ Р±РѕСЂС‚Р°РјРё
 			for(int i=0 ; i<16 ; i++)
 			{
 				if(!showball[i])continue;
@@ -1590,7 +1590,7 @@ int main( HINSTANCE hInst, HINSTANCE hPrevInst, LPSTR lpCmd, int nShowCmd)
 					}
 					else
 					ball[i].x = -1.532;ball[i].angle=360-ball[i].angle;
-					
+
 				}
 				else
 				if(ball[i].x >  1.532)
@@ -1627,7 +1627,7 @@ int main( HINSTANCE hInst, HINSTANCE hPrevInst, LPSTR lpCmd, int nShowCmd)
 				while(ball[i].angle<0) ball[i].angle+=360;
 				if(ball[i].angle>=360) ball[i].angle%=360;
 			}
-		/////постепенное уменьшение скорости
+		/////РїРѕСЃС‚РµРїРµРЅРЅРѕРµ СѓРјРµРЅСЊС€РµРЅРёРµ СЃРєРѕСЂРѕСЃС‚Рё
 		for(int i=0 ; i<16 ; i++)
 		{
 			if(showball[i])
@@ -1641,7 +1641,7 @@ int main( HINSTANCE hInst, HINSTANCE hPrevInst, LPSTR lpCmd, int nShowCmd)
 			}
 		}
 	}
-	/////передача управления ЛКМ после остановки всех шаров на столе
+	/////РїРµСЂРµРґР°С‡Р° СѓРїСЂР°РІР»РµРЅРёСЏ Р›РљРњ РїРѕСЃР»Рµ РѕСЃС‚Р°РЅРѕРІРєРё РІСЃРµС… С€Р°СЂРѕРІ РЅР° СЃС‚РѕР»Рµ
 	if(
 		ball[0].acceleration==0 &&
 		ball[1].acceleration==0 &&
@@ -1663,8 +1663,8 @@ int main( HINSTANCE hInst, HINSTANCE hPrevInst, LPSTR lpCmd, int nShowCmd)
 	{
 		LKM=false;
 	}
-	
-	
+
+
 	Draw();
 	}
 		Sleep(10);

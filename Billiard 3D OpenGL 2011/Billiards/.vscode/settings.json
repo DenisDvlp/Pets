@@ -1,0 +1,35 @@
+{
+    "files.associations": {
+        "xiosbase": "cpp",
+        "bit": "cpp",
+        "cctype": "cpp",
+        "compare": "cpp",
+        "concepts": "cpp",
+        "cstddef": "cpp",
+        "cstdint": "cpp",
+        "cstdio": "cpp",
+        "cstdlib": "cpp",
+        "cstring": "cpp",
+        "cwchar": "cpp",
+        "exception": "cpp",
+        "initializer_list": "cpp",
+        "iosfwd": "cpp",
+        "limits": "cpp",
+        "new": "cpp",
+        "string": "cpp",
+        "tuple": "cpp",
+        "type_traits": "cpp",
+        "utility": "cpp",
+        "xmemory": "cpp",
+        "xstddef": "cpp",
+        "xstring": "cpp",
+        "xtr1common": "cpp",
+        "xutility": "cpp"
+    },
+    "C_Cpp.default.includePath": [
+        "inc"
+    ],
+    "C_Cpp.clang_format_path": "./clang-format",
+    "clang-format.executable": "D:/WORK/Projects/Pets/Billiard 3D OpenGL 2011/Billiards/clang-format.exe",
+    "clang-format.style": "{BasedOnStyle: llvm, IndentWidth: 4}"
+}
