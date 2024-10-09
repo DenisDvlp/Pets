@@ -1,20 +1,24 @@
-
-#define WIN32_LEAN_AND_MEAN
-#include <windows.h>
+#include "Windows.hpp"
 #include <string>
 
-class Window {
+class Window final {
   public:
-    Window(std::wstring name, HINSTANCE hInstance);
-    bool open(const std::wstring& caption);
+    Window(std::wstring className, const std::wstring& caption, HINSTANCE hInstance);
+    bool create();
+    void show();
+    void hide();
+    void close();
+    const std::wstring& getClassName();
+    const std::wstring& getCaption();
     ~Window();
 
-    bool OnMessage(UINT message, WPARAM wParam, LPARAM lParam);
+    bool onMessage(UINT message, WPARAM wParam, LPARAM lParam);
 
   protected:
-    static LRESULT CALLBACK WindowProcedure(HWND hWnd, UINT message,
-                                            WPARAM wParam, LPARAM lParam);
-    std::wstring name;
-    HINSTANCE hInstance;
-    HWND hwnd;
+    void registerWindowClass();
+    static LRESULT CALLBACK windowProcedure(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam);
+    std::wstring m_className{};
+    std::wstring m_caption{};
+    HINSTANCE m_hInstance{};
+    HWND m_hWnd{};
 };

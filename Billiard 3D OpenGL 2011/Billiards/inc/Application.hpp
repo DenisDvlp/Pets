@@ -1,13 +1,12 @@
-#define WIN32_LEAN_AND_MEAN
-#include <windows.h>
 #include "Window.hpp"
+#include "Windows.hpp"
 
-class Application {
+class Application final {
   public:
     Application(HINSTANCE hInstance);
     void run();
     ~Application();
 
   private:
-    Window window;
+    Window m_window;
 };
