@@ -3,7 +3,7 @@
 
 class Window final {
   public:
-    Window(std::wstring className, const std::wstring& caption, HINSTANCE hInstance);
+    Window(std::wstring className, std::wstring caption, HINSTANCE hInstance);
     bool create();
     void show();
     void hide();
