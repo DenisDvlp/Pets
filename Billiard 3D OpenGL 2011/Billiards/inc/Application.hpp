@@ -7,6 +7,7 @@ class Application final {
     void run();
     ~Application();
 
-  private:
+  protected:
+    void runMessageLoop();
     Window m_window;
 };
