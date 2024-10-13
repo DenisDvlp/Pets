@@ -9,6 +9,7 @@ void Application::run() {
     }
     m_window.show();
     MSG message{};
+    // PostQuitMessage(0) makes `GetMessage` return zero result to stop the loop.
     while (GetMessage(&message, NULL, 0, 0)) {
         TranslateMessage(&message);
         DispatchMessage(&message);

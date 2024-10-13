@@ -16,9 +16,15 @@ class Window final {
 
   protected:
     void registerWindowClass();
+    void createOpenGlRenderingContext();
+    void destroyOpenGlRenderingContext();
+    static Window* getSelfPtr(HWND hwnd);
+    static Window* storeSelfPtr(HWND hwnd, LPARAM lParam);
     static LRESULT CALLBACK windowProcedure(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam);
     std::wstring m_className{};
     std::wstring m_caption{};
-    HINSTANCE m_hInstance{};
-    HWND m_hWnd{};
+    HINSTANCE m_handleInstance{};
+    HWND m_handleWindow{};
+    HDC m_handleDeviceContext{};
+    HGLRC m_handleOpenGlRenderingContext{};
 };
