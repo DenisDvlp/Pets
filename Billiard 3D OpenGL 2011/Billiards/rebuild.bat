@@ -5,7 +5,13 @@ mkdir build
 cd build
 
 : Generate build files
-cmake -GNinja ..
+cmake -GNinja .. && (
+    set cmakeResult=1
+) || (
+    set cmakeResult=0
+)
 
 : Build the project
-ninja
+if %cmakeResult% == 1 (
+    ninja
+)
