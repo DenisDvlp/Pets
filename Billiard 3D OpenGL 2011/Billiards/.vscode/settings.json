@@ -61,9 +61,13 @@
         "xloctime": "cpp"
     },
     "C_Cpp.default.includePath": [
-        "inc"
+        "${workspaceFolder}/inc"
     ],
     "C_Cpp.clang_format_path": "${workspaceFolder}/clang-format.exe",
     "editor.formatOnSave": true,
     "editor.defaultFormatter": "ms-vscode.cpptools",
+    "C_Cpp.inlayHints.referenceOperator.enabled": true,
+    "C_Cpp.default.cppStandard": "c++17",
+    "files.insertFinalNewline": true,
+    "files.trimFinalNewlines": false,
 }
