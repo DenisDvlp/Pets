@@ -1,4 +1,4 @@
-#include "Window.hpp"
+#include "win/Window.hpp"
 
 Window::Window(std::wstring className, std::wstring caption, HINSTANCE hInstance)
     : m_className{std::move(className)}, m_caption{std::move(caption)}, m_handleInstance{hInstance} {

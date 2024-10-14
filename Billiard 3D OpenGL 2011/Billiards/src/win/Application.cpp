@@ -1,4 +1,4 @@
-#include "Application.hpp"
+#include "win/Application.hpp"
 
 Application::Application(HINSTANCE hInstance)
     : m_window{L"billiard_main_window", L"Billiards by Denys Petrov 2024", hInstance} {}

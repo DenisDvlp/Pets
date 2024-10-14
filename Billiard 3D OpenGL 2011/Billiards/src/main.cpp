@@ -1,4 +1,4 @@
-#include "Application.hpp"
+#include "win/Application.hpp"
 
 int WinMain(HINSTANCE hInstance, HINSTANCE /*hprev*/, LPSTR /*cmdline*/, int /*show*/) {
     Application app(hInstance);
