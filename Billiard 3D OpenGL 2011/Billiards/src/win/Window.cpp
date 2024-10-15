@@ -61,6 +61,26 @@ bool Window::onMessage(UINT message, WPARAM wParam, LPARAM lParam) {
         PostQuitMessage(0); // stop the main loop of the application
         return true;
     }
+    case WM_SIZE: {
+        // switch (wParam) {
+        // case SIZE_MAXHIDE: {
+        //     onResize(LOWORD(lParam), HIWORD(lParam));
+        // }
+        // case SIZE_MAXIMIZED: {
+        //     onResize(LOWORD(lParam), HIWORD(lParam));
+        // }
+        // case SIZE_MAXSHOW: {
+        //     onResize(LOWORD(lParam), HIWORD(lParam));
+        // }
+        // case SIZE_MINIMIZED: {
+        //     onResize(LOWORD(lParam), HIWORD(lParam));
+        // }
+        // case SIZE_RESTORED: {
+        //     onResize(LOWORD(lParam), HIWORD(lParam));
+        // }
+        // }
+        return true;
+    }
     default: {
         return false;
     }

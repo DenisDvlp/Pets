@@ -6,6 +6,8 @@ Application::Application(HINSTANCE hInstance)
 void Application::run() {
     if (m_window.create()) {
         m_window.show();
+        m_scene.init();
+        m_scene.resize(500, 500);
         runMessageLoop();
     }
 }
@@ -16,6 +18,8 @@ void Application::runMessageLoop() {
     while (GetMessage(&message, NULL, 0, 0)) {
         TranslateMessage(&message);
         DispatchMessage(&message);
+        m_scene.draw();
+        SwapBuffers(m_window.m_handleDeviceContext);
     }
 }
 

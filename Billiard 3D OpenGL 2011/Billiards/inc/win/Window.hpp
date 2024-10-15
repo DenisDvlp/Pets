@@ -14,7 +14,7 @@ class Window final {
 
     bool onMessage(UINT message, WPARAM wParam, LPARAM lParam);
 
-  protected:
+  public:
     void registerWindowClass();
     void createOpenGlRenderingContext();
     void destroyOpenGlRenderingContext();

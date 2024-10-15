@@ -1,5 +1,6 @@
 #include "Window.hpp"
 #include "Windows.hpp"
+#include "graphics/Scene.hpp"
 
 class Application final {
   public:
@@ -10,4 +11,5 @@ class Application final {
   protected:
     void runMessageLoop();
     Window m_window;
+    gl::Scene m_scene;
 };
