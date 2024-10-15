@@ -13,8 +13,8 @@ class SceneObject {
     bool visible{true};
 
   private:
+    virtual void onInit() = 0;
     virtual void onDraw() const = 0;
-    virtual void onInit() const = 0;
 };
 
 } // namespace gl
