@@ -1,5 +1,5 @@
 #pragma once
-#include "graphics/Types.hpp"
+#include "Types.hpp"
 
 namespace gl {
 

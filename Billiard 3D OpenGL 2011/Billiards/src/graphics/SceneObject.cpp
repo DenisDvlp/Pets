@@ -1,5 +1,5 @@
 #include "graphics/SceneObject.hpp"
-#include "graphics/Drawing.hpp"
+#include "graphics/Draw.hpp"
 
 namespace gl {
 
