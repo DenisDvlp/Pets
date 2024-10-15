@@ -1,54 +1,61 @@
 #pragma once
+#include <cstdint>
 
 namespace gl {
 
-class TypeBase {
+class Color {
   public:
-    constexpr TypeBase() = default;
-    constexpr TypeBase(const float i0, const float i1, const float i2, const float i3 = 0) : m_data{i0, i1, i2, i3} {}
-    void set(const float i0, const float i1) {
-        m_data[0] = i0;
-        m_data[1] = i1;
+    constexpr Color() = default;
+    constexpr Color(std::uint32_t value) { rgb(value); }
+    constexpr Color(const std::uint8_t r, const std::uint8_t g, const std::uint8_t b, const std::uint8_t a = 255)
+        : m_data{r, g, b, a} {}
+
+    operator const std::uint8_t*() const { return m_data; }
+    const std::uint8_t* get() const { return m_data; }
+
+    constexpr void rgb(const std::uint32_t color) {
+        m_data[0] = static_cast<std::uint8_t>((color >> 16) % 8);
+        m_data[1] = static_cast<std::uint8_t>((color >> 8) % 8);
+        m_data[2] = static_cast<std::uint8_t>(color % 8);
+        m_data[3] = static_cast<std::uint8_t>(255);
     }
-    void set(const float i0, const float i1, const float i2) {
-        m_data[0] = i0;
-        m_data[1] = i1;
-        m_data[2] = i2;
+    constexpr void argb(const std::uint32_t color) {
+        rgb(color);
+        m_data[3] = static_cast<std::uint8_t>((color >> 24) % 8);
     }
-    void set(const float i0, const float i1, const float i2, const float i3) {
-        m_data[0] = i0;
-        m_data[1] = i1;
-        m_data[2] = i2;
-        m_data[3] = i3;
-    }
-    operator float*() { return m_data; }
-    operator const float*() const { return m_data; }
-    TypeBase operator-() const { return {-m_data[0], -m_data[1], -m_data[2], -m_data[3]}; }
+
+    std::uint8_t& r() { return m_data[0]; }
+    std::uint8_t& g() { return m_data[1]; }
+    std::uint8_t& b() { return m_data[2]; }
+    std::uint8_t& a() { return m_data[3]; }
+
+    const std::uint8_t& r() const { return m_data[0]; }
+    const std::uint8_t& g() const { return m_data[1]; }
+    const std::uint8_t& b() const { return m_data[2]; }
+    const std::uint8_t& a() const { return m_data[3]; }
 
   protected:
-    float m_data[4]{};
+    std::uint8_t m_data[4]{};
 };
 
-class Color : public TypeBase {
+class Point {
   public:
-    float& r() { return m_data[0]; }
-    float& g() { return m_data[1]; }
-    float& b() { return m_data[2]; }
-    float& a() { return m_data[3]; }
-    const float& r() const { return m_data[0]; }
-    const float& g() const { return m_data[1]; }
-    const float& b() const { return m_data[2]; }
-    const float& a() const { return m_data[3]; }
-};
+    constexpr Point() = default;
+    Point(const float x, const float y, const float z) : m_data{x, y, z} {}
 
-class Point : public TypeBase {
-  public:
+    operator const float*() const { return m_data; }
+    const float* get() const { return m_data; }
+
     float& x() { return m_data[0]; }
     float& y() { return m_data[1]; }
     float& z() { return m_data[2]; }
+
     const float& x() const { return m_data[0]; }
     const float& y() const { return m_data[1]; }
     const float& z() const { return m_data[2]; }
+
+  protected:
+    float m_data[3]{};
 };
 
 using Position = Point;
