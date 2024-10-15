@@ -24,11 +24,11 @@ void resize(const std::uint16_t width, const std::uint16_t height);
 
 namespace color {
 
-// rgba [red, green, blue, alpha]
+// array of 4 [red, green, blue, alpha]
 // e.g. 0xFF00AAFF
 void rgba(const std::uint8_t* color);
 
-// rgb [red, green, blue, 255]
+// array of 3 [red, green, blue, 255]
 // e.g. 0xFF00AA
 void rgb(const std::uint8_t* color);
 
