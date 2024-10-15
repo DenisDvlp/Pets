@@ -1,7 +1,38 @@
 #pragma once
+#include <cstdint>
 #include <windows.h>
 
 namespace gl {
+
+namespace scene {
+
+// backgroundColor [red, green, blue, alpha]
+// e.g. 0xFF00AAFF
+void init(const std::uint8_t* backgroundColor);
+
+// angle - The field of view angle, in degrees, in the y-direction.
+// aspect - The aspect ratio is the ratio of width / height.
+// nearDistance - The distance from the viewer to the near clipping plane >0.
+// farDistance - The distance from the viewer to the far clipping plane >0.
+void update(const float angle, const float aspect, const float nearDistance, const float farDistance);
+
+// width - width of the window.
+// height - height of the window.
+void resize(const std::uint16_t width, const std::uint16_t height);
+
+} // namespace scene
+
+namespace color {
+
+// rgba [red, green, blue, alpha]
+// e.g. 0xFF00AAFF
+void rgba(const std::uint8_t* color);
+
+// rgb [red, green, blue, 255]
+// e.g. 0xFF00AA
+void rgb(const std::uint8_t* color);
+
+} // namespace color
 
 namespace material {
 

@@ -4,6 +4,41 @@
 
 namespace gl {
 
+namespace scene {
+
+void init(const std::uint8_t* backgroundColor) {
+    glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);
+    glClearColor(backgroundColor[0], backgroundColor[1], backgroundColor[2], backgroundColor[3]);
+    glLightModeli(GL_LIGHT_MODEL_LOCAL_VIEWER, GL_TRUE);
+    glLightModeli(GL_LIGHT_MODEL_TWO_SIDE, GL_TRUE);
+    constexpr float ambient[4]{};
+    glLightModelfv(GL_LIGHT_MODEL_AMBIENT, ambient);
+    glEnable(GL_LIGHTING);
+    glEnable(GL_COLOR_MATERIAL);
+    glEnable(GL_NORMALIZE);
+}
+
+void update(const float angle, const float aspect, const float nearDistance, const float farDistance) {
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    glMatrixMode(GL_PROJECTION);
+    glLoadIdentity();
+    gluPerspective(angle, aspect, nearDistance, farDistance);
+    glMatrixMode(GL_MODELVIEW);
+    glLoadIdentity();
+}
+
+void resize(const std::uint16_t width, const std::uint16_t height) { glViewport(0, 0, width, height); }
+
+} // namespace scene
+
+namespace color {
+
+void rgba(const std::uint8_t* color) { glColor4ubv(color); }
+
+void rgb(const std::uint8_t* color) { glColor3ubv(color); }
+
+} // namespace color
+
 namespace material {
 
 void reflection(float intensity, float sharpness) {
