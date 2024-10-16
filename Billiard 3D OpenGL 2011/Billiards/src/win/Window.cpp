@@ -10,6 +10,7 @@ void Window::registerWindowClass() {
     wc.lpfnWndProc = Window::windowProcedure;
     wc.hInstance = m_handleInstance;
     wc.lpszClassName = m_className.c_str();
+    wc.hCursor = LoadCursor(NULL, IDC_ARROW);
     RegisterClass(&wc);
 }
 
@@ -18,7 +19,8 @@ bool Window::create() {
         m_handleWindow = CreateWindowEx(0,                   // Optional window styles.
                                         m_className.c_str(), // Window class
                                         m_caption.c_str(),   // Window text
-                                        WS_OVERLAPPEDWINDOW, // Window style
+                                        // WS_DLGFRAME | WS_MAXIMIZE,
+                                        WS_OVERLAPPEDWINDOW | WS_VISIBLE, // Window style
 
                                         // Size and position
                                         CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT,
@@ -88,7 +90,7 @@ bool Window::onMessage(UINT message, WPARAM wParam, LPARAM lParam) {
 }
 
 void Window::createOpenGlRenderingContext() {
-    if (!m_handleDeviceContext) {
+    if (m_handleDeviceContext || !m_handleWindow) {
         return;
     }
 
@@ -101,7 +103,7 @@ void Window::createOpenGlRenderingContext() {
         PFD_SUPPORT_OPENGL |   // support OpenGL
         PFD_DOUBLEBUFFER,      // double buffered
         PFD_TYPE_RGBA,         // RGBA type
-        24,                    // 24-bit color depth
+        32,                    // 32-bit color depth
         0, 0, 0, 0, 0, 0,      // color bits ignored
         0,                     // no alpha buffer
         0,                     // shift bit ignored
@@ -151,6 +153,7 @@ LRESULT CALLBACK Window::windowProcedure(HWND hwnd, UINT message, WPARAM wParam,
         }
     } else if (Window * self{storeSelfPtr(hwnd, lParam)}) {
         // WM_CREATE
+        self->m_handleWindow = hwnd;
         self->createOpenGlRenderingContext();
     }
     return DefWindowProc(hwnd, message, wParam, lParam);

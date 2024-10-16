@@ -6,6 +6,8 @@ Application::Application(HINSTANCE hInstance)
 void Application::run() {
     if (m_window.create()) {
         m_window.show();
+        m_square.position.z() = -3;
+        m_scene.addSceneObject(m_square);
         m_scene.init();
         m_scene.resize(500, 500);
         runMessageLoop();

@@ -8,7 +8,9 @@ namespace scene {
 
 void init(const std::uint8_t* backgroundColor) {
     glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);
-    glClearColor(backgroundColor[0], backgroundColor[1], backgroundColor[2], backgroundColor[3]);
+    constexpr float kMaxVolorValue{255};
+    glClearColor(backgroundColor[0] / kMaxVolorValue, backgroundColor[1] / kMaxVolorValue,
+                 backgroundColor[2] / kMaxVolorValue, backgroundColor[3] / kMaxVolorValue);
     glLightModeli(GL_LIGHT_MODEL_LOCAL_VIEWER, GL_TRUE);
     glLightModeli(GL_LIGHT_MODEL_TWO_SIDE, GL_TRUE);
     constexpr float ambient[4]{};

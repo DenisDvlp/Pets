@@ -114,7 +114,7 @@ struct MatrixGuard {
     ~MatrixGuard();
 };
 
-#define MateriaBlock gl::guard::MaterialGuard glMaterialGuard
+#define MaterialBlock gl::guard::MaterialGuard glMaterialGuard
 #define PositionBlock gl::guard::MatrixGuard glMatrixGuard
 
 } // namespace guard

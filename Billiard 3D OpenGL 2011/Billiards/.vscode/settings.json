@@ -59,7 +59,8 @@
         "xlocmon": "cpp",
         "xlocnum": "cpp",
         "xloctime": "cpp",
-        "algorithm": "cpp"
+        "algorithm": "cpp",
+        "iostream": "cpp"
     },
     "C_Cpp.default.includePath": [
         "${workspaceFolder}/inc"
