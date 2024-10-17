@@ -9,6 +9,7 @@ void SceneObject::draw() const {
     if (visible) {
         PositionBlock;
         transform::position(position);
+        transform::rotation(rotation);
         onDraw();
     }
 }
