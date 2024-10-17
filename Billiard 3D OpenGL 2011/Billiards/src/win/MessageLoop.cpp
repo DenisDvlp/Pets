@@ -1,5 +1,7 @@
-#include "MessageLoop.hpp"
-#include "Windows.hpp"
+#include "win/MessageLoop.hpp"
+#include "win/Windows.hpp"
+
+namespace win {
 
 MessageLoop::MessageLoop(std::function<void()> inLoopCallback) : m_inLoopCallback{std::move(inLoopCallback)} {}
 
@@ -9,6 +11,10 @@ void MessageLoop::run() {
     while (GetMessage(&message, NULL, 0, 0)) {
         TranslateMessage(&message);
         DispatchMessage(&message);
-        m_inLoopCallback();
+        if (m_inLoopCallback) {
+            m_inLoopCallback();
+        }
     }
 }
+
+} // namespace win
