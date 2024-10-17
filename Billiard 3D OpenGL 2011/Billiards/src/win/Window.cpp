@@ -1,5 +1,7 @@
 #include "win/Window.hpp"
 
+namespace win {
+
 Window::Window(std::wstring className, std::wstring caption, HINSTANCE hInstance)
     : m_className{std::move(className)}, m_caption{std::move(caption)}, m_handleInstance{hInstance} {
     registerWindowClass();
@@ -53,6 +55,8 @@ void Window::close() {
         m_handleWindow = 0;
     }
 }
+
+void Window::swapBuffers() { SwapBuffers(m_handleDeviceContext); }
 
 Window::~Window() { close(); }
 
@@ -158,3 +162,5 @@ LRESULT CALLBACK Window::windowProcedure(HWND hwnd, UINT message, WPARAM wParam,
     }
     return DefWindowProc(hwnd, message, wParam, lParam);
 }
+
+} // namespace win

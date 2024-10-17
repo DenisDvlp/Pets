@@ -1,20 +1,24 @@
+#pragma once
 #include "Windows.hpp"
 #include <string>
 
-class Window final {
+namespace win {
+
+class Window {
   public:
     Window(std::wstring className, std::wstring caption, HINSTANCE hInstance);
     bool create();
     void show();
     void hide();
     void close();
+    void swapBuffers();
     const std::wstring& getClassName();
     const std::wstring& getCaption();
     ~Window();
 
-    bool onMessage(UINT message, WPARAM wParam, LPARAM lParam);
+    virtual bool onMessage(UINT message, WPARAM wParam, LPARAM lParam);
 
-  public:
+  protected:
     void registerWindowClass();
     void createOpenGlRenderingContext();
     void destroyOpenGlRenderingContext();
@@ -28,3 +32,5 @@ class Window final {
     HDC m_handleDeviceContext{};
     HGLRC m_handleOpenGlRenderingContext{};
 };
+
+} // namespace win
