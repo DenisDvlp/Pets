@@ -120,6 +120,14 @@ void rotationZ(const float angle) { glRotatef(angle, 0, 0, 1); }
 
 } // namespace transform
 
+namespace figure {
+
+static GLUquadric* guadric{gluNewQuadric()};
+
+void cylinder() {}
+
+} // namespace figure
+
 namespace guard {
 
 MaterialGuard::MaterialGuard() { glPushAttrib(GL_LIGHTING_BIT); }

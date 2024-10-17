@@ -102,6 +102,13 @@ void rotationZ(const float angle);
 
 } // namespace transform
 
+namespace figure {
+
+void sphere();
+void cylinder();
+
+} // namespace figure
+
 namespace guard {
 
 struct MaterialGuard {
