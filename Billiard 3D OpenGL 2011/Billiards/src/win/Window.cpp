@@ -7,15 +7,6 @@ Window::Window(std::wstring className, std::wstring caption, HINSTANCE hInstance
     registerWindowClass();
 }
 
-void Window::registerWindowClass() {
-    WNDCLASS wc{};
-    wc.lpfnWndProc = Window::windowProcedure;
-    wc.hInstance = m_handleInstance;
-    wc.lpszClassName = m_className.c_str();
-    wc.hCursor = LoadCursor(NULL, IDC_ARROW);
-    RegisterClass(&wc);
-}
-
 bool Window::create() {
     if (!m_handleWindow) {
         m_handleWindow = CreateWindowEx(0,                   // Optional window styles.
@@ -49,10 +40,8 @@ void Window::hide() {
 }
 
 void Window::close() {
-    destroyOpenGlRenderingContext();
     if (m_handleWindow) {
-        DestroyWindow(m_handleWindow);
-        m_handleWindow = 0;
+        PostMessage(m_handleWindow, WM_CLOSE, 0, 0);
     }
 }
 
@@ -60,31 +49,37 @@ void Window::swapBuffers() { SwapBuffers(m_handleDeviceContext); }
 
 Window::~Window() { close(); }
 
+void Window::onCreate() {}
+
+void Window::onMouseMove(const int x, const int y) {}
+
+void Window::onResize(const unsigned short width, const unsigned short height) {}
+
+bool Window::onClose() { return true; }
+
 bool Window::onMessage(UINT message, WPARAM wParam, LPARAM lParam) {
     switch (message) {
-    case WM_DESTROY: {
-        close();
-        PostQuitMessage(0); // stop the main loop of the application
+    case WM_MOUSEMOVE: {
+        const int x = GET_X_LPARAM(lParam);
+        const int y = GET_Y_LPARAM(lParam);
+        onMouseMove(x, y);
         return true;
     }
     case WM_SIZE: {
-        // switch (wParam) {
-        // case SIZE_MAXHIDE: {
-        //     onResize(LOWORD(lParam), HIWORD(lParam));
-        // }
-        // case SIZE_MAXIMIZED: {
-        //     onResize(LOWORD(lParam), HIWORD(lParam));
-        // }
-        // case SIZE_MAXSHOW: {
-        //     onResize(LOWORD(lParam), HIWORD(lParam));
-        // }
-        // case SIZE_MINIMIZED: {
-        //     onResize(LOWORD(lParam), HIWORD(lParam));
-        // }
-        // case SIZE_RESTORED: {
-        //     onResize(LOWORD(lParam), HIWORD(lParam));
-        // }
-        // }
+        const unsigned short width = LOWORD(lParam);
+        const unsigned short height = HIWORD(lParam);
+        onResize(width, height);
+        // wParam: SIZE_MAXHIDE, SIZE_MAXIMIZED, SIZE_MAXSHOW, SIZE_MINIMIZED, SIZE_RESTORED
+        return true;
+    }
+    case WM_CLOSE: {
+        if (onClose()) {
+            destroy();
+        }
+        return true;
+    }
+    case WM_DESTROY: {
+        PostQuitMessage(0); // stop the main loop of the application
         return true;
     }
     default: {
@@ -93,53 +88,7 @@ bool Window::onMessage(UINT message, WPARAM wParam, LPARAM lParam) {
     }
 }
 
-void Window::createOpenGlRenderingContext() {
-    if (m_handleDeviceContext || !m_handleWindow) {
-        return;
-    }
-
-    m_handleDeviceContext = GetDC(m_handleWindow);
-    // clang-format off
-    PIXELFORMATDESCRIPTOR pixelFormatDescriptor{
-        sizeof(PIXELFORMATDESCRIPTOR),   // size of this pfd
-        1,                     // version number
-        PFD_DRAW_TO_WINDOW |   // support window
-        PFD_SUPPORT_OPENGL |   // support OpenGL
-        PFD_DOUBLEBUFFER,      // double buffered
-        PFD_TYPE_RGBA,         // RGBA type
-        32,                    // 32-bit color depth
-        0, 0, 0, 0, 0, 0,      // color bits ignored
-        0,                     // no alpha buffer
-        0,                     // shift bit ignored
-        0,                     // no accumulation buffer
-        0, 0, 0, 0,            // accum bits ignored
-        32,                    // 32-bit z-buffer
-        0,                     // no stencil buffer
-        0,                     // no auxiliary buffer
-        PFD_MAIN_PLANE,        // main layer
-        0,                     // reserved
-        0, 0, 0                // layer masks ignored
-    };
-    // clang-format on
-    const int pixelFormat = ChoosePixelFormat(m_handleDeviceContext, &pixelFormatDescriptor);
-    SetPixelFormat(m_handleDeviceContext, pixelFormat, &pixelFormatDescriptor);
-    m_handleOpenGlRenderingContext = wglCreateContext(m_handleDeviceContext);
-    wglMakeCurrent(m_handleDeviceContext, m_handleOpenGlRenderingContext);
-}
-
-void Window::destroyOpenGlRenderingContext() {
-    if (m_handleDeviceContext) {
-        wglMakeCurrent(m_handleDeviceContext, NULL);
-        wglDeleteContext(m_handleOpenGlRenderingContext);
-        ReleaseDC(m_handleWindow, m_handleDeviceContext);
-        m_handleOpenGlRenderingContext = 0;
-        m_handleDeviceContext = 0;
-    }
-}
-
-inline Window* Window::getSelfPtr(HWND hwnd) {
-    return reinterpret_cast<Window*>(GetWindowLongPtr(hwnd, GWLP_USERDATA));
-}
+Window* Window::getSelfPtr(HWND hwnd) { return reinterpret_cast<Window*>(GetWindowLongPtr(hwnd, GWLP_USERDATA)); }
 
 Window* Window::storeSelfPtr(HWND hwnd, LPARAM lParam) {
     auto createStruct = reinterpret_cast<CREATESTRUCT*>(lParam);
@@ -158,9 +107,30 @@ LRESULT CALLBACK Window::windowProcedure(HWND hwnd, UINT message, WPARAM wParam,
     } else if (Window * self{storeSelfPtr(hwnd, lParam)}) {
         // WM_CREATE
         self->m_handleWindow = hwnd;
-        self->createOpenGlRenderingContext();
+        self->m_handleDeviceContext = GetDC(hwnd);
+        self->onCreate();
     }
     return DefWindowProc(hwnd, message, wParam, lParam);
+}
+
+void Window::destroy() {
+    if (m_handleWindow) {
+        // Setting this to 0 prevents getting `this` from `getSelfPtr` that in turn disables `windowProcedure`
+        SetWindowLongPtr(m_handleWindow, GWLP_USERDATA, 0);
+        ReleaseDC(m_handleWindow, m_handleDeviceContext);
+        m_handleDeviceContext = 0;
+        DestroyWindow(m_handleWindow);
+        m_handleWindow = 0;
+    }
+}
+
+void Window::registerWindowClass() {
+    WNDCLASS wc{};
+    wc.lpfnWndProc = Window::windowProcedure;
+    wc.hInstance = m_handleInstance;
+    wc.lpszClassName = m_className.c_str();
+    wc.hCursor = LoadCursor(NULL, IDC_ARROW);
+    RegisterClass(&wc);
 }
 
 } // namespace win

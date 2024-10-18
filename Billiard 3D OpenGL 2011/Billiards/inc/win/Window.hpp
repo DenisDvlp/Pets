@@ -12,25 +12,26 @@ class Window {
     void hide();
     void close();
     void swapBuffers();
-    const std::wstring& getClassName();
-    const std::wstring& getCaption();
-    ~Window();
-
-    virtual bool onMessage(UINT message, WPARAM wParam, LPARAM lParam);
+    virtual ~Window();
 
   protected:
-    void registerWindowClass();
-    void createOpenGlRenderingContext();
-    void destroyOpenGlRenderingContext();
+    virtual void onCreate();
+    virtual void onMouseMove(const int x, const int y);
+    virtual void onResize(const unsigned short width, const unsigned short height);
+    virtual bool onClose();
+
+  protected:
+    bool onMessage(UINT message, WPARAM wParam, LPARAM lParam);
     static Window* getSelfPtr(HWND hwnd);
     static Window* storeSelfPtr(HWND hwnd, LPARAM lParam);
     static LRESULT CALLBACK windowProcedure(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam);
+    void destroy();
+    void registerWindowClass();
     std::wstring m_className{};
     std::wstring m_caption{};
     HINSTANCE m_handleInstance{};
     HWND m_handleWindow{};
     HDC m_handleDeviceContext{};
-    HGLRC m_handleOpenGlRenderingContext{};
 };
 
 } // namespace win
