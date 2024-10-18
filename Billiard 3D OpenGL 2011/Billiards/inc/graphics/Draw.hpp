@@ -53,6 +53,8 @@ void ambient(float intensity);
 
 namespace light {
 
+unsigned int availableId();
+
 // id - light ID
 // On - turn on or turn off
 void turn(int id, bool on);
@@ -104,8 +106,11 @@ void rotationZ(const float angle);
 
 namespace figure {
 
-void sphere();
-void cylinder();
+void sphere(const float radius, const int verPolygons, const int horPolygons);
+
+void cylinder(const float baseRadius, const float topRadius, const float height, const int verPolygons,
+              const int horPolygons);
+void disk(const float innerRadius, const float outerRadius, const float verPolygons, const int horPolygons);
 
 } // namespace figure
 

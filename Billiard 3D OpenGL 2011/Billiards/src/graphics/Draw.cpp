@@ -1,12 +1,17 @@
 #include "graphics/Draw.hpp"
+#include <cassert>
 #include <gl/gl.h>
 #include <gl/glu.h>
 
 namespace gl {
 
+static GLUquadric* guadric{gluNewQuadric()};
+
 namespace scene {
 
 void init(const std::uint8_t* backgroundColor) {
+    gluQuadricNormals(guadric, GLU_SMOOTH);
+    gluQuadricTexture(guadric, GL_TRUE);
     glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);
     constexpr float kMaxVolorValue{255};
     glClearColor(backgroundColor[0] / kMaxVolorValue, backgroundColor[1] / kMaxVolorValue,
@@ -69,6 +74,12 @@ void ambient(float intensity) {
 
 namespace light {
 
+unsigned int availableId() {
+    static unsigned int availableLightId{GL_LIGHT0};
+    assert((availableLightId >= GL_MAX_LIGHTS) && "Limit of number of lights is reached.");
+    return availableLightId++;
+}
+
 void turn(int id, bool on) { on ? glEnable(id) : glDisable(id); }
 
 void ambient(int id, float intensity) {
@@ -122,9 +133,16 @@ void rotationZ(const float angle) { glRotatef(angle, 0, 0, 1); }
 
 namespace figure {
 
-static GLUquadric* guadric{gluNewQuadric()};
+void sphere(const float radius, const int verPolygons, const int horPolygons) { gluSphere(guadric, 0.068f, 64, 64); }
 
-void cylinder() {}
+void cylinder(const float baseRadius, const float topRadius, const float height, const int verPolygons,
+              const int horPolygons) {
+    gluCylinder(guadric, baseRadius, topRadius, height, verPolygons, horPolygons);
+}
+
+void disk(const float innerRadius, const float outerRadius, const float verPolygons, const int horPolygons) {
+    gluDisk(guadric, innerRadius, outerRadius, verPolygons, horPolygons);
+}
 
 } // namespace figure
 
