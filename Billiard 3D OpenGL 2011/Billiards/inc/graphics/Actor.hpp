@@ -3,7 +3,7 @@
 
 namespace gl {
 
-class SceneObject {
+class Actor {
   public:
     void init();
     void draw() const;

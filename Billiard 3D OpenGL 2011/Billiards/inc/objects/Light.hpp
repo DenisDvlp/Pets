@@ -1,10 +1,10 @@
 #pragma once
-#include "graphics/SceneObject.hpp"
+#include "graphics/Actor.hpp"
 
 namespace gl {
 namespace objects {
 
-class Light final : public SceneObject {
+class Light final : public Actor {
   public:
     Light();
 

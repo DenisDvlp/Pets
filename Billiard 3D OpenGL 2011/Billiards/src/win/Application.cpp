@@ -16,8 +16,8 @@ bool Application::init() {
     if (success) {
         m_window.show();
         m_square.position.z() = -1;
-        m_scene.addSceneObject(m_light);
-        m_scene.addSceneObject(m_square);
+        m_scene.addActor(m_light);
+        m_scene.addActor(m_square);
         m_scene.init();
         m_scene.resize(500, 500);
     }

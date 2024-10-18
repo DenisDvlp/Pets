@@ -1,10 +1,10 @@
 #pragma once
-#include "graphics/SceneObject.hpp"
+#include "graphics/Actor.hpp"
 
 namespace gl {
 namespace objects {
 
-class Square final : public SceneObject {
+class Square final : public Actor {
 
   private:
     void onInit() override;
