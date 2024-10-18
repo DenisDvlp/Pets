@@ -4,7 +4,7 @@
 namespace gl {
 namespace objects {
 
-class Square : public SceneObject {
+class Square final : public SceneObject {
 
   private:
     void onInit() override;

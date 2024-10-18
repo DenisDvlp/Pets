@@ -13,21 +13,30 @@ void Square::onInit() {}
 void Square::onDraw() const {
     constexpr Color color{0xFF00AA};
     color::rgb(color);
-    // glBegin(GL_QUADS);
-    // glVertex3f(-5.0, -2.1f, 2.0);
-    // glVertex3f(-5.0, -2.1f, 2.0 + 2.0f);
-    // glVertex3f(-5.0 + 2.0f, -2.1f, 2.0 + 2.0f);
-    // glVertex3f(-5.0 + 2.0f, -2.1f, 2.0);
-    // glEnd();
+    MaterialBlock;
+    material::reflection(1.0f, 1.0f);
+    material::diffusion(1.0f);
+    material::ambient(0.0f);
+    glBegin(GL_QUADS);
+    glVertex3f(0, 0, 0);
+    glVertex3f(1, 0, 0);
+    glVertex3f(1, 1, 0);
+    glVertex3f(0, 1, 0);
+    glEnd();
+
+    glBegin(GL_QUADS);
+    glVertex3f(1, 0, 0);
+    glVertex3f(1, 1, 0);
+    glVertex3f(2, 1, 0);
+    glVertex3f(2, 0, 0);
+    glEnd();
 
     {
-        MaterialBlock;
-        material::reflection(1.0f, 1.0f);
-        material::diffusion(1.0f);
-        material::ambient(0.0f);
-        gluQuadricNormals(ptr, GLU_SMOOTH);
-        gluQuadricTexture(ptr, GL_TRUE);
-        gluSphere(ptr, 0.068f, 64, 64);
+        // MaterialBlock;
+        // material::reflection(1.0f, 1.0f);
+        // material::diffusion(1.0f);
+        // material::ambient(0.0f);
+        // figure::cylinder(0.7f, 0.2f, 0.6f, 64, 32);
     }
 }
 
