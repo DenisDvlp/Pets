@@ -3,15 +3,11 @@
 namespace win {
 
 Application::Application(HINSTANCE hInstance)
-    : m_window{L"billiard_main_window", L"Billiards by Denys Petrov 2024", hInstance}, m_messageLoop{[this] {
-          m_light.rotation.y() += 5;
-          m_scene.draw();
-          m_window.swapBuffers();
-      }} {}
+    : m_window{L"billiard_main_window", L"Billiards by Denys Petrov 2024", hInstance} {}
 
 void Application::run() {
     if (init()) {
-        m_messageLoop.run();
+        runMessageLoop();
     }
 }
 
@@ -26,6 +22,17 @@ bool Application::init() {
         m_scene.resize(500, 500);
     }
     return success;
+}
+
+void Application::runMessageLoop() {
+    MSG message{};
+    // PostQuitMessage(0) makes `GetMessage` return zero result to stop the loop.
+    while (GetMessage(&message, NULL, 0, 0)) {
+        TranslateMessage(&message);
+        DispatchMessage(&message);
+        m_scene.draw();
+        m_window.swapBuffers();
+    }
 }
 
 } // namespace win

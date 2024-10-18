@@ -1,6 +1,5 @@
 #pragma once
 #include "MainWindow.hpp"
-#include "MessageLoop.hpp"
 #include "Windows.hpp"
 #include "graphics/Scene.hpp"
 #include "objects/Light.hpp"
@@ -15,11 +14,11 @@ class Application final {
 
   private:
     bool init();
+    void runMessageLoop();
     MainWindow m_window;
     gl::Scene m_scene{};
     gl::objects::Square m_square{};
     gl::objects::Light m_light{};
-    MessageLoop m_messageLoop;
 };
 
 } // namespace win
