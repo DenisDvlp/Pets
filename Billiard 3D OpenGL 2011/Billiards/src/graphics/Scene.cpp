@@ -5,29 +5,19 @@
 namespace gl {
 
 void Scene::init() {
-    constexpr Color backgroundColor{127, 127, 127};
-    scene::init(backgroundColor);
-
-    for (Actor* sceneObject : m_actors) {
-        sceneObject->init();
+    for (Actor* actor : m_actors) {
+        actor->init();
     }
 }
 
 void Scene::draw() const {
-    static constexpr float viewAngle{65.0f};
-    static constexpr float nearDistance{0.01f};
-    static constexpr float farDistance{100.0f};
-    scene::update(viewAngle, aspect, nearDistance, farDistance);
-
-    for (const Actor* sceneObject : m_actors) {
-        sceneObject->draw();
+    for (const Actor* actor : m_actors) {
+        actor->draw();
     }
 }
-void Scene::resize(const std::uint16_t width, const std::uint16_t height) {
-    aspect = static_cast<float>(width) / height;
-    scene::resize(width, height);
-}
 
-void Scene::addActor(Actor& sceneObject) { m_actors.push_back(&sceneObject); }
+void Scene::addActor(Actor& actor) {
+    m_actors.push_back(&actor);
+}
 
 } // namespace gl
