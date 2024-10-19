@@ -62,7 +62,9 @@
         "algorithm": "cpp",
         "iostream": "cpp",
         "functional": "cpp",
-        "list": "cpp"
+        "list": "cpp",
+        "unordered_map": "cpp",
+        "xhash": "cpp"
     },
     "C_Cpp.default.includePath": [
         "${workspaceFolder}/inc"
