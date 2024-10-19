@@ -4,7 +4,7 @@
 
 namespace gl {
 
-namespace scene {
+namespace stage {
 
 // backgroundColor [red, green, blue, alpha]
 // e.g. 0xFF00AAFF
@@ -20,7 +20,7 @@ void update(const float angle, const float aspect, const float nearDistance, con
 // height - height of the window.
 void resize(const std::uint16_t width, const std::uint16_t height);
 
-} // namespace scene
+} // namespace stage
 
 namespace color {
 
@@ -110,7 +110,9 @@ void sphere(const float radius, const int verPolygons, const int horPolygons);
 
 void cylinder(const float baseRadius, const float topRadius, const float height, const int verPolygons,
               const int horPolygons);
-void disk(const float innerRadius, const float outerRadius, const float verPolygons, const int horPolygons);
+void disk(const float innerRadius, const float outerRadius, const int verPolygons, const int horPolygons);
+
+void square(const float sideLength, const int verPolygons, const int horPolygons);
 
 } // namespace figure
 

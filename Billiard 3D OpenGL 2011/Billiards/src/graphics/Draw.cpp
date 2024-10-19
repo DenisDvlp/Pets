@@ -7,7 +7,7 @@ namespace gl {
 
 static GLUquadric* guadric{gluNewQuadric()};
 
-namespace scene {
+namespace stage {
 
 void init(const std::uint8_t* backgroundColor) {
     gluQuadricNormals(guadric, GLU_SMOOTH);
@@ -34,15 +34,21 @@ void update(const float angle, const float aspect, const float nearDistance, con
     glLoadIdentity();
 }
 
-void resize(const std::uint16_t width, const std::uint16_t height) { glViewport(0, 0, width, height); }
+void resize(const std::uint16_t width, const std::uint16_t height) {
+    glViewport(0, 0, width, height);
+}
 
-} // namespace scene
+} // namespace stage
 
 namespace color {
 
-void rgba(const std::uint8_t* color) { glColor4ubv(color); }
+void rgba(const std::uint8_t* color) {
+    glColor4ubv(color);
+}
 
-void rgb(const std::uint8_t* color) { glColor3ubv(color); }
+void rgb(const std::uint8_t* color) {
+    glColor3ubv(color);
+}
 
 } // namespace color
 
@@ -80,7 +86,9 @@ unsigned int availableId() {
     return availableLightId++;
 }
 
-void turn(int id, bool on) { on ? glEnable(id) : glDisable(id); }
+void turn(int id, bool on) {
+    on ? glEnable(id) : glDisable(id);
+}
 
 void ambient(int id, float intensity) {
     const float color[] = {intensity, intensity, intensity, 1.0f};
@@ -97,7 +105,9 @@ void reflection(int id, float intensity) {
     glLightfv(id, GL_SPECULAR, color);
 }
 
-void spotAngle(int id, float angle) { glLightf(id, GL_SPOT_CUTOFF, angle); }
+void spotAngle(int id, float angle) {
+    glLightf(id, GL_SPOT_CUTOFF, angle);
+}
 
 void direction(int id, const float* xyz, bool isSpot) {
     if (isSpot) {
@@ -113,9 +123,13 @@ void direction(int id, const float* xyz, bool isSpot) {
 
 namespace transform {
 
-void position(const float* xyz) { glTranslatef(xyz[0], xyz[1], xyz[2]); }
+void position(const float* xyz) {
+    glTranslatef(xyz[0], xyz[1], xyz[2]);
+}
 
-void position(float x, float y, float z) { glTranslatef(x, y, z); }
+void position(float x, float y, float z) {
+    glTranslatef(x, y, z);
+}
 
 void rotation(const float* xyz) {
     glRotatef(xyz[0], 1, 0, 0);
@@ -123,38 +137,71 @@ void rotation(const float* xyz) {
     glRotatef(xyz[2], 0, 0, 1);
 }
 
-void rotationX(const float angle) { glRotatef(angle, 1, 0, 0); }
+void rotationX(const float angle) {
+    glRotatef(angle, 1, 0, 0);
+}
 
-void rotationY(const float angle) { glRotatef(angle, 0, 1, 0); }
+void rotationY(const float angle) {
+    glRotatef(angle, 0, 1, 0);
+}
 
-void rotationZ(const float angle) { glRotatef(angle, 0, 0, 1); }
+void rotationZ(const float angle) {
+    glRotatef(angle, 0, 0, 1);
+}
 
 } // namespace transform
 
 namespace figure {
 
-void sphere(const float radius, const int verPolygons, const int horPolygons) { gluSphere(guadric, 0.068f, 64, 64); }
+void sphere(const float radius, const int verPolygons, const int horPolygons) {
+    gluSphere(guadric, 0.068f, 64, 64);
+}
 
 void cylinder(const float baseRadius, const float topRadius, const float height, const int verPolygons,
               const int horPolygons) {
     gluCylinder(guadric, baseRadius, topRadius, height, verPolygons, horPolygons);
 }
 
-void disk(const float innerRadius, const float outerRadius, const float verPolygons, const int horPolygons) {
+void disk(const float innerRadius, const float outerRadius, const int verPolygons, const int horPolygons) {
     gluDisk(guadric, innerRadius, outerRadius, verPolygons, horPolygons);
+}
+
+void square(const float sideLength, const int verPolygons, const int horPolygons) {
+    const float dx{sideLength / horPolygons};
+    const float dy{sideLength / verPolygons};
+    glBegin(GL_QUADS);
+    float start{-sideLength / 2};
+    float stop{-start};
+    for (float y{start}; y < stop; y += dy) {
+        for (float x{start}; x < stop; x += dx) {
+            glVertex3f(x, y, 0);
+            glVertex3f(x, y + dy, 0);
+            glVertex3f(x + dx, y + dy, 0);
+            glVertex3f(x + dx, y, 0);
+        }
+    }
+    glEnd();
 }
 
 } // namespace figure
 
 namespace guard {
 
-MaterialGuard::MaterialGuard() { glPushAttrib(GL_LIGHTING_BIT); }
+MaterialGuard::MaterialGuard() {
+    glPushAttrib(GL_LIGHTING_BIT);
+}
 
-MaterialGuard::~MaterialGuard() { glPopAttrib(); }
+MaterialGuard::~MaterialGuard() {
+    glPopAttrib();
+}
 
-MatrixGuard::MatrixGuard() { glPushMatrix(); }
+MatrixGuard::MatrixGuard() {
+    glPushMatrix();
+}
 
-MatrixGuard::~MatrixGuard() { glPopMatrix(); }
+MatrixGuard::~MatrixGuard() {
+    glPopMatrix();
+}
 
 } // namespace guard
 
