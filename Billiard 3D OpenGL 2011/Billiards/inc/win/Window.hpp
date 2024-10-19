@@ -6,7 +6,7 @@ namespace win {
 
 class Window {
   public:
-    Window(std::wstring className, std::wstring caption, HINSTANCE hInstance);
+    Window(HINSTANCE hInstance, std::wstring className, std::wstring caption);
     bool create();
     void show();
     void hide();
@@ -27,9 +27,9 @@ class Window {
     static LRESULT CALLBACK windowProcedure(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam);
     void destroy();
     void registerWindowClass();
+    HINSTANCE m_handleInstance{};
     std::wstring m_className{};
     std::wstring m_caption{};
-    HINSTANCE m_handleInstance{};
     HWND m_handleWindow{};
     HDC m_handleDeviceContext{};
 };

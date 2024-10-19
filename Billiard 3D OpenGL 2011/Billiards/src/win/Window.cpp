@@ -2,8 +2,8 @@
 
 namespace win {
 
-Window::Window(std::wstring className, std::wstring caption, HINSTANCE hInstance)
-    : m_className{std::move(className)}, m_caption{std::move(caption)}, m_handleInstance{hInstance} {
+Window::Window(HINSTANCE hInstance, std::wstring className, std::wstring caption)
+    : m_handleInstance{hInstance}, m_className{std::move(className)}, m_caption{std::move(caption)} {
     registerWindowClass();
 }
 
@@ -45,9 +45,13 @@ void Window::close() {
     }
 }
 
-void Window::swapBuffers() { SwapBuffers(m_handleDeviceContext); }
+void Window::swapBuffers() {
+    SwapBuffers(m_handleDeviceContext);
+}
 
-Window::~Window() { close(); }
+Window::~Window() {
+    close();
+}
 
 void Window::onCreate() {}
 
@@ -55,7 +59,9 @@ void Window::onMouseMove(const int x, const int y) {}
 
 void Window::onResize(const unsigned short width, const unsigned short height) {}
 
-bool Window::onClose() { return true; }
+bool Window::onClose() {
+    return true;
+}
 
 bool Window::onMessage(UINT message, WPARAM wParam, LPARAM lParam) {
     switch (message) {
@@ -88,7 +94,9 @@ bool Window::onMessage(UINT message, WPARAM wParam, LPARAM lParam) {
     }
 }
 
-Window* Window::getSelfPtr(HWND hwnd) { return reinterpret_cast<Window*>(GetWindowLongPtr(hwnd, GWLP_USERDATA)); }
+Window* Window::getSelfPtr(HWND hwnd) {
+    return reinterpret_cast<Window*>(GetWindowLongPtr(hwnd, GWLP_USERDATA));
+}
 
 Window* Window::storeSelfPtr(HWND hwnd, LPARAM lParam) {
     auto createStruct = reinterpret_cast<CREATESTRUCT*>(lParam);
