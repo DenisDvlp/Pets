@@ -14,7 +14,9 @@ void Light::onInit() {
     light::spotAngle(m_id, 180);
 }
 
-void Light::onDraw() const { light::direction(m_id, rotation, false); }
+void Light::onDraw() const {
+    light::direction(m_id, rotation, false);
+}
 
 } // namespace objects
 } // namespace gl
