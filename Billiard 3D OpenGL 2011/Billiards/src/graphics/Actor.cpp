@@ -3,7 +3,9 @@
 
 namespace gl {
 
-void Actor::init() { onInit(); }
+void Actor::init() {
+    onInit();
+}
 
 void Actor::draw() const {
     if (visible) {
