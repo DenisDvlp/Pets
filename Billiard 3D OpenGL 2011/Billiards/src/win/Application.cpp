@@ -2,8 +2,7 @@
 
 namespace win {
 
-Application::Application(HINSTANCE hInstance)
-    : m_window{L"billiard_main_window", L"Billiards by Denys Petrov 2024", hInstance} {}
+Application::Application(HINSTANCE hInstance) : m_window{hInstance, m_director} {}
 
 void Application::run() {
     if (init()) {
@@ -15,11 +14,6 @@ bool Application::init() {
     const bool success{m_window.create()};
     if (success) {
         m_window.show();
-        m_square.position.z() = -1;
-        m_scene.addActor(m_light);
-        m_scene.addActor(m_square);
-        m_scene.init();
-        m_scene.resize(500, 500);
     }
     return success;
 }
@@ -30,7 +24,7 @@ void Application::runMessageLoop() {
     while (GetMessage(&message, NULL, 0, 0)) {
         TranslateMessage(&message);
         DispatchMessage(&message);
-        m_scene.draw();
+        m_director.draw();
         m_window.swapBuffers();
     }
 }
