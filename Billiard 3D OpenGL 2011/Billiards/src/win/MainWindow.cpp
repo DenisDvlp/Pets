@@ -2,11 +2,19 @@
 
 namespace win {
 
-void MainWindow::onCreate() { createOpenGlRenderingContext(); }
+MainWindow::MainWindow(HINSTANCE hInstance, gl::Director& director)
+    : Window(hInstance, L"billiard_main_window", L"Billiards by Denys Petrov 2024"), m_director{director} {}
+
+void MainWindow::onCreate() {
+    createOpenGlRenderingContext();
+    m_director.init();
+}
 
 void MainWindow::onMouseMove(const int x, const int y) {}
 
-void MainWindow::onResize(const unsigned short width, const unsigned short height) {}
+void MainWindow::onResize(const unsigned short width, const unsigned short height) {
+    m_director.resize(width, height);
+}
 
 bool MainWindow::onClose() {
     destroyOpenGlRenderingContext();

@@ -1,12 +1,13 @@
 #pragma once
 #include "Window.hpp"
+#include "graphics/Director.hpp"
 #include <string>
 
 namespace win {
 
 class MainWindow : public Window {
   public:
-    using Window::Window;
+    MainWindow(HINSTANCE hInstance, gl::Director& director);
 
   protected:
     void onCreate() override;
@@ -18,6 +19,7 @@ class MainWindow : public Window {
     void createOpenGlRenderingContext();
     void destroyOpenGlRenderingContext();
     HGLRC m_handleOpenGlRenderingContext{};
+    gl::Director& m_director;
 };
 
 } // namespace win
