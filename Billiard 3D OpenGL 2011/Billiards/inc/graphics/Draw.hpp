@@ -4,7 +4,7 @@
 
 namespace gl {
 
-namespace stage {
+namespace camera {
 
 // backgroundColor [red, green, blue, alpha]
 // e.g. 0xFF00AAFF
@@ -14,13 +14,13 @@ void init(const std::uint8_t* backgroundColor);
 // aspect - The aspect ratio is the ratio of width / height.
 // nearDistance - The distance from the viewer to the near clipping plane >0.
 // farDistance - The distance from the viewer to the far clipping plane >0.
-void update(const float angle, const float aspect, const float nearDistance, const float farDistance);
+void clear(const float angle, const float aspect, const float nearDistance, const float farDistance);
 
 // width - width of the window.
 // height - height of the window.
 void resize(const std::uint16_t width, const std::uint16_t height);
 
-} // namespace stage
+} // namespace camera
 
 namespace color {
 

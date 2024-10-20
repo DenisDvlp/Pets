@@ -7,7 +7,7 @@ namespace gl {
 
 static GLUquadric* guadric{gluNewQuadric()};
 
-namespace stage {
+namespace camera {
 
 void init(const std::uint8_t* backgroundColor) {
     gluQuadricNormals(guadric, GLU_SMOOTH);
@@ -25,7 +25,7 @@ void init(const std::uint8_t* backgroundColor) {
     glEnable(GL_NORMALIZE);
 }
 
-void update(const float angle, const float aspect, const float nearDistance, const float farDistance) {
+void clear(const float angle, const float aspect, const float nearDistance, const float farDistance) {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
@@ -38,7 +38,7 @@ void resize(const std::uint16_t width, const std::uint16_t height) {
     glViewport(0, 0, width, height);
 }
 
-} // namespace stage
+} // namespace camera
 
 namespace color {
 
