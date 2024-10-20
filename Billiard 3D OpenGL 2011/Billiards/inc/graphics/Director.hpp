@@ -13,7 +13,7 @@ class Director {
     void draw() const;
     void resize(const std::uint16_t width, const std::uint16_t height);
 
-  protected:
+    // protected:
     void buildScenes();
     Stage m_stage{};
     std::vector<Scene> m_scenes{};

@@ -1,4 +1,5 @@
 #pragma once
+#include "Types.hpp"
 #include "Window.hpp"
 #include "graphics/Director.hpp"
 #include <string>
@@ -20,6 +21,8 @@ class MainWindow : public Window {
     void destroyOpenGlRenderingContext();
     HGLRC m_handleOpenGlRenderingContext{};
     gl::Director& m_director;
+    Point m_windowCenter{};
+    Point m_windowCenterOnScreen{};
 };
 
 } // namespace win

@@ -10,9 +10,23 @@ void MainWindow::onCreate() {
     m_director.init();
 }
 
-void MainWindow::onMouseMove(const int x, const int y) {}
+void MainWindow::onMouseMove(const int x, const int y) {
+    static constexpr float mouseSensivity = 0.19f;
+    m_director.m_stage.rotation.y() += (x - m_windowCenter.x) * mouseSensivity;
+    m_director.m_stage.rotation.x() += (y - m_windowCenter.y) * mouseSensivity;
+
+    SetCursorPos(m_windowCenterOnScreen.x, m_windowCenterOnScreen.y);
+}
 
 void MainWindow::onResize(const unsigned short width, const unsigned short height) {
+    m_windowCenter.x = width / 2;
+    m_windowCenter.y = height / 2;
+
+    POINT point{width / 2, height / 2};
+    ClientToScreen(m_handleWindow, &point);
+    m_windowCenterOnScreen.x = point.x;
+    m_windowCenterOnScreen.y = point.y;
+
     m_director.resize(width, height);
 }
 

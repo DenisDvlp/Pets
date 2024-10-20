@@ -19,6 +19,10 @@ void Stage::draw() const {
     static constexpr float farDistance{100.0f};
     stage::update(viewAngle, aspect, nearDistance, farDistance);
 
+    PositionBlock;
+    transform::position(position);
+    transform::rotation(rotation);
+
     for (const Scene* scene : m_scenes) {
         scene->draw();
     }
