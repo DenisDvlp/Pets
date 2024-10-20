@@ -24,7 +24,7 @@ void Application::runMessageLoop() {
     while (GetMessage(&message, NULL, 0, 0)) {
         TranslateMessage(&message);
         DispatchMessage(&message);
-        m_director.draw();
+        m_director.action();
         m_window.swapBuffers();
     }
 }

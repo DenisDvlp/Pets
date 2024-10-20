@@ -11,9 +11,9 @@ void MainWindow::onCreate() {
 }
 
 void MainWindow::onMouseMove(const int x, const int y) {
-    static constexpr float mouseSensivity = 0.19f;
-    m_director.m_stage.rotation.y() += (x - m_windowCenter.x) * mouseSensivity;
-    m_director.m_stage.rotation.x() += (y - m_windowCenter.y) * mouseSensivity;
+    static constexpr float mouseSensitivity = 0.19f;
+    m_director.camera.rotation.y() += (x - m_windowCenter.x) * mouseSensitivity;
+    m_director.camera.rotation.x() += (y - m_windowCenter.y) * mouseSensitivity;
 
     SetCursorPos(m_windowCenterOnScreen.x, m_windowCenterOnScreen.y);
 }
