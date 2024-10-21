@@ -15,6 +15,7 @@ guard::MatrixGuard Camera::block() const {
     camera::clear(viewAngle, aspect, nearDistance, farDistance);
 
     guard::MatrixGuard guard;
+    transform::position(0, 0, -2.0f);
     transform::rotation(rotation);
     transform::position(position);
 
