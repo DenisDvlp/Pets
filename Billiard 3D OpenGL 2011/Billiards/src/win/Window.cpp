@@ -81,11 +81,8 @@ bool Window::onMessage(UINT message, WPARAM wParam, LPARAM lParam) {
     case WM_CLOSE: {
         if (onClose()) {
             destroy();
+            PostQuitMessage(0); // stop the main loop of the application
         }
-        return true;
-    }
-    case WM_DESTROY: {
-        PostQuitMessage(0); // stop the main loop of the application
         return true;
     }
     default: {
