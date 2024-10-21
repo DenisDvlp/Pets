@@ -13,9 +13,9 @@ void init(const std::uint8_t* backgroundColor) {
     gluQuadricNormals(quadric, GLU_SMOOTH);
     gluQuadricTexture(quadric, GL_TRUE);
     glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);
-    constexpr float kMaxVolorValue{255};
-    glClearColor(backgroundColor[0] / kMaxVolorValue, backgroundColor[1] / kMaxVolorValue,
-                 backgroundColor[2] / kMaxVolorValue, backgroundColor[3] / kMaxVolorValue);
+    constexpr float kMaxColorValue{255};
+    glClearColor(backgroundColor[0] / kMaxColorValue, backgroundColor[1] / kMaxColorValue,
+                 backgroundColor[2] / kMaxColorValue, backgroundColor[3] / kMaxColorValue);
     glLightModeli(GL_LIGHT_MODEL_LOCAL_VIEWER, GL_TRUE);
     glLightModeli(GL_LIGHT_MODEL_TWO_SIDE, GL_TRUE);
     constexpr float ambient[4]{};
@@ -23,6 +23,7 @@ void init(const std::uint8_t* backgroundColor) {
     glEnable(GL_LIGHTING);
     glEnable(GL_COLOR_MATERIAL);
     glEnable(GL_NORMALIZE);
+    glEnable(GL_DEPTH_TEST);
 }
 
 void clear(const float angle, const float aspect, const float nearDistance, const float farDistance) {
