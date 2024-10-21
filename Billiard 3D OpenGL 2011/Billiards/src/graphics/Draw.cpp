@@ -154,7 +154,7 @@ void rotationZ(const float angle) {
 namespace figure {
 
 void sphere(const float radius, const int verPolygons, const int horPolygons) {
-    gluSphere(guadric, 0.068f, 64, 64);
+    gluSphere(guadric, radius, verPolygons, horPolygons);
 }
 
 void cylinder(const float baseRadius, const float topRadius, const float height, const int verPolygons,
