@@ -10,8 +10,8 @@ void Actor::init() {
 void Actor::draw() const {
     if (visible) {
         PositionBlock;
-        transform::position(position);
         transform::rotation(rotation);
+        transform::position(position);
         onDraw();
     }
 }
