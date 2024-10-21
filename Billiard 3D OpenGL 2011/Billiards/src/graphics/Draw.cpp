@@ -5,13 +5,13 @@
 
 namespace gl {
 
-static GLUquadric* guadric{gluNewQuadric()};
+static GLUquadric* quadric{gluNewQuadric()};
 
 namespace camera {
 
 void init(const std::uint8_t* backgroundColor) {
-    gluQuadricNormals(guadric, GLU_SMOOTH);
-    gluQuadricTexture(guadric, GL_TRUE);
+    gluQuadricNormals(quadric, GLU_SMOOTH);
+    gluQuadricTexture(quadric, GL_TRUE);
     glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);
     constexpr float kMaxVolorValue{255};
     glClearColor(backgroundColor[0] / kMaxVolorValue, backgroundColor[1] / kMaxVolorValue,
@@ -154,16 +154,16 @@ void rotationZ(const float angle) {
 namespace figure {
 
 void sphere(const float radius, const int verPolygons, const int horPolygons) {
-    gluSphere(guadric, radius, verPolygons, horPolygons);
+    gluSphere(quadric, radius, verPolygons, horPolygons);
 }
 
 void cylinder(const float baseRadius, const float topRadius, const float height, const int verPolygons,
               const int horPolygons) {
-    gluCylinder(guadric, baseRadius, topRadius, height, verPolygons, horPolygons);
+    gluCylinder(quadric, baseRadius, topRadius, height, verPolygons, horPolygons);
 }
 
 void disk(const float innerRadius, const float outerRadius, const int verPolygons, const int horPolygons) {
-    gluDisk(guadric, innerRadius, outerRadius, verPolygons, horPolygons);
+    gluDisk(quadric, innerRadius, outerRadius, verPolygons, horPolygons);
 }
 
 void square(const float sideLength, const int verPolygons, const int horPolygons) {
