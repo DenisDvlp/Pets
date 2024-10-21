@@ -1,4 +1,5 @@
 #include "win/MainWindow.hpp"
+#include <cmath>
 
 namespace win {
 
@@ -10,15 +11,66 @@ void MainWindow::onCreate() {
     m_director.init();
 }
 
-void MainWindow::onMouseMove(const int x, const int y) {
-    static constexpr float mouseSensitivity = 0.19f;
+void MainWindow::onKeyDown(const std::uint8_t keyCode) {
+
+    static constexpr float pi_v = static_cast<float>(3.14159265358979323846);
+    static constexpr float velocity = 0.1f;
+    int directionX{1};
+    int directionZ{1};
+    double (*trigX)(double){nullptr};
+    double (*trigZ)(double){nullptr};
+    switch (keyCode) {
+    case 0x44: // D
+    {
+        directionX = -1;
+        directionZ = -1;
+        trigX = cos;
+        trigZ = sin;
+        break;
+    }
+    case 0x41: // A
+    {
+        directionX = 1;
+        directionZ = 1;
+        trigX = cos;
+        trigZ = sin;
+        break;
+    }
+    case 0x57: // W
+    {
+        directionX = -1;
+        directionZ = 1;
+        trigX = sin;
+        trigZ = cos;
+        break;
+    }
+    case 0x53: // S
+    {
+        directionX = 1;
+        directionZ = -1;
+        trigX = sin;
+        trigZ = cos;
+        break;
+    }
+    default: {
+        return;
+    }
+    }
+    m_director.camera.position.x() += directionX * velocity * trigX(m_director.camera.rotation.y() * pi_v / 180.0f);
+    m_director.camera.position.z() += directionZ * velocity * trigZ(m_director.camera.rotation.y() * pi_v / 180.0f);
+}
+
+void MainWindow::onMouseMove(const std::int32_t x, const std::int32_t y) {
+    static constexpr float mouseSensitivity = 0.2f;
     m_director.camera.rotation.y() += (x - m_windowCenter.x) * mouseSensitivity;
     m_director.camera.rotation.x() += (y - m_windowCenter.y) * mouseSensitivity;
+
+    // m_director.m_light.rotation.x() += (y - m_windowCenter.y) * mouseSensitivity;
 
     SetCursorPos(m_windowCenterOnScreen.x, m_windowCenterOnScreen.y);
 }
 
-void MainWindow::onResize(const unsigned short width, const unsigned short height) {
+void MainWindow::onResize(const std::uint16_t width, const std::uint16_t height) {
     m_windowCenter.x = width / 2;
     m_windowCenter.y = height / 2;
 

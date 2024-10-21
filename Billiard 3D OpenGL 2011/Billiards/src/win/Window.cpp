@@ -55,9 +55,11 @@ Window::~Window() {
 
 void Window::onCreate() {}
 
-void Window::onMouseMove(const int x, const int y) {}
+void Window::onKeyDown(const std::uint8_t keyCode) {}
 
-void Window::onResize(const unsigned short width, const unsigned short height) {}
+void Window::onMouseMove(const std::int32_t x, const std::int32_t y) {}
+
+void Window::onResize(const std::uint16_t width, const std::uint16_t height) {}
 
 bool Window::onClose() {
     return true;
@@ -65,15 +67,19 @@ bool Window::onClose() {
 
 bool Window::onMessage(UINT message, WPARAM wParam, LPARAM lParam) {
     switch (message) {
+    case WM_KEYDOWN: {
+        onKeyDown(static_cast<std::uint8_t>(wParam));
+        return true;
+    }
     case WM_MOUSEMOVE: {
-        const int x = GET_X_LPARAM(lParam);
-        const int y = GET_Y_LPARAM(lParam);
+        const std::int32_t x = GET_X_LPARAM(lParam);
+        const std::int32_t y = GET_Y_LPARAM(lParam);
         onMouseMove(x, y);
         return true;
     }
     case WM_SIZE: {
-        const unsigned short width = LOWORD(lParam);
-        const unsigned short height = HIWORD(lParam);
+        const auto width = static_cast<std::uint16_t>(LOWORD(lParam));
+        const auto height = static_cast<std::uint16_t>(HIWORD(lParam));
         onResize(width, height);
         // wParam: SIZE_MAXHIDE, SIZE_MAXIMIZED, SIZE_MAXSHOW, SIZE_MINIMIZED, SIZE_RESTORED
         return true;

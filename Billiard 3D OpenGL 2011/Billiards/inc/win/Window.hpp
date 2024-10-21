@@ -1,5 +1,6 @@
 #pragma once
 #include "Windows.hpp"
+#include <cstdint>
 #include <string>
 
 namespace win {
@@ -16,8 +17,9 @@ class Window {
 
   protected:
     virtual void onCreate();
-    virtual void onMouseMove(const int x, const int y);
-    virtual void onResize(const unsigned short width, const unsigned short height);
+    virtual void onKeyDown(const std::uint8_t keyCode);
+    virtual void onMouseMove(const std::int32_t x, const std::int32_t y);
+    virtual void onResize(const std::uint16_t width, const std::uint16_t height);
     virtual bool onClose();
 
   protected:

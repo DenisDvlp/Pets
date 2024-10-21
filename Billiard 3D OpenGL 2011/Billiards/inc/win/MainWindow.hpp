@@ -2,7 +2,6 @@
 #include "Types.hpp"
 #include "Window.hpp"
 #include "graphics/Director.hpp"
-#include <string>
 
 namespace win {
 
@@ -12,8 +11,9 @@ class MainWindow : public Window {
 
   protected:
     void onCreate() override;
-    void onMouseMove(const int x, const int y) override;
-    void onResize(const unsigned short width, const unsigned short height) override;
+    void onKeyDown(const std::uint8_t keyCode) override;
+    void onMouseMove(const std::int32_t x, const std::int32_t y) override;
+    void onResize(const std::uint16_t width, const std::uint16_t height) override;
     bool onClose() override;
 
   protected:
