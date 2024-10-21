@@ -6,18 +6,17 @@
 
 namespace gl {
 namespace objects {
-auto ptr{gluNewQuadric()};
 
 void Square::onInit() {}
 
 void Square::onDraw() const {
-    constexpr Color color{255, 0, 255};
+    constexpr Color color{0, 0, 255};
     color::rgb(color);
     MaterialBlock;
     material::reflection(1.0f, 1.0f);
     material::diffusion(1.0f);
-    material::ambient(0.0f);
-    figure::square(1.0f, 10, 10);
+    material::ambient(1.0f);
+    figure::square(2, 50, 50);
 }
 
 } // namespace objects
