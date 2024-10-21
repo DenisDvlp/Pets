@@ -24,12 +24,6 @@
                 "ignoreFailures": true
             }
         ]
-    },
-    {
-        "name": "Build and run",
-        "type": "chrome",
-        "request": "launch",
-        "preLaunchTask": "build_and_run",
     }
     ]
 }
