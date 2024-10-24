@@ -1,11 +1,62 @@
 #include "graphics/Camera.hpp"
 #include "graphics/Types.hpp"
+#include <cmath>
 
 namespace gl {
 
 void Camera::init() {
+    move.velocity = 2.0f;
     constexpr Color backgroundColor{127, 127, 127};
     camera::init(backgroundColor);
+}
+
+void Camera::adjust(const DurationMs milliseconds) {
+    if (!(move.forward ^ move.backward) && !(move.left ^ move.right)) {
+        return;
+    }
+
+    static constexpr float pi_v = static_cast<float>(3.14159265358979323846);
+    int directionX{};
+    int directionZ{};
+    double (*trigX)(double){nullptr};
+    double (*trigZ)(double){nullptr};
+
+    float distanceZ{}; // forward, backward
+    float distanceX{}; // left, right
+
+    const float angleAdjustment{[this]() -> float {
+        float angle{0.0f};
+        if (!(move.left ^ move.right)) {
+            if (move.forward) {
+                return 0.0f;
+            }
+            return 180.f;
+        }
+
+        if (!(move.forward ^ move.backward)) {
+            if (move.left) {
+                return -90.0f;
+            }
+            return 90.0f;
+        }
+
+        if (move.forward) {
+            if (move.left) {
+                return -45.0f;
+            }
+            return 45.0f;
+        }
+
+        if (move.left) {
+            return 225.0f;
+        }
+        return 135.0f;
+    }()};
+
+    const float distance = move.velocity * milliseconds / 1000.f;
+    const float radian = (rotation.y() + angleAdjustment) * pi_v / 180.0f;
+    position.x() += -distance * sin(radian);
+    position.z() += distance * cos(radian);
 }
 
 guard::MatrixGuard Camera::block() const {

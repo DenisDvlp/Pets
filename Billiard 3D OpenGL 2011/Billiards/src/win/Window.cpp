@@ -57,6 +57,8 @@ void Window::onCreate() {}
 
 void Window::onKeyDown(const std::uint8_t keyCode) {}
 
+void Window::onKeyUp(const std::uint8_t keyCode) {}
+
 void Window::onMouseMove(const std::int32_t x, const std::int32_t y) {}
 
 void Window::onResize(const std::uint16_t width, const std::uint16_t height) {}
@@ -69,6 +71,10 @@ bool Window::onMessage(UINT message, WPARAM wParam, LPARAM lParam) {
     switch (message) {
     case WM_KEYDOWN: {
         onKeyDown(static_cast<std::uint8_t>(wParam));
+        return true;
+    }
+    case WM_KEYUP: {
+        onKeyUp(static_cast<std::uint8_t>(wParam));
         return true;
     }
     case WM_MOUSEMOVE: {

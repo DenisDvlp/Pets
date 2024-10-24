@@ -10,6 +10,7 @@ namespace gl {
 class Director {
   public:
     void init();
+    void adjust();
     void action() const;
     void resize(const std::uint16_t width, const std::uint16_t height);
 

@@ -1,4 +1,5 @@
 #pragma once
+#include <chrono>
 #include <cstdint>
 
 namespace gl {
@@ -61,5 +62,19 @@ class Point {
 using Position = Point;
 using Direction = Point;
 using Rotation = Point;
+
+class Movement {
+  public:
+    float velocity{};
+    bool forward{};
+    bool backward{};
+    bool left{};
+    bool right{};
+    bool up{};
+    bool down{};
+};
+
+using TimestampMs = std::chrono::steady_clock::rep;
+using DurationMs = std::chrono::steady_clock::rep;
 
 } // namespace gl

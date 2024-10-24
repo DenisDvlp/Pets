@@ -1,4 +1,6 @@
 #include "graphics/Director.hpp"
+#include "graphics/Types.hpp"
+#include <chrono>
 
 namespace gl {
 
@@ -6,6 +8,20 @@ void Director::init() {
     buildScene();
     camera.init();
     m_scene.init();
+}
+
+static DurationMs millisecondsSinceLastAdjustment() {
+    using namespace std::chrono;
+    auto now = duration_cast<milliseconds>(steady_clock::now().time_since_epoch()).count();
+    static auto last{now};
+    auto result{now - last};
+    last = now;
+    return result;
+}
+
+void Director::adjust() {
+    const DurationMs timespan{millisecondsSinceLastAdjustment()};
+    camera.adjust(timespan);
 }
 
 void Director::action() const {

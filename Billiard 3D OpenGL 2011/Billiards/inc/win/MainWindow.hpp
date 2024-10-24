@@ -12,6 +12,7 @@ class MainWindow : public Window {
   protected:
     void onCreate() override;
     void onKeyDown(const std::uint8_t keyCode) override;
+    void onKeyUp(const std::uint8_t keyCode) override;
     void onMouseMove(const std::int32_t x, const std::int32_t y) override;
     void onResize(const std::uint16_t width, const std::uint16_t height) override;
     bool onClose() override;

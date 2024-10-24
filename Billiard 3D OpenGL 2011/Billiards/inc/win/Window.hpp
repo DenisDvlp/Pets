@@ -18,6 +18,7 @@ class Window {
   protected:
     virtual void onCreate();
     virtual void onKeyDown(const std::uint8_t keyCode);
+    virtual void onKeyUp(const std::uint8_t keyCode);
     virtual void onMouseMove(const std::int32_t x, const std::int32_t y);
     virtual void onResize(const std::uint16_t width, const std::uint16_t height);
     virtual bool onClose();
