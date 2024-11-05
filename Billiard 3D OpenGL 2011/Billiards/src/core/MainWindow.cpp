@@ -1,16 +1,17 @@
-#include "win/MainWindow.hpp"
+#include "core/MainWindow.hpp"
 
-namespace win {
+namespace core {
 
 MainWindow::MainWindow(HINSTANCE hInstance, gl::Director& director)
-    : Window(hInstance, L"billiard_main_window", L"Billiards by Denys Petrov 2024"), m_director{director} {}
+    : Window(hInstance, L"billiard_main_window", L"Billiards by Denys Petrov 2024"), m_director{director},
+      m_renderingLoop{*this, director} {}
 
 void MainWindow::onCreate() {
-    createOpenGlRenderingContext();
-    m_director.init();
+    m_renderingLoop.run();
 }
 
 void MainWindow::onKeyDown(const std::uint8_t keyCode) {
+
     switch (keyCode) {
     case 0x41: // A
     {
@@ -85,7 +86,8 @@ void MainWindow::onResize(const std::uint16_t width, const std::uint16_t height)
 }
 
 bool MainWindow::onClose() {
-    destroyOpenGlRenderingContext();
+    m_renderingLoop.stop();
+    m_renderingLoop.wait();
     return true;
 }
 
@@ -122,10 +124,10 @@ void MainWindow::createOpenGlRenderingContext() {
 
 void MainWindow::destroyOpenGlRenderingContext() {
     if (m_handleOpenGlRenderingContext) {
-        wglMakeCurrent(m_handleDeviceContext, NULL);
+        wglMakeCurrent(NULL, NULL);
         wglDeleteContext(m_handleOpenGlRenderingContext);
         m_handleOpenGlRenderingContext = 0;
     }
 }
 
-} // namespace win
+} // namespace core

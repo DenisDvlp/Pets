@@ -1,15 +1,18 @@
 #pragma once
-#include "Types.hpp"
-#include "Window.hpp"
+#include "RenderingLoop.hpp"
+#include "common/Types.hpp"
 #include "graphics/Director.hpp"
+#include "win/Window.hpp"
 
-namespace win {
+namespace core {
 
-class MainWindow : public Window {
+class MainWindow final : public win::Window {
   public:
     MainWindow(HINSTANCE hInstance, gl::Director& director);
+    void createOpenGlRenderingContext();
+    void destroyOpenGlRenderingContext();
 
-  protected:
+  private:
     void onCreate() override;
     void onKeyDown(const std::uint8_t keyCode) override;
     void onKeyUp(const std::uint8_t keyCode) override;
@@ -17,13 +20,12 @@ class MainWindow : public Window {
     void onResize(const std::uint16_t width, const std::uint16_t height) override;
     bool onClose() override;
 
-  protected:
-    void createOpenGlRenderingContext();
-    void destroyOpenGlRenderingContext();
-    HGLRC m_handleOpenGlRenderingContext{};
+  private:
     gl::Director& m_director;
-    Point m_windowCenter{};
-    Point m_windowCenterOnScreen{};
+    common::Point m_windowCenter{};
+    common::Point m_windowCenterOnScreen{};
+    HGLRC m_handleOpenGlRenderingContext{};
+    RenderingLoop m_renderingLoop;
 };
 
-} // namespace win
+} // namespace core
