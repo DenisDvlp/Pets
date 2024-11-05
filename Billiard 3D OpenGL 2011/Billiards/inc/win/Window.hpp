@@ -8,12 +8,12 @@ namespace win {
 class Window {
   public:
     Window(HINSTANCE hInstance, std::wstring className, std::wstring caption);
+    virtual ~Window();
     bool create();
     void show();
     void hide();
     void close();
     void swapBuffers();
-    virtual ~Window();
 
   protected:
     virtual void onCreate();
