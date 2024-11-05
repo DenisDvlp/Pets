@@ -13,6 +13,5 @@ cmake -GNinja .. && (
 
 : Build the project
 if %cmakeResult% == 1 (
-    ninja
-    start billiards.exe
+    ninja && start billiards.exe
 )
