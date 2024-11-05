@@ -1,20 +1,18 @@
 #pragma once
 #include "MainWindow.hpp"
-#include "Windows.hpp"
 #include "graphics/Director.hpp"
+#include "win/ApplicationLoop.hpp"
 
-namespace win {
+namespace core {
 
 class Application final {
   public:
     Application(HINSTANCE hInstance);
-    void run();
 
   private:
-    bool init();
-    void runMessageLoop();
-    MainWindow m_window;
     gl::Director m_director{};
+    MainWindow m_mainWindow;
+    win::ApplicationLoop m_applicationLoop;
 };
 
-} // namespace win
+} // namespace core
