@@ -1,7 +1,6 @@
-#include "win/Application.hpp"
+#include "core/Application.hpp"
 
 int WinMain(HINSTANCE hInstance, HINSTANCE /*hprev*/, LPSTR /*cmdline*/, int /*show*/) {
-    win::Application app(hInstance);
-    app.run();
+    core::Application{hInstance};
     return 0;
 }
