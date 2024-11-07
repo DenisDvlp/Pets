@@ -11,7 +11,7 @@ class RenderingLoop final : public common::ThreadLoop {
     RenderingLoop(MainWindow& mainWindow, gl::Director& director);
     ~RenderingLoop();
 
-  protected:
+  private:
     void onStart() override;
     void onIteration() override;
     void onStop() override;

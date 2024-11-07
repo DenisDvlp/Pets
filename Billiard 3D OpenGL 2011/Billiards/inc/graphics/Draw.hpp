@@ -72,7 +72,7 @@ void diffusion(int id, float intensity);
 void reflection(int id, float intensity);
 
 // id - light ID
-// angle [0..360]
+// angle [0..90] or 180 (special value by default)
 void spotAngle(int id, float angle);
 
 // id - light ID

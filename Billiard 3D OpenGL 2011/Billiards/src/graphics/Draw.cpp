@@ -116,7 +116,8 @@ void direction(int id, const float* xyz, bool isSpot) {
         glLightfv(id, GL_POSITION, xyzs);
         glLightfv(id, GL_SPOT_DIRECTION, xyz);
     } else {
-        glLightfv(id, GL_POSITION, xyz);
+        const float xyzs[] = {-xyz[0], -xyz[1], -xyz[2], 0};
+        glLightfv(id, GL_POSITION, xyzs);
     }
 }
 
