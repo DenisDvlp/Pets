@@ -107,15 +107,17 @@ void reflection(int id, float intensity) {
 }
 
 void spotAngle(int id, float angle) {
-    glLightf(id, GL_SPOT_CUTOFF, angle);
+    glLightf(id, GL_SPOT_CUTOFF, angle * 2);
 }
 
 void direction(int id, const float* xyz, bool isSpot) {
     if (isSpot) {
+        // The normal of the surface is not important for spot.
         static constexpr float xyzs[] = {0, 0, 0, 1.0f};
         glLightfv(id, GL_POSITION, xyzs);
         glLightfv(id, GL_SPOT_DIRECTION, xyz);
     } else {
+        // The normal of the surface is important for sun light.
         const float xyzs[] = {-xyz[0], -xyz[1], -xyz[2], 0};
         glLightfv(id, GL_POSITION, xyzs);
     }

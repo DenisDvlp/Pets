@@ -73,11 +73,15 @@ void reflection(int id, float intensity);
 
 // id - light ID
 // angle [0..90] or 180 (special value by default)
+// For spot angle is defined.
+// For sun light, it is only visible under the given angle.
 void spotAngle(int id, float angle);
 
 // id - light ID
 // xyz[3]
 // isSpot - is light a spot or sun
+// The normal of the surface is not important for spot.
+// The normal of the surface is important for sun light.
 void direction(int id, const float* xyz, bool isSpot);
 
 } // namespace light
