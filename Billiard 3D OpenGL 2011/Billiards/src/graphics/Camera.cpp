@@ -1,5 +1,5 @@
 #include "graphics/Camera.hpp"
-#include "graphics/Types.hpp"
+#include "graphics/Draw.hpp"
 #include <cmath>
 
 namespace gl {
@@ -14,15 +14,6 @@ void Camera::adjust(const DurationMs milliseconds) {
     if (!(move.forward ^ move.backward) && !(move.left ^ move.right)) {
         return;
     }
-
-    static constexpr float pi_v = static_cast<float>(3.14159265358979323846);
-    int directionX{};
-    int directionZ{};
-    double (*trigX)(double){nullptr};
-    double (*trigZ)(double){nullptr};
-
-    float distanceZ{}; // forward, backward
-    float distanceX{}; // left, right
 
     const float angleAdjustment{[this]() -> float {
         float angle{0.0f};
@@ -53,24 +44,21 @@ void Camera::adjust(const DurationMs milliseconds) {
         return 135.0f;
     }()};
 
+    static constexpr float pi_v = static_cast<float>(3.14159265358979323846);
     const float distance = move.velocity * milliseconds / 1000.f;
     const float radian = (rotation.y() + angleAdjustment) * pi_v / 180.0f;
     position.x() += -distance * sin(radian);
     position.z() += distance * cos(radian);
 }
 
-guard::MatrixGuard Camera::block() const {
+void Camera::block() const {
     static constexpr float viewAngle{65.0f};
     static constexpr float nearDistance{0.01f};
     static constexpr float farDistance{100.0f};
     camera::clear(viewAngle, aspect, nearDistance, farDistance);
-
-    guard::MatrixGuard guard;
     transform::position(0, 0, -2.0f);
     transform::rotation(rotation);
     transform::position(position);
-
-    return guard;
 }
 
 void Camera::resize(const std::uint16_t width, const std::uint16_t height) {

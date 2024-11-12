@@ -25,7 +25,7 @@ void Director::adjust() {
 }
 
 void Director::action() const {
-    auto guard{camera.block()};
+    camera.block();
     m_scene.draw();
 }
 
