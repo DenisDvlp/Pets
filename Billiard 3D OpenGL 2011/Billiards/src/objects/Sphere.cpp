@@ -1,20 +1,20 @@
-#include "objects/Square.hpp"
+#include "objects/Sphere.hpp"
 #include "graphics/Draw.hpp"
 #include "graphics/Types.hpp"
 
 namespace gl {
 namespace objects {
 
-void Square::onInit() {}
+void Sphere::onInit() {}
 
-void Square::onDraw() const {
-    constexpr Color color{0, 0, 255};
+void Sphere::onDraw() const {
+    constexpr Color color{0xFF0000};
     color::rgb(color);
     MaterialBlock;
     material::reflection(1.0f, 1.0f);
     material::diffusion(0.5f);
     material::ambient(0.5f);
-    figure::square(2, 50, 50);
+    figure::sphere(2, 50, 50);
 }
 
 } // namespace objects

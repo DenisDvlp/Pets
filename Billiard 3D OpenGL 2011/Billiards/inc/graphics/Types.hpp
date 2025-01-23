@@ -15,9 +15,9 @@ class Color {
     const std::uint8_t* get() const { return m_data; }
 
     constexpr void rgb(const std::uint32_t color) {
-        m_data[0] = static_cast<std::uint8_t>((color >> 16) % 8);
-        m_data[1] = static_cast<std::uint8_t>((color >> 8) % 8);
-        m_data[2] = static_cast<std::uint8_t>(color % 8);
+        m_data[0] = static_cast<std::uint8_t>((color >> 16) & 0xFF);
+        m_data[1] = static_cast<std::uint8_t>((color >> 8) & 0xFF);
+        m_data[2] = static_cast<std::uint8_t>(color & 0xFF);
         m_data[3] = static_cast<std::uint8_t>(255);
     }
     constexpr void argb(const std::uint32_t color) {

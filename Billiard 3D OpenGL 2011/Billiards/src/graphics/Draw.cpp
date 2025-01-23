@@ -118,7 +118,8 @@ void direction(int id, const float* xyz, bool isSpot) {
         glLightfv(id, GL_SPOT_DIRECTION, xyz);
     } else {
         // The normal of the surface is important for sun light.
-        const float xyzs[] = {-xyz[0], -xyz[1], -xyz[2], 0};
+        // 4th param is ignored but needed.
+        const float xyzs[4] = {-xyz[0], -xyz[1], -xyz[2]};
         glLightfv(id, GL_POSITION, xyzs);
     }
 }

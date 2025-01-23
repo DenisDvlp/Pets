@@ -4,18 +4,10 @@
 namespace gl {
 namespace objects {
 
-class Light final : public Actor {
-  public:
-    Light();
-    void adjust(const DurationMs milliseconds);
-    Movement move{};
-
+class Sphere final : public Actor {
   private:
     void onInit() override;
     void onDraw() const override;
-
-  private:
-    const unsigned int m_id;
 };
 
 } // namespace objects

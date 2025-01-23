@@ -33,6 +33,26 @@ void MainWindow::onKeyDown(const std::uint8_t keyCode) {
         m_director.camera.move.backward = true;
         break;
     }
+    case 0x25: // left
+    {
+        m_director.m_light.move.left = true;
+        break;
+    }
+    case 0x26: // up
+    {
+        m_director.m_light.move.forward = true;
+        break;
+    }
+    case 0x27: // right
+    {
+        m_director.m_light.move.right = true;
+        break;
+    }
+    case 0x28: // down
+    {
+        m_director.m_light.move.backward = true;
+        break;
+    }
     default: {
         return;
     }
@@ -58,6 +78,26 @@ void MainWindow::onKeyUp(const std::uint8_t keyCode) {
     case 0x53: // S
     {
         m_director.camera.move.backward = false;
+        break;
+    }
+    case 0x25: // left
+    {
+        m_director.m_light.move.left = false;
+        break;
+    }
+    case 0x26: // up
+    {
+        m_director.m_light.move.forward = false;
+        break;
+    }
+    case 0x27: // right
+    {
+        m_director.m_light.move.right = false;
+        break;
+    }
+    case 0x28: // down
+    {
+        m_director.m_light.move.backward = false;
         break;
     }
     default: {
