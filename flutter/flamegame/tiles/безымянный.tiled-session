@@ -1,0 +1,37 @@
+{
+    "Map/SizeTest": {
+        "height": 4300,
+        "width": 2
+    },
+    "activeFile": "безымянный.tmx",
+    "expandedProjectPaths": [
+        "."
+    ],
+    "fileStates": {
+        "77f8c7438fce4571edfb463ff2db97410ec91d50.tsx": {
+            "scaleInDock": 3,
+            "scaleInEditor": 1
+        },
+        "безымянный.tmx": {
+            "scale": 1.5,
+            "selectedLayer": 0,
+            "viewCenter": {
+                "x": 293.6666666666667,
+                "y": 472.6666666666667
+            }
+        }
+    },
+    "last.imagePath": "D:/WORK/Projects/flamegame/tiles",
+    "map.lastUsedFormat": "tmx",
+    "map.orientation": "2",
+    "openFiles": [
+        "безымянный.tmx",
+        "77f8c7438fce4571edfb463ff2db97410ec91d50.tsx"
+    ],
+    "project": "безымянный.tiled-project",
+    "recentFiles": [
+        "77f8c7438fce4571edfb463ff2db97410ec91d50.tsx",
+        "безымянный.tmx"
+    ],
+    "tileset.lastUsedFormat": "tsx"
+}
