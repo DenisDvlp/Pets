@@ -1,19 +1,15 @@
 import 'package:flame/camera.dart';
 import 'package:flame/components.dart';
-import 'tile_map.dart';
-import 'int_size.dart';
+import 'ui/tile_map.dart';
+import 'common/int_vector.dart';
 
 class MyWorld extends World {
 
   final tileSet = TileSet(
-    tileSize: IntSize(256, 256),
-    mapSizeInTiles: IntSize(4, 4),
+    tileSize: IntVector2(256, 256),
+    mapSizeInTiles: IntVector2(4, 4),
     imagePath: 'tiles.png'
   );
-
-  void onTileTapCallback(TileCell tileCell) {
-    print('[my] Tile tapped: ${tileCell.tileValue} at position ${tileCell.tilePosition}');
-  }
 
   @override
   Future<void> onLoad() async {
@@ -28,8 +24,7 @@ class MyWorld extends World {
         [12, 13, 14, 15],
       ],
       position: Vector2(0, 0),
-      scale: 0.2,
-      onTileTapCallback: onTileTapCallback,
+      scale: 1.0
     );
     add(tileMap);
 

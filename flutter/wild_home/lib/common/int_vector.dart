@@ -1,16 +1,16 @@
 import 'package:flame/components.dart';
 
-class IntSize {
+class IntVector2 {
   int x = 0;
   int y = 0;
 
-  IntSize(this.x, this.y);
+  IntVector2(this.x, this.y);
 
-  IntSize.zero();
+  IntVector2.zero();
 
-  IntSize.all(int x): this(x, x);
+  IntVector2.all(int x): this(x, x);
 
-  IntSize.fromVector2(Vector2 v): this(v.x.toInt(), v.y.toInt());
+  IntVector2.fromVector2(Vector2 v): this(v.x.toInt(), v.y.toInt());
   Vector2 toVector2() => Vector2(x.toDouble(), y.toDouble());
 
   void inflate(int dx, int dy) {
@@ -38,33 +38,34 @@ class IntSize {
     y = (y * factor).toInt();
   }
 
-  IntSize copy() {
-    return IntSize(x, y);
+  IntVector2 copy() {
+    return IntVector2(x, y);
   }
 
-  IntSize operator -() => IntSize(-x, -y);
+  IntVector2 operator -() => IntVector2(-x, -y);
 
-  IntSize operator -(IntSize other) => IntSize(
+  IntVector2 operator -(IntVector2 other) => IntVector2(
     x - other.x,
     y - other.y,
   );
 
-  IntSize operator +(IntSize other) => IntSize(
+  IntVector2 operator +(IntVector2 other) => IntVector2(
     x + other.x,
     y + other.y,
   );
 
-  IntSize operator *(IntSize other) => IntSize(
+  IntVector2 operator *(IntVector2 other) => IntVector2(
     x * other.x,
     y * other.y,
   );
 
-  IntSize operator /(IntSize other) => IntSize(
+  IntVector2 operator /(IntVector2 other) => IntVector2(
     x ~/ other.x,
     y ~/ other.y,
   );
 
+  @override
   String toString(){
-    return 'IntSize{ x: $x, y: $y }';
+    return 'IntVector2{x: $x, y: $y}';
   }
 }
