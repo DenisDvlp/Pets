@@ -19,3 +19,7 @@ Connect the board and choose 1200 bitrate in the assigned COM port through Devic
 # Configuration VS Code project
 
 Click on PlatformIO button on the right panel. Choose "Open" button in the appeared window. Create new project. Choose board "Arduino Leonardo".
+
+# Notes
+
+https://learn.sparkfun.com/tutorials/pro-micro--fio-v3-hookup-guide/all
