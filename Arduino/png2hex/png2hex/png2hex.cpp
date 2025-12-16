@@ -115,9 +115,9 @@ string getBitmapString(const unsigned char* output, int realWidth, int width, in
   bmpName.append(name);
   string picName("pic_");
   picName.append(name);
-  ss << "static const Bitmap " << bmpName << "(" << pngName << ", "
+  ss << "const Bitmap " << bmpName << "(" << pngName << ", "
     << (width * 8) << ", " << height << ");\n"
-    "static const Picture " << picName << "(" << bmpName << ", 0, 0, "
+    "const Picture " << picName << "(" << bmpName << ", 0, 0, "
     << realWidth << ", " << height << ");\n\n";
 
   return ss.str();
@@ -187,7 +187,7 @@ imglist.txt flags:
        Note: image file path shall be without spaces.
 -f     flag indicates this is a font image.
        The first line of pixels in font image shall be for metrics which denotes
-       the offset og each particular letter. The remaining lines is for the 
+       the offset of each particular letter. The remaining lines is for the 
        graphical representation of letters.
 )";
     cout << helpText;
