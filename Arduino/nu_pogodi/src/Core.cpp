@@ -1,9 +1,9 @@
-#include "Core.h"
-#include "FontCirillic.h"
-#include "Images.h"
-#include "Sprite.h"
-#include "Animation.h"
-#include "stl.h"
+#include "Core.hpp"
+#include "FontCirillic.hpp"
+#include "Images.hpp"
+#include "Sprite.hpp"
+#include "Animation.hpp"
+#include "stl.hpp"
 
 template<typename T, int S>
 constexpr int size(T(&)[S]) { return S; }

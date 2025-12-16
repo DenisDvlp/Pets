@@ -1,5 +1,5 @@
 #pragma once
-#include "Font.h"
+#include "Font.hpp"
 
 class FontCirillic : public Font {
 public:

@@ -1,9 +1,9 @@
 #pragma once
 #include "stdint.h"
-#include "Graphics.h"
-#include "Display.h"
-#include "Controller.h"
-#include "Core.h"
+#include "Graphics.hpp"
+#include "Display.hpp"
+#include "Controller.hpp"
+#include "Core.hpp"
 
 class Application {
   Graphics graphics;

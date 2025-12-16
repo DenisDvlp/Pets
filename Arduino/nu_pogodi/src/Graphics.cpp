@@ -1,7 +1,7 @@
-#include "Graphics.h"
-#include "stl.h"
+#include "Graphics.hpp"
+#include "stl.hpp"
 #ifdef ARDUINO
-#include "Function.h"
+#include "Function.hpp"
 #endif
 
 static constexpr uint8_t BITS_IN_BYTE = 8;

@@ -1,8 +1,8 @@
-#include "Application.h"
-#include "Picture.h"
+#include "Application.hpp"
+#include "Picture.hpp"
 #include "Arduino.h"
-#include "Images.h"
-#include "FontCirillic.h"
+#include "Images.hpp"
+#include "FontCirillic.hpp"
 
 void log(const char* str)
 {
@@ -25,7 +25,7 @@ void Application::init()
   // This takes approximately 0.3 seconds.
   display.init();
 
-  turnOffOledOnBoard();
+  //turnOffOledOnBoard();
 
   // set the output source (display buffer) to drawing system
   graphics.init(display.getBuffer());
@@ -37,7 +37,7 @@ void Application::init()
   //core.init(controller, graphics);
 
   // init port for logs
-  Serial.begin(9600);
+  Serial.begin(1200);
 
   // clean display
   graphics.clear();
@@ -47,12 +47,15 @@ int x = 0;
 void Application::update()
 {
   delay(200);
+  digitalWrite(LED_BUILTIN_RX, HIGH);
+  delay(200);
+  digitalWrite(LED_BUILTIN_RX, LOW);
   graphics.drawPixel({10 + x,20 + x} );
   ++x;
   if(x == 15){
     graphics.drawText("Жёлтая кнопка", {10,10}, FontCirillic{});
   }
-  // core.update();
+  // // core.update();
   controller.update();
   display.update();
 }

@@ -1,4 +1,4 @@
-#include "Images.h"
+#include "Images.hpp"
 #ifdef ARDUINO
 #include <avr/pgmspace.h>
 #endif
@@ -26,8 +26,8 @@ PROGMEM
   0x00, 0x00, 0x1B, 0x70, 0xC0, 0x00, 0x00, 0x31, 0xFF, 0x80, 0x00, 0x00,
   0xE0, 0x70, 0x00, 0x00, 0x03, 0x80, 0x00, 0x00,
 };
-static const Bitmap bmp_w_body(png_w_body, 40, 40);
-static const Picture pic_w_body(bmp_w_body, 0, 0, 35, 40);
+const Bitmap bmp_w_body(png_w_body, 40, 40);
+const Picture pic_w_body(bmp_w_body, 0, 0, 35, 40);
 
 static const uint8_t png_w_basket[136]
 #ifdef ARDUINO
@@ -47,8 +47,8 @@ PROGMEM
   0x0F, 0xFC, 0xDB, 0x60, 0x07, 0xF9, 0xB1, 0xE0, 0x03, 0xFE, 0xE0, 0x60,
   0x00, 0xFB, 0x80, 0x00,
 };
-static const Bitmap bmp_w_basket(png_w_basket, 32, 34);
-static const Picture pic_w_basket(bmp_w_basket, 0, 0, 27, 34);
+const Bitmap bmp_w_basket(png_w_basket, 32, 34);
+const Picture pic_w_basket(bmp_w_basket, 0, 0, 27, 34);
 
 static const uint8_t png_w_lleg[39]
 #ifdef ARDUINO
@@ -60,8 +60,8 @@ PROGMEM
   0x02, 0x0F, 0xC0, 0xFF, 0xFC, 0xC0, 0x99, 0x40, 0xC0, 0xC0, 0x01, 0x80,
   0x7F, 0xFF, 0x00,
 };
-static const Bitmap bmp_w_lleg(png_w_lleg, 24, 13);
-static const Picture pic_w_lleg(bmp_w_lleg, 0, 0, 20, 13);
+const Bitmap bmp_w_lleg(png_w_lleg, 24, 13);
+const Picture pic_w_lleg(bmp_w_lleg, 0, 0, 20, 13);
 
 static const uint8_t png_w_rleg[36]
 #ifdef ARDUINO
@@ -72,8 +72,8 @@ PROGMEM
   0x10, 0x40, 0x10, 0x4E, 0x30, 0x7F, 0x21, 0xC1, 0x67, 0x03, 0x4C, 0xFE,
   0x5B, 0x0C, 0xF4, 0x70, 0xE8, 0xC0, 0xD9, 0x80, 0xE3, 0x00, 0x3E, 0x00,
 };
-static const Bitmap bmp_w_rleg(png_w_rleg, 16, 18);
-static const Picture pic_w_rleg(bmp_w_rleg, 0, 0, 16, 18);
+const Bitmap bmp_w_rleg(png_w_rleg, 16, 18);
+const Picture pic_w_rleg(bmp_w_rleg, 0, 0, 16, 18);
 
 static const uint8_t png_dline[30]
 #ifdef ARDUINO
@@ -84,8 +84,8 @@ PROGMEM
   0x03, 0x80, 0x00, 0x00, 0xE0, 0x00, 0x00, 0x38, 0x00, 0x00, 0x0E, 0x00,
   0x00, 0x03, 0x80, 0x00, 0x00, 0xE0,
 };
-static const Bitmap bmp_dline(png_dline, 24, 10);
-static const Picture pic_dline(bmp_dline, 0, 0, 19, 10);
+const Bitmap bmp_dline(png_dline, 24, 10);
+const Picture pic_dline(bmp_dline, 0, 0, 19, 10);
 
 static const uint8_t png_eggs[28]
 #ifdef ARDUINO
@@ -96,8 +96,8 @@ PROGMEM
   0x85, 0x0A, 0x0C, 0x20, 0x85, 0x0A, 0x0C, 0x20, 0x49, 0x11, 0x12, 0x20,
   0x30, 0xE0, 0xE1, 0xC0,
 };
-static const Bitmap bmp_eggs(png_eggs, 32, 7);
-static const Picture pic_eggs(bmp_eggs, 0, 0, 28, 7);
+const Bitmap bmp_eggs(png_eggs, 32, 7);
+const Picture pic_eggs(bmp_eggs, 0, 0, 28, 7);
 
 static const uint8_t png_chicken[33]
 #ifdef ARDUINO
@@ -108,8 +108,8 @@ PROGMEM
   0x88, 0x53, 0x88, 0xF0, 0x5F, 0xC8, 0x86, 0x50, 0x48, 0xBC, 0x50, 0x08,
   0x80, 0x90, 0x10, 0x81, 0x10, 0x20, 0x7E, 0x0F, 0xC0,
 };
-static const Bitmap bmp_chicken(png_chicken, 24, 11);
-static const Picture pic_chicken(bmp_chicken, 0, 0, 22, 11);
+const Bitmap bmp_chicken(png_chicken, 24, 11);
+const Picture pic_chicken(bmp_chicken, 0, 0, 22, 11);
 
 // Each offset value contains 10 bits. Use `ExtIntArray` to read.
 static const uint8_t font_offsets_font1[202]
@@ -207,8 +207,8 @@ PROGMEM
   0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
   0x01, 0x00, 0x42, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
 };
-static const Bitmap bmp_font1(png_font1, 632, 10);
-static const Picture pic_font1(bmp_font1, 0, 0, 628, 10);
+const Bitmap bmp_font1(png_font1, 632, 10);
+const Picture pic_font1(bmp_font1, 0, 0, 628, 10);
 
 // Each offset value contains 10 bits. Use `ExtIntArray` to read.
 static const uint8_t font_offsets_font2[202]
@@ -319,8 +319,8 @@ PROGMEM
   0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x04,
   0x00, 0x10, 0x80, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
 };
-static const Bitmap bmp_font2(png_font2, 688, 11);
-static const Picture pic_font2(bmp_font2, 0, 0, 682, 11);
+const Bitmap bmp_font2(png_font2, 688, 11);
+const Picture pic_font2(bmp_font2, 0, 0, 682, 11);
 
 // Each offset value contains 10 bits. Use `ExtIntArray` to read.
 static const uint8_t font_offsets_font3[202]
@@ -451,8 +451,8 @@ PROGMEM
   0x00, 0x00, 0x00, 0x00, 0x00, 0x84, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
   0x02, 0x00, 0x04, 0x08, 0x00, 0x80, 0x00, 0x10, 0x00, 0x00, 0x00, 0x00,
 };
-static const Bitmap bmp_font3(png_font3, 792, 12);
-static const Picture pic_font3(bmp_font3, 0, 0, 791, 12);
+const Bitmap bmp_font3(png_font3, 792, 12);
+const Picture pic_font3(bmp_font3, 0, 0, 791, 12);
 
 // Each offset value contains 10 bits. Use `ExtIntArray` to read.
 static const uint8_t font_offsets_font4[202]
@@ -606,8 +606,8 @@ PROGMEM
   0x00, 0x00, 0x00, 0x40, 0x01, 0x81, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
   0x00, 0x00, 0x00, 0x00,
 };
-static const Bitmap bmp_font4(png_font4, 896, 13);
-static const Picture pic_font4(bmp_font4, 0, 0, 892, 13);
+const Bitmap bmp_font4(png_font4, 896, 13);
+const Picture pic_font4(bmp_font4, 0, 0, 892, 13);
 
 // Each offset value contains 10 bits. Use `ExtIntArray` to read.
 static const uint8_t font_offsets_font5[202]
@@ -796,5 +796,5 @@ PROGMEM
   0x04, 0x00, 0x00, 0x80, 0x80, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
   0x00, 0x00, 0x00,
 };
-static const Bitmap bmp_font5(png_font5, 1000, 15);
-static const Picture pic_font5(bmp_font5, 0, 0, 1000, 15);
+const Bitmap bmp_font5(png_font5, 1000, 15);
+const Picture pic_font5(bmp_font5, 0, 0, 1000, 15);

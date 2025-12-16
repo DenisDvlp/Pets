@@ -1,5 +1,5 @@
 #pragma once
-#include "Function.h"
+#include "Function.hpp"
 
 using milliseconds = unsigned long;
 
@@ -238,4 +238,3 @@ public:
   SequenceAnimation(Animation* animations[], unsigned number, unsigned times = 0) :
     animations(animations), size(number), times(times) {}
 };
-

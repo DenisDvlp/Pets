@@ -1,6 +1,6 @@
 #pragma once
-#include "Picture.h"
-#include "Font.h"
+#include "Picture.hpp"
+#include "Font.hpp"
 
 #ifdef ARDUINO
 #include "WString.h"

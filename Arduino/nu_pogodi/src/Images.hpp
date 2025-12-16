@@ -1,5 +1,5 @@
 #pragma once
-#include "Picture.h"
+#include "Picture.hpp"
 
 extern const Bitmap bmp_w_body;
 extern const Picture pic_w_body;
@@ -41,4 +41,3 @@ extern const uint8_t font_offsets_font4[];
 extern const Bitmap bmp_font5;
 extern const Picture pic_font5;
 extern const uint8_t font_offsets_font5[];
-

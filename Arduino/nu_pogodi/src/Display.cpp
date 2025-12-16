@@ -1,4 +1,4 @@
-#include "Display.h"
+#include "Display.hpp"
 #include <avr/pgmspace.h>
 
 // Display driver for SH1106
@@ -34,7 +34,7 @@ void Display::init() const
   // http://microsin.net/adminstuff/hardware/ssd1306-oled-controller.html
 
   // GDDRAM - Graphic Display Data RAM
-  // COM - Common Drivers 
+  // COM - Common Drivers
   // SEG - Segment Drivers
 
   // D/C - Data/Command
@@ -92,7 +92,7 @@ void Display::init() const
 
   // Отражение изображения по горизонтали.
   // 0xA0 + X[0]:
-  // 1 - счёт колонок слева направо 
+  // 1 - счёт колонок слева направо
   // 0 - счёт колонок справа налево
   command(0xA1);//--Set SEG/Column Mapping (0xA1, 0xA0)
 

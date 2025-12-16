@@ -1,5 +1,5 @@
 #pragma once
-#include "Picture.h"
+#include "Picture.hpp"
 #ifdef ARDUINO
 #include "Arduino.h"
 #else

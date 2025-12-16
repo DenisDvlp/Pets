@@ -1,7 +1,7 @@
 #pragma once
 #include "stdint.h"
-#include "Controller.h"
-#include "Graphics.h"
+#include "Controller.hpp"
+#include "Graphics.hpp"
 
 class Core {
 private:

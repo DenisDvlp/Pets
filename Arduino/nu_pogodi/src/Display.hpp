@@ -1,6 +1,6 @@
 #pragma once
 #include "stdint.h"
-#include "Picture.h"
+#include "Picture.hpp"
 #include <SPI.h>
 
 class Display {

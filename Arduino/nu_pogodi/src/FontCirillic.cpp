@@ -1,8 +1,8 @@
-#include "FontCirillic.h"
-#include "Images.h"
-#include "ExtIntArray.h"
+#include "FontCirillic.hpp"
+#include "Images.hpp"
+#include "ExtIntArray.hpp"
 
-//!"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\]^_`abcdefghijklmnopqrstuvwxyz{|}~¨ÀÁÂÃÄÅÆÇÈÉÊËÌÍÎÏĞÑÒÓÔÕÖ×ØÙÚÛÜİŞßàáâãäåæçèéêëìíîïğñòóôõö÷øùúûüışÿ¸
+//!"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\]^_`abcdefghijklmnopqrstuvwxyz{|}~ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 
 FontCirillic::FontCirillic() :
   bmps{
@@ -30,7 +30,7 @@ inline int FontCirillic::getCharHeight() const
 }
 
 int FontCirillic::getOffset(int code) const
-{ 
+{
   struct range{ const int from; const int to; };
   // 33-126,1025,1040-1103,1105
   static const range mapping[] = {
@@ -74,4 +74,3 @@ int FontCirillic::getCharSpaceWidth() const
 {
   return 1;
 }
-

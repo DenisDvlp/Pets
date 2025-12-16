@@ -442,6 +442,8 @@ Return Function<Return(Args...)>::operator()(Args... args) const
             case CallType::LAMBDA_FUNCTION:
                 return (m_method.lambdaCall)(m_object, forward<Args>(args)...);
                 break;
+            default:
+                break;
         }
     }
     return Return();
