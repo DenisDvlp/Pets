@@ -46,7 +46,7 @@ void Application::init()
 
 void Application::update()
 {
-  //delay(200);
+  delay(200);
   //digitalWrite(LED_BUILTIN_RX, HIGH);
   //delay(200);
   //digitalWrite(LED_BUILTIN_RX, LOW);
@@ -54,12 +54,12 @@ void Application::update()
   static int x = 0;
   graphics.drawPixel({x, x} );
   ++x;
-  if(x == 15){
-    graphics.drawText("Жёлтая кнопка", {10,10}, FontCirillic{});
-  }
+  // if(x == 15){
+  //   graphics.drawText("     Какашка кнопкаа", {10,10}, FontCirillic{});
+  // }
 
   // core.update();
-  controller.update();
+  //controller.update();
 }
 
 void Application::draw()

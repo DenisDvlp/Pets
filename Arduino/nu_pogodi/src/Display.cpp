@@ -268,18 +268,6 @@ void Display::init() const {}
 extern HWND hwnd;
 
 void Display::update() const {
-  // Update the screen only if any pixel has been changed.
-  static uint8_t prevBuf[BUF_SIZE] = {};
-
-  if (std::equal(buffer, buffer + BUF_SIZE, prevBuf)) {
-    PAINTSTRUCT ps;
-    BeginPaint(hwnd, &ps);
-    EndPaint(hwnd, &ps);
-    return;
-  }
-
-  std::memcpy(prevBuf, buffer, BUF_SIZE);
-
   PAINTSTRUCT ps;
   HDC hdc = BeginPaint(hwnd, &ps);
 
@@ -299,7 +287,7 @@ void Display::update() const {
   int l = 0;
   std::bitset<BITS_IN_BYTE> bits;
   static const HBRUSH brushOn = CreateSolidBrush(RGB(0, 0, 0));
-  static const HBRUSH brushOff = CreateSolidBrush(RGB(50, 50, 255));
+  static const HBRUSH brushOff = CreateSolidBrush(RGB(0, 170, 192));
 
   for (int i = 0; i < NUM_PAGE; i++) {
     for (int j = 0; j < WIDTH; j++) {

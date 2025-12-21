@@ -53,7 +53,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 
 ATOM MyRegisterClass(HINSTANCE hInstance)
 {
-    HBRUSH brsh = CreateSolidBrush(RGB(50, 50, 255));
+    HBRUSH brsh = CreateSolidBrush(RGB(0, 170, 192));
     WNDCLASSEXW wcex;
 
     wcex.cbSize = sizeof(WNDCLASSEX);
