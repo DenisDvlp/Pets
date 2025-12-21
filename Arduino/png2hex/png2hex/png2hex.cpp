@@ -87,7 +87,7 @@ string getStringArray(const unsigned char* output, size_t size, string name) {
   }
 
   std::stringstream ss;
-  ss << "static const uint8_t " << name << "[" << size << "]\n#ifdef ARDUINO\nPROGMEM\n#endif\n= {";
+  ss << "static const uint8_t " << name << "[" << size << "] PROGMEM = {";
   for (size_t i = 0; i < size; ++i)
   {
     if (i % HEX_IN_ROW == 0) {
@@ -154,8 +154,33 @@ DVector<string> readFromFile(string filepath)
   return list;
 }
 
+filesystem::path getAbsolutePath(const char* strPath) {
+  auto absPath = filesystem::path(strPath).lexically_normal();
+  if (absPath.is_relative()) {
+    if (absPath.wstring().front() == filesystem::path::preferred_separator)
+      absPath = (filesystem::current_path() += absPath);
+    else
+      absPath = filesystem::current_path() / absPath;
+  }
+  return absPath.lexically_normal();
+}
+
 int main(int count, const char** args)
 {
+  if (count != 3) {
+    cout << "png2hex - Convert PNG images to PROGMEM HEX arrays for Arduino.\n"
+      "Usage: png2hex <path to imglist.txt> <path to output dir>\n" << endl;
+    return 0;
+  }
+
+  auto imagelistPath = getAbsolutePath(args[1]);
+
+  auto outputPath = getAbsolutePath(args[2]);
+
+  auto isf = filesystem::is_character_file(imagelistPath);
+  auto isdir = filesystem::is_directory(outputPath);
+
+
   if (!filesystem::exists("imglist.txt")) {
     const char helpText[] = R"(
 This program read `imglist.txt` which contains a list of image names. It converts

@@ -159,12 +159,9 @@
       </Command>
     </PreBuildEvent>
     <PostBuildEvent>
-      <Command>copy $(ProjectDir)kit\Picture.h $(ProjectDir)..\..\main\ /Y
-copy $(ProjectDir)kit\ExtIntArray.h $(ProjectDir)..\..\main\ /Y
-copy $(TargetPath) $(ProjectDir)..\..\main\img\$(TargetFileName) /Y
-copy $(ProjectDir)kit\Picture.h "$(ProjectDir)..\..\Arduino Simulator\ArduinoSimulator\" /Y
-copy $(ProjectDir)kit\ExtIntArray.h "$(ProjectDir)..\..\Arduino Simulator\ArduinoSimulator\" /Y
-copy $(TargetPath) "$(ProjectDir)..\..\Arduino Simulator\ArduinoSimulator\img\$(TargetFileName)" /Y</Command>
+      <Command>copy $(ProjectDir)kit\Picture.h $(ProjectDir)..\..\nu_pogodi\src\ /Y
+copy $(ProjectDir)kit\ExtIntArray.h $(ProjectDir)..\..\nu_pogodi\src\ /Y
+copy $(TargetPath) $(ProjectDir)..\..\nu_pogodi\$(TargetFileName) /Y</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
