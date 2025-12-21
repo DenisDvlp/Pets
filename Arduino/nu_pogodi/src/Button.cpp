@@ -1,5 +1,5 @@
 #include "Button.hpp"
-#include "Arduino.h"
+#include "Arduino.hpp"
 
 void Button::init(uint8_t id, Callback pressDownCallback, Callback pressUpCallback)
 {

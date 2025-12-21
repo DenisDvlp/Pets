@@ -26,4 +26,5 @@ void setup() {
 
 void loop() {
   app.update();
+  app.draw();
 }

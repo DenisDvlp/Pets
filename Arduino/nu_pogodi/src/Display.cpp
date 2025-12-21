@@ -1,4 +1,6 @@
 #include "Display.hpp"
+
+#ifdef ARDUINO
 #include <avr/pgmspace.h>
 
 // Display driver for SH1106
@@ -13,11 +15,9 @@ static constexpr uint8_t SPI_PIN_SCK = 13; // connect to the CLK pin of OLED
 Display::Display() :
   // первый параметр влияет на скорость передачи данных на дисплей
   // это заметно по тому как заполняются страницы
-  Settings(/*Speed up to 16M Hz*/8000000, MSBFIRST, SPI_MODE0)
-{}
+  Settings(/*Speed up to 16M Hz*/8000000, MSBFIRST, SPI_MODE0) {}
 
-void Display::init() const
-{
+void Display::init() const {
   // Difference between SSD1306 and SH1106:
   // - The SH1106 controller has an internal RAM of 132x64 pixel.
   //   The SSD1306 controller only has 128x64 pixel.
@@ -211,20 +211,17 @@ void Display::init() const
   delay(100);
 }
 
-void Display::update() const
-{
+void Display::update() const {
   uint8_t page = 0;
   const uint8_t* buf = buffer;
   const uint8_t* end = buffer + WIDTH * NUM_PAGE;
-  while (buf != end)
-  {
+  while (buf != end) {
     fillPage(page++, buf);
     buf += WIDTH;
   }
 }
 
-Buffer Display::getBuffer() const
-{
+Buffer Display::getBuffer() const {
   return { const_cast<uint8_t*>(buffer), WIDTH, HEIGHT };
 }
 
@@ -253,11 +250,79 @@ void Display::command(uint8_t cmd, uint8_t data) const {
   command(data);
 }
 
-void Display::fillPage(uint8_t pageNum, const uint8_t* buf) const
-{
+void Display::fillPage(uint8_t pageNum, const uint8_t* buf) const {
   digitalWrite(PIN_DC, LOW);  // set command flag
   command(0xB0 + pageNum);    // set page address
   command(0x02, 0x10);        // set LOW and HIGH column address
   digitalWrite(PIN_DC, HIGH); // set data flag
   transfer(buf, WIDTH);
 }
+#else
+#include <string>
+#include <algorithm>
+#include <bitset>
+#include "framework.h"
+
+void Display::init() const {}
+
+extern HWND hwnd;
+
+void Display::update() const {
+  // Update the screen only if any pixel has been changed.
+  static uint8_t prevBuf[BUF_SIZE] = {};
+
+  if (std::equal(buffer, buffer + BUF_SIZE, prevBuf)) {
+    PAINTSTRUCT ps;
+    BeginPaint(hwnd, &ps);
+    EndPaint(hwnd, &ps);
+    return;
+  }
+
+  std::memcpy(prevBuf, buffer, BUF_SIZE);
+
+  PAINTSTRUCT ps;
+  HDC hdc = BeginPaint(hwnd, &ps);
+
+  // This is for double buffering, to avoid seeing the "live" drawing.
+  HDC hdcMemory = CreateCompatibleDC(hdc);
+  HBITMAP hbmp = CreateCompatibleBitmap(hdc, canvasWidth, canvasHeight);
+  SelectObject(hdcMemory, hbmp);
+
+  // Turn in on to see inactive pixels.
+  constexpr bool drawInactivePixels = true;
+
+  static const RECT bgR = { 0, 0, canvasWidth, canvasHeight };
+  static const HBRUSH brushBkg = CreateSolidBrush(drawInactivePixels ? RGB(50, 50, 50) : RGB(50, 50, 255));
+  FillRect(hdcMemory, &bgR, brushBkg);
+
+  RECT r = {};
+  int l = 0;
+  std::bitset<BITS_IN_BYTE> bits;
+  static const HBRUSH brushOn = CreateSolidBrush(RGB(0, 0, 0));
+  static const HBRUSH brushOff = CreateSolidBrush(RGB(50, 50, 255));
+
+  for (int i = 0; i < NUM_PAGE; i++) {
+    for (int j = 0; j < WIDTH; j++) {
+      r.left = (pixelSize + pixelInterval) * j + offsetHorizontal;
+      r.right = r.left + pixelSize;
+      bits = buffer[l++];
+      for (int k = 0; k < BITS_IN_BYTE; k++) {
+        r.top = (pixelSize + pixelInterval) * (i * BITS_IN_BYTE + k) + offsetVertical;
+        r.bottom = r.top + pixelSize;
+        if (drawInactivePixels || bits[k])
+          FillRect(hdcMemory, &r, bits[k] ? brushOn : brushOff);
+      }
+    }
+  }
+
+  BitBlt(hdc, 0, 0, canvasWidth, canvasHeight, hdcMemory, 0, 0, SRCCOPY);
+  DeleteObject(hbmp);
+  DeleteDC(hdcMemory);
+
+  EndPaint(hwnd, &ps);
+}
+
+Buffer Display::getBuffer() const {
+  return { const_cast<uint8_t*>(buffer), WIDTH, HEIGHT };
+}
+#endif

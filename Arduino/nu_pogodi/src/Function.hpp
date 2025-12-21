@@ -171,18 +171,18 @@ private:
         LAMBDA_FUNCTION,
     };
 
-    using MethodPair = pair<MethodUnion, CallType>;
+    using MethodPair = ::pair<MethodUnion, CallType>;
 
     template<typename T, int x = 0>
-    static MethodPair method_cast(T method, false_type)
+    static MethodPair method_cast(T method, ::false_type)
     {
         static_assert(x < 4, "Appropriate class method cast not found");
         using Method = typename CastMethods<x>::type;
-        return method_cast<T, x + 1>(method, bool_constant<sizeof(T) == sizeof(Method)>());
+        return method_cast<T, x + 1>(method, ::bool_constant<sizeof(T) == sizeof(Method)>());
     }
 
     template<typename T, int x>
-    static MethodPair method_cast(T method, true_type)
+    static MethodPair method_cast(T method, ::true_type)
     {
         using Method = typename CastMethods<x - 1>::type;
         union
@@ -193,7 +193,7 @@ private:
         ptr.method = reinterpret_cast<Method>(method);
         MethodUnion methodUnion;
         memcpy(methodUnion.raw, ptr.raw, MAX_UNION_SIZE);
-        return pair<MethodUnion, CallType>{methodUnion, static_cast<CallType>(x - 1)};
+        return ::pair<MethodUnion, CallType>{methodUnion, static_cast<CallType>(x - 1)};
     }
 
     template<typename T>
@@ -308,7 +308,7 @@ void Function<Return(Args...)>::assign(T1 object, T2 method)
 {
     clear();
     m_object = object;
-    auto methodPair = method_cast(method, false_type());
+    auto methodPair = method_cast(method, ::false_type());
     m_method = methodPair.first;
     m_callType = methodPair.second;
 }

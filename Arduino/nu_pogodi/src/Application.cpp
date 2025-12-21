@@ -1,6 +1,6 @@
 #include "Application.hpp"
+#include "Arduino.hpp"
 #include "Picture.hpp"
-#include "Arduino.h"
 #include "Images.hpp"
 #include "FontCirillic.hpp"
 
@@ -43,20 +43,27 @@ void Application::init()
   graphics.clear();
   display.update();
 }
-int x = 0;
+
 void Application::update()
 {
-  delay(200);
-  digitalWrite(LED_BUILTIN_RX, HIGH);
-  delay(200);
-  digitalWrite(LED_BUILTIN_RX, LOW);
-  graphics.drawPixel({10 + x,20 + x} );
+  //delay(200);
+  //digitalWrite(LED_BUILTIN_RX, HIGH);
+  //delay(200);
+  //digitalWrite(LED_BUILTIN_RX, LOW);
+
+  static int x = 0;
+  graphics.drawPixel({x, x} );
   ++x;
   if(x == 15){
     graphics.drawText("Жёлтая кнопка", {10,10}, FontCirillic{});
   }
-  // // core.update();
+
+  // core.update();
   controller.update();
+}
+
+void Application::draw()
+{
   display.update();
 }
 

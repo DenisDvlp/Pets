@@ -13,6 +13,7 @@ class Application {
 public:
   void init();
   void update();
+  void draw();
 private:
   void pressDown(uint8_t button);
 };
