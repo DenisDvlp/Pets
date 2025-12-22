@@ -161,7 +161,7 @@
     <PostBuildEvent>
       <Command>copy $(ProjectDir)kit\Picture.h $(ProjectDir)..\..\nu_pogodi\src\ /Y
 copy $(ProjectDir)kit\ExtIntArray.h $(ProjectDir)..\..\nu_pogodi\src\ /Y
-copy $(TargetPath) $(ProjectDir)..\..\nu_pogodi\$(TargetFileName) /Y</Command>
+copy $(TargetPath) $(ProjectDir)..\..\nu_pogodi\$(TargetName)\$(TargetFileName) /Y</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>

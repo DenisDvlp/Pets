@@ -77,7 +77,7 @@ DBiArray<unsigned char> convertToBits(const DImage& img, uint8 threshold) {
   return convertToBitsHelper(img, threshold);
 }
 
-string getStringArray(const unsigned char* output, size_t size, string name) {
+std::string getStringArray(const unsigned char* output, size_t size, std::string name) {
   static constexpr size_t HEX_IN_ROW = 12;
   static const char lookupHexTable[] = {
     '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F'
@@ -100,20 +100,20 @@ string getStringArray(const unsigned char* output, size_t size, string name) {
   return ss.str();
 }
 
-string getBitmapString(const unsigned char* output, int realWidth, int width, int height, string name) {
+std::string getBitmapString(const unsigned char* output, int realWidth, int width, int height, std::string name) {
   size_t outSize = width * height;
   if (outSize == 0) {
     return "";
   }
 
-  string pngName = "png_" + name;
+  std::string pngName = "png_" + name;
   std::stringstream ss;
   ss << getStringArray(output, outSize, pngName);
 
   // get full structs
-  string bmpName("bmp_");
+  std::string bmpName("bmp_");
   bmpName.append(name);
-  string picName("pic_");
+  std::string picName("pic_");
   picName.append(name);
   ss << "const Bitmap " << bmpName << "(" << pngName << ", "
     << (width * 8) << ", " << height << ");\n"
@@ -123,11 +123,11 @@ string getBitmapString(const unsigned char* output, int realWidth, int width, in
   return ss.str();
 }
 
-bool appendToFile(string filepath, const string& text) {
+bool appendToFile(const std::string& filepath, const std::string& text, bool rewrite = false) {
   if (text.empty()) {
     return true;
   }
-  fstream headerFile(filepath, std::ios_base::out | std::ios_base::app);
+  fstream headerFile(filepath, std::ios_base::out | (rewrite ? 0 :std::ios_base::app));
   if (!headerFile.is_open()) {
     return false;
   }
@@ -136,14 +136,14 @@ bool appendToFile(string filepath, const string& text) {
   return true;
 }
 
-DVector<string> readFromFile(string filepath)
+DVector<std::string> readFromFile(std::string filepath)
 {
   fstream imgfile(filepath, std::ios_base::in);
   if (!imgfile.is_open()) {
     return {};
   }
-  DVector<string> list;
-  string str;
+  DVector<std::string> list;
+  std::string str;
   while (!imgfile.eof()) {
     std::getline(imgfile, str);
     if (!str.empty()) {
@@ -154,49 +154,29 @@ DVector<string> readFromFile(string filepath)
   return list;
 }
 
-filesystem::path getAbsolutePath(const char* strPath) {
-  auto absPath = filesystem::path(strPath).lexically_normal();
+std::filesystem::path getAbsolutePath(const char* strPath, std::filesystem::path parent = std::filesystem::current_path()) {
+  auto absPath = std::filesystem::path(strPath).lexically_normal();
   if (absPath.is_relative()) {
-    if (absPath.wstring().front() == filesystem::path::preferred_separator)
-      absPath = (filesystem::current_path() += absPath);
+    if (absPath.wstring().front() == std::filesystem::path::preferred_separator)
+      absPath = (parent += absPath);
     else
-      absPath = filesystem::current_path() / absPath;
+      absPath = parent / absPath;
   }
   return absPath.lexically_normal();
 }
 
-int main(int count, const char** args)
+bool isFile(const std::filesystem::path& p) {
+  return !std::filesystem::is_directory(p);
+}
+
+int main(int argNum, const char** args)
 {
-  if (count != 3) {
-    cout << "png2hex - Convert PNG images to PROGMEM HEX arrays for Arduino.\n"
-      "Usage: png2hex <path to imglist.txt> <path to output dir>\n" << endl;
-    return 0;
-  }
-
-  auto imagelistPath = getAbsolutePath(args[1]);
-
-  auto outputPath = getAbsolutePath(args[2]);
-
-  auto isf = filesystem::is_character_file(imagelistPath);
-  auto isdir = filesystem::is_directory(outputPath);
-
-
-  if (!filesystem::exists("imglist.txt")) {
+  if (argNum != 3) {
     const char helpText[] = R"(
 This program read `imglist.txt` which contains a list of image names. It converts
 the images into PROGMEM arrays of HEX values suitable for Arduino projects.
 
-Run example:
->png2hex [<path for generated files>]
-
-Structure shall look like:
--root
-|-png2hex.exe
-|-imglist.txt
-|-filepath
- `-img1.png
-|-img2.png
-`-fontpic.png
+Usage: png2hex <path to text file with image list> <path to output dir>
 
 imglist.txt:
   filepath/img1.png -t200
@@ -215,47 +195,58 @@ imglist.txt flags:
        the offset of each particular letter. The remaining lines is for the 
        graphical representation of letters.
 )";
-    cout << helpText;
+    std::cout << helpText;
+    return 0;
+  }
+
+  auto imagelistPath = getAbsolutePath(args[1]);
+
+  auto outputPath = getAbsolutePath(args[2]);
+
+  auto isf = isFile(imagelistPath);
+  auto isdir = std::filesystem::is_directory(outputPath);
+
+  if (!isFile(imagelistPath)) {
+    std::cout << "Image list file does not exist or corrupted";
     return 1;
   }
 
-  if (count != 2) {
-    cout << "Usage: png2hex FILEPATH\n"
-      "FILEPATH is a name of two autogenerated files: FILEPATH.h and FILEPATH.cpp";
-    return 1;
+  if (std::filesystem::exists(outputPath) && !std::filesystem::is_directory(outputPath)) {
+      std::cout << "Output path is not a directory";
+      return 1;
   }
+  std::filesystem::create_directories(outputPath);
 
-  auto list = readFromFile("imglist.txt");
-  if (list.empty()) {
-    cout << "Unable to read `imglist.txt` or file is empty.\n";
-    return 1;
-  }
+  constexpr char headerName[] = "Images.hpp";
+  constexpr char srcName[] = "Images.cpp";
 
-  DString headerName = args[1];
-  headerName += ".h";
-  DString cppName = args[1];
-  cppName += ".cpp";
-  filesystem::remove(headerName.data());
-  filesystem::remove(cppName.data());
+  std::filesystem::path headerPath = outputPath / headerName;
+  std::filesystem::path cppPath = outputPath / srcName;
+  auto headerStr = headerPath.string();
+  auto cppStr = cppPath.string();
 
-  string includes = "#pragma once\n"
-                    "#include \"Picture.h\"\n\n";
-  appendToFile(headerName.data(), includes);
+  std::string includes = R"(
+#pragma once
+#include "Picture.hpp"
 
-  includes = "#include \"";
-  includes += filesystem::path(headerName.data()).filename().string();
-  includes += '"';
-  includes += R"(
+)";
+  appendToFile(headerStr, includes, true);
+
+  includes = R"(
+#include "Images.hpp"
 #ifdef ARDUINO
 #include <avr/pgmspace.h>
+#else
+# define PROGMEM
 #endif
 
 )";
-  appendToFile(cppName.data(), includes);
+  appendToFile(cppStr, includes, true);
 
   size_t totalNumberOfBytes = 0;
 
-  for (DString command : list)
+  auto imgList = readFromFile(imagelistPath.string());
+  for (DString command : imgList)
   {
     // font flag
     const bool isFont = command.find(" -f") != command.end();
@@ -273,60 +264,61 @@ imglist.txt flags:
     }
 
     DImage img;
-    if (!img.load(command.data())) {
-      cout << "Unable to read image `" << command.data() << "`. Skipped." << endl;
+    auto imgPath = getAbsolutePath(command.data(), imagelistPath.parent_path());
+    if (!img.load(imgPath.string())) {
+      std::cout << "Unable to read image `" << imgPath << "`. Skipped." << endl;
       continue;
     }
-    cout << (isFont ? "Font" : "Image") << " `" << command.data() << "` read." << endl;
+    std::cout << (isFont ? "Font" : "Image") << " `" << imgPath << "` read." << endl;
 
     command.remove(".png");
 
     if (isFont) {
       FontInfo fi = readFontInfo(img, threshold);
       totalNumberOfBytes += fi.output.size().square() + fi.offsetsSize;
-      string bitmapArray = getBitmapString(fi.output.raw(), img.size().width(), fi.output.size().width(), fi.output.size().height(), command.data());
+      std::string bitmapArray = getBitmapString(fi.output.raw(), img.size().width(), fi.output.size().width(), fi.output.size().height(), command.data());
       DString offsetName = "font_offsets_" + command;
-      string offsetsArray = getStringArray(fi.offsetsData, fi.offsetsSize, offsetName.data());
+      std::string offsetsArray = getStringArray(fi.offsetsData, fi.offsetsSize, offsetName.data());
       stringstream ss;
       ss << "// Each offset value contains " << int(FontInfo::OFFSET_BITS) << " bits. Use `ExtIntArray` to read.\n" << offsetsArray;
       offsetsArray = std::move(ss.str());
-      if (!appendToFile(cppName.data(), offsetsArray)) {
-        cout << "Unable to write to file `" << cppName.data() << "`." << endl;
+      if (!appendToFile(cppStr, offsetsArray)) {
+        std::cout << "Unable to write to file `" << cppStr << "`." << endl;
         return 1;
       }
-      if (!appendToFile(cppName.data(), bitmapArray)) {
-        cout << "Unable to write to file `" << cppName.data() << "`." << endl;
+      if (!appendToFile(cppStr, bitmapArray)) {
+        std::cout << "Unable to write to file `" << cppStr << "`." << endl;
         return 1;
       }
       DString structs =
         "extern const Bitmap bmp_" + command +
         ";\nextern const Picture pic_" + command +
         ";\nextern const uint8_t font_offsets_" + command + "[];\n\n";
-      if (!appendToFile(headerName.data(), structs.data())) {
-        cout << "Unable to write to file `" << headerName.data() << "`." << endl;
+      if (!appendToFile(headerStr, structs.data())) {
+        std::cout << "Unable to write to file `" << headerStr << "`." << endl;
         return 1;
       }
     }
     else {
       DBiArray<unsigned char> output = convertToBits(img, threshold);
       totalNumberOfBytes += output.size().square();
-      string array = getBitmapString(output.raw(), img.size().width(), output.size().width(), output.size().height(), command.data());
-      if (!appendToFile(cppName.data(), array)) {
-        cout << "Unable to write to file `" << cppName.data() << "`." << endl;
+      std::string array = getBitmapString(output.raw(), img.size().width(), output.size().width(), output.size().height(), command.data());
+      if (!appendToFile(cppStr, array)) {
+        std::cout << "Unable to write to file `" << cppStr << "`." << endl;
         return 1;
       }
       DString structs = 
         "extern const Bitmap bmp_" + command + 
         ";\nextern const Picture pic_" + command + ";\n\n";
-      if (!appendToFile(headerName.data(), structs.data())) {
-        cout << "Unable to write to file `" << headerName.data() << "`." << endl;
+      if (!appendToFile(headerStr, structs.data())) {
+        std::cout << "Unable to write to file `" << headerStr << "`." << endl;
         return 1;
       }
     }
   }
-  cout << "Generated `" << headerName.data() << "`." << endl;
-  cout << "Generated `" << cppName.data() << "`." << endl;
-  cout << "Total PROGMEM bytes used:" << totalNumberOfBytes << endl;
-  cout << "Done." << endl;
+  std::cout << "Generated `" << headerStr << "`." << endl;
+  std::cout << "Generated `" << cppStr << "`." << endl;
+  std::cout << "Total PROGMEM bytes used:" << totalNumberOfBytes << endl;
+  std::cout << "Done." << endl;
   return 0;
 }
