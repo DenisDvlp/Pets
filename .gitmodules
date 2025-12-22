@@ -1,0 +1,6 @@
+[submodule "Arduino/nu_pogodi/png2hex/ext/libpng"]
+	path = Arduino/nu_pogodi/png2hex/ext/libpng
+	url = https://github.com/pnggroup/libpng.git
+[submodule "Arduino/nu_pogodi/png2hex/ext/zlib"]
+	path = Arduino/nu_pogodi/png2hex/ext/zlib
+	url = https://github.com/madler/zlib.git
