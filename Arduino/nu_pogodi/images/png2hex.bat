@@ -1,3 +1,3 @@
 cd img
-png2hex imglist.txt ../src
+png2hex imglist.txt ../src/Images.hpp ../src/Images.cpp
 pause

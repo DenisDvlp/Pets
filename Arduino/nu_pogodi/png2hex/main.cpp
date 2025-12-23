@@ -13,7 +13,6 @@ using namespace std;
 
 static constexpr int8_t BITS_IN_BYTE = 8;
 
-
 class FontInfo {
 public:
   static constexpr int8_t OFFSET_BITS = 10;
@@ -171,20 +170,21 @@ bool isFile(const std::filesystem::path& p) {
 
 int main(int argNum, const char** args)
 {
-  if (argNum != 3) {
+  if (argNum != 4) {
     const char helpText[] = R"(
 This program read `imglist.txt` which contains a list of image names. It converts
 the images into PROGMEM arrays of HEX values suitable for Arduino projects.
 
-Usage: png2hex <path to text file with image list> <path to output dir>
+Usage: png2hex <path to text file with image list> <output header path> <output source path>
 
 imglist.txt:
   filepath/img1.png -t200
-  img2.png -t128\
+  img1.png
+  img2.png -t128
   fontpic.png -f"
 
 imglist.txt flags:
--t128  flag with a following value of the threshold after the image path.
+-t<n>  flag with a following value of the threshold after the image path.
        All pixels with brightness higher than the given threshold are considered
        as a background(or white), otherwise those, which are lower than the threshold,
        are considered as black pixels. The threshold `-t` flag is not mandatory.
@@ -199,41 +199,32 @@ imglist.txt flags:
     return 0;
   }
 
-  auto imagelistPath = getAbsolutePath(args[1]);
-
-  auto outputPath = getAbsolutePath(args[2]);
-
-  auto isf = isFile(imagelistPath);
-  auto isdir = std::filesystem::is_directory(outputPath);
-
-  if (!isFile(imagelistPath)) {
+  auto inputImageListPath = getAbsolutePath(args[1]);
+  if (!isFile(inputImageListPath)) {
     std::cout << "Image list file does not exist or corrupted";
     return 1;
   }
 
-  if (std::filesystem::exists(outputPath) && !std::filesystem::is_directory(outputPath)) {
-      std::cout << "Output path is not a directory";
-      return 1;
+  auto outputHeaderPath = getAbsolutePath(args[2]);
+  if (std::filesystem::is_directory(outputHeaderPath)) {
+    std::cout << "Output header file is an existing directory";
+    return 1;
   }
-  std::filesystem::create_directories(outputPath);
 
-  constexpr char headerName[] = "Images.hpp";
-  constexpr char srcName[] = "Images.cpp";
+  auto outputSourcePath = getAbsolutePath(args[3]);
+  if (std::filesystem::is_directory(outputSourcePath)) {
+    std::cout << "Output source file is an existing directory";
+    return 1;
+  }
 
-  std::filesystem::path headerPath = outputPath / headerName;
-  std::filesystem::path cppPath = outputPath / srcName;
-  auto headerStr = headerPath.string();
-  auto cppStr = cppPath.string();
+  std::string includes = "#pragma once\n#include \"Picture.hpp\"\n\n";
 
-  std::string includes = R"(
-#pragma once
-#include "Picture.hpp"
-
-)";
+  auto headerStr = outputHeaderPath.string();
   appendToFile(headerStr, includes, true);
 
-  includes = R"(
-#include "Images.hpp"
+  includes =
+    "#include \"" + outputHeaderPath.filename().string() + "\"";
+  includes += R"(
 #ifdef ARDUINO
 #include <avr/pgmspace.h>
 #else
@@ -241,11 +232,13 @@ imglist.txt flags:
 #endif
 
 )";
+
+  auto cppStr = outputSourcePath.string();
   appendToFile(cppStr, includes, true);
 
   size_t totalNumberOfBytes = 0;
 
-  auto imgList = readFromFile(imagelistPath.string());
+  auto imgList = readFromFile(inputImageListPath.string());
   for (DString command : imgList)
   {
     // font flag
@@ -264,7 +257,7 @@ imglist.txt flags:
     }
 
     DImage img;
-    auto imgPath = getAbsolutePath(command.data(), imagelistPath.parent_path());
+    auto imgPath = getAbsolutePath(command.data(), inputImageListPath.parent_path());
     if (!img.load(imgPath.string())) {
       std::cout << "Unable to read image `" << imgPath << "`. Skipped." << endl;
       continue;

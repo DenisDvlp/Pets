@@ -1,4 +1,3 @@
-
 #include "Images.hpp"
 #ifdef ARDUINO
 #include <avr/pgmspace.h>
