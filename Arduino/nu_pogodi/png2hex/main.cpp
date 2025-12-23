@@ -1,8 +1,8 @@
 ﻿// png2hex.cpp : Этот файл содержит функцию "main". Здесь начинается и заканчивается выполнение программы.
 //
-#include "DImage.h"
-#include "DString.h"
-#include "ExtIntArray.h"
+#include "DImage.hpp"
+#include "DString.hpp"
+#include "ExtIntArray.hpp"
 #include <iostream>
 #include <bitset>
 #include <sstream>
@@ -192,7 +192,7 @@ imglist.txt flags:
        Note: image file path shall be without spaces.
 -f     flag indicates this is a font image.
        The first line of pixels in font image shall be for metrics which denotes
-       the offset of each particular letter. The remaining lines is for the 
+       the offset of each particular letter. The remaining lines is for the
        graphical representation of letters.
 )";
     std::cout << helpText;
@@ -307,8 +307,8 @@ imglist.txt flags:
         std::cout << "Unable to write to file `" << cppStr << "`." << endl;
         return 1;
       }
-      DString structs = 
-        "extern const Bitmap bmp_" + command + 
+      DString structs =
+        "extern const Bitmap bmp_" + command +
         ";\nextern const Picture pic_" + command + ";\n\n";
       if (!appendToFile(headerStr, structs.data())) {
         std::cout << "Unable to write to file `" << headerStr << "`." << endl;

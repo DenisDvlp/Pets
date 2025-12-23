@@ -1,5 +1,5 @@
 //DImage.cpp
-#include "DImage.h"
+#include "DImage.hpp"
 #include "png.h"
 // See http://zarb.org/~gc/html/libpng.html
 //     https://gist.github.com/niw/5963798
@@ -50,7 +50,7 @@ bool DImage::load(std::string filePath)
   // Enable I/O methods.
   png_init_io(png, file);
   // Tell libpng that 8 bytes are missing from the start after we read signature above.
-  png_set_sig_bytes(png, signatureSize);  
+  png_set_sig_bytes(png, signatureSize);
   // Bit depth always 8. No palette. Always BGRA.
   int transforms = PNG_TRANSFORM_GRAY_TO_RGB | PNG_TRANSFORM_BGR;
   // Read entire image.

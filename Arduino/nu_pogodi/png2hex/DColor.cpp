@@ -1,24 +1,24 @@
 //DColor.cpp
-#include "DColor.h"
+#include "DColor.hpp"
 
 constexpr size_t BITS_IN_BYTE = 8;
 
-#define INIT_CHANNEL_SHIFT(ÑHANNEL, BYTE_NUM) constexpr size_t ÑHANNEL##_SHIFT = BITS_IN_BYTE * BYTE_NUM;
+#define INIT_CHANNEL_SHIFT(ï¿½HANNEL, BYTE_NUM) constexpr size_t ï¿½HANNEL##_SHIFT = BITS_IN_BYTE * BYTE_NUM;
 INIT_CHANNEL_SHIFT(ALPHA, 3) // constexpr size_t ALPHA_SHIFT = BITS_IN_BYTE * 3;
 INIT_CHANNEL_SHIFT(RED, 2)
 INIT_CHANNEL_SHIFT(GREEN, 1)
 INIT_CHANNEL_SHIFT(BLUE, 0)
 
-#define INT_CHANNEL(IN, ÑHANNEL) (static_cast<uint32>(IN) << ÑHANNEL##_SHIFT)
+#define INT_CHANNEL(IN, ï¿½HANNEL) (static_cast<uint32>(IN) << ï¿½HANNEL##_SHIFT)
 
-#define INIT_CHANNEL_MASK(ÑHANNEL) constexpr uint32 ÑHANNEL##_MASK = INT_CHANNEL(0xFF, ÑHANNEL);
+#define INIT_CHANNEL_MASK(ï¿½HANNEL) constexpr uint32 ï¿½HANNEL##_MASK = INT_CHANNEL(0xFF, ï¿½HANNEL);
 INIT_CHANNEL_MASK(ALPHA) // constexpr uint32 ALPHA_MASK = INT_CHANNEL(0xFF, ALPHA);
 INIT_CHANNEL_MASK(RED)
 INIT_CHANNEL_MASK(GREEN)
 INIT_CHANNEL_MASK(BLUE)
 
-#define GET_CHANNEL(IN, ÑHANNEL) ((IN & ÑHANNEL##_MASK) >> ÑHANNEL##_SHIFT)
-#define SET_CHANNEL(OUT, IN, ÑHANNEL) OUT &= ~static_cast<uint32>(ÑHANNEL##_MASK) | INT_CHANNEL(IN, ÑHANNEL)
+#define GET_CHANNEL(IN, ï¿½HANNEL) ((IN & ï¿½HANNEL##_MASK) >> ï¿½HANNEL##_SHIFT)
+#define SET_CHANNEL(OUT, IN, ï¿½HANNEL) OUT &= ~static_cast<uint32>(ï¿½HANNEL##_MASK) | INT_CHANNEL(IN, ï¿½HANNEL)
 
 inline byte DColor::Alpha(uint32 color)
 {

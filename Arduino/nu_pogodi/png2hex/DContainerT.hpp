@@ -8,14 +8,14 @@
 #include <random>
 #include <ctime>
 #include <iterator>
-#include "DSfinae.h"
+#include "DSfinae.hpp"
 
 template<typename BaseContainer>
 class DContainerT
 {
 private:
 
-    static_assert(!is_const<BaseContainer>, "BaseContainer shall not be constant");
+    static_assert(!::is_const<BaseContainer>, "BaseContainer shall not be constant");
     static_assert(!is_ref<BaseContainer>, "BaseContainer shall not be a reference");
     static_assert(!is_ptr<BaseContainer>, "BaseContainer shall not be a pointer");
     static_assert(is_container<pure<BaseContainer>>, "BaseContainer shall be a container");
@@ -44,18 +44,18 @@ public:
 private: //sfinae block
 
     using AssertType = BaseContainer;
-    template<typename T> static constexpr bool this_class_detected = is_same<T, DContainerT>;
-    template<typename T> static constexpr bool this_baseclass_detected = is_same<T, BaseContainer>;
-    template<typename T> static constexpr bool this_iterator_detected = is_same<iterator, T> || is_same<const_iterator, T>;
-    template<typename T> static constexpr bool value_detected = is_convertible<value_type, unref<T>>;
-    template<typename T> static constexpr bool container_detected = is_convertible<value_type, get_value_type<T>>;
-    template<typename T> static constexpr bool array_detected = is_convertible<value_type, array_type<T>>;
-    template<typename T> static constexpr bool size_type_detected = is_convertible<size_type, T>;
-    template<typename T> static constexpr bool array_char_detected = array_detected<T> && is_same<array_type<T>, char>;
-    template<typename T> static constexpr bool ptr_detected = is_ptr<unref<T>> && is_convertible<value_type, pure<T>>;
-    template<typename T> static constexpr bool ptr_char_detected = ptr_detected<T> && is_same<T, char>;
-    template<typename T> static constexpr bool iterator_detected = is_convertible<value_type, get_value_type<T>> || ptr_detected<T>;
-    template<typename T1, typename T2> static constexpr bool iterator_range_detected = iterator_detected<T1> && iterator_detected<T2> && is_same<T1, T2>;
+    template<typename T> static constexpr bool this_class_detected = ::is_same<T, DContainerT>;
+    template<typename T> static constexpr bool this_baseclass_detected = ::is_same<T, BaseContainer>;
+    template<typename T> static constexpr bool this_iterator_detected = ::is_same<iterator, T> || ::is_same<const_iterator, T>;
+    template<typename T> static constexpr bool value_detected = ::is_convertible<value_type, unref<T>>;
+    template<typename T> static constexpr bool container_detected = ::is_convertible<value_type, get_value_type<T>>;
+    template<typename T> static constexpr bool array_detected = ::is_convertible<value_type, array_type<T>>;
+    template<typename T> static constexpr bool size_type_detected = ::is_convertible<size_type, T>;
+    template<typename T> static constexpr bool array_char_detected = array_detected<T> && ::is_same<array_type<T>, char>;
+    template<typename T> static constexpr bool ptr_detected = is_ptr<unref<T>> && ::is_convertible<value_type, pure<T>>;
+    template<typename T> static constexpr bool ptr_char_detected = ptr_detected<T> && ::is_same<T, char>;
+    template<typename T> static constexpr bool iterator_detected = ::is_convertible<value_type, get_value_type<T>> || ptr_detected<T>;
+    template<typename T1, typename T2> static constexpr bool iterator_range_detected = iterator_detected<T1> && iterator_detected<T2> && ::is_same<T1, T2>;
     template<typename T, typename S> static constexpr bool ptr_and_size_detected = (ptr_detected<T> || array_detected<T>) && size_type_detected<S>;
     template<typename T> static constexpr bool container_array_string_detected = container_detected<T> || array_detected<T> || ptr_char_detected<T>;
     template<typename T> static constexpr bool compare_pred2_detected = is_callable_match<T, bool, const value_type&, const value_type&>;

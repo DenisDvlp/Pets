@@ -1,8 +1,8 @@
 //Image.h
 #pragma once
-#include "DColor.h"
-#include "DSize.h"
-#include "DBiArray.h"
+#include "DColor.hpp"
+#include "DSize.hpp"
+#include "DBiArray.hpp"
 #include <string>
 
 class DImage
@@ -20,4 +20,3 @@ public:
 private:
   DBiArray<DColor> m_pixels;
 };
-

@@ -157,7 +157,7 @@ template<typename T> using has_key_type_impl = typename T::key_type;
 template<typename T> constexpr bool has_key_type = feature_detected<has_key_type_impl, T>;
 
 template<typename TAG, typename T>
-constexpr bool check_iterator = is_convertible<TAG, T>;
+constexpr bool check_iterator = ::is_convertible<TAG, T>;
 
 template<typename TAG, typename T>
 using is_iterator_category_impl = IF<check_iterator<TAG, typename T::iterator::iterator_category>>;

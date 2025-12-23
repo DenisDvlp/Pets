@@ -1,7 +1,7 @@
 //DBiArray.h
 #pragma once
-#include "DSizable.h"
-#include "DVector.h"
+#include "DSizable.hpp"
+#include "DVector.hpp"
 
 template<typename T>
 class DBiArray

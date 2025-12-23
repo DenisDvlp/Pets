@@ -1,6 +1,6 @@
 //Color.h
 #pragma once
-#include "DTypes.h"
+#include "DTypes.hpp"
 
 #ifdef TRANSPARENT
 #undef TRANSPARENT
@@ -76,4 +76,3 @@ public:
 private:
     uint32 m_color;
 };
-
