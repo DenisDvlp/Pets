@@ -43,3 +43,7 @@ target_link_libraries(${CMAKE_PROJECT_NAME} PRIVATE
     zlibstatic
     png_static
 )
+
+install(TARGETS ${CMAKE_PROJECT_NAME}
+    RUNTIME DESTINATION ${PROJECT_SOURCE_DIR}/../images
+)
