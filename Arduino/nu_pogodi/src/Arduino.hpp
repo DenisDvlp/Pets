@@ -24,6 +24,7 @@ int digitalRead(int);
 struct Serial_ {
   void begin(unsigned long) const {}
   void println(const char*) const {}
+  void println(long) const {}
 };
 
 const Serial_ Serial{};

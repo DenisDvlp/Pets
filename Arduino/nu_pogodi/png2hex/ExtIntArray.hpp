@@ -2,8 +2,8 @@
 
 // ExtIntArray allows to read a plain bytes
 // as if there was an arbitrary number of bits in each value.
-// This allows to reduce occupied place. If you know the values wouldn't be larger
-// then, say, 2000, which exactly fit in 11 bits, then you haven't to use regular 16 bits of `short`,
+// This allows to reduce the occupied place. If you know the values wouldn't be larger
+// then, say, 2000, which exactly fit in 11 bits, then you don't have to use regular 16 bits of `short`,
 // you can represent the bytes as 11-bit-numbers instead.
 //E.g.:
 //   ExtIntArray<short, 11> exBytes(bytes);

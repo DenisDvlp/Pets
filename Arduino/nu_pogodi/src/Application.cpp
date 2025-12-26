@@ -4,9 +4,10 @@
 #include "Images.hpp"
 #include "FontCirillic.hpp"
 
-void log(const char* str)
+template<typename T>
+void log(const T value)
 {
-  Serial.println(str);
+  Serial.println(value);
 }
 
 // Turn off LEDs on the board.

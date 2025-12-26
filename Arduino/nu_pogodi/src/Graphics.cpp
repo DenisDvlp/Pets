@@ -4,6 +4,10 @@
 #include "Function.hpp"
 #endif
 
+#ifdef _WIN32
+#define pgm_read_byte(ptr) uint8_t{*(ptr)}
+#endif // _WIN32
+
 static constexpr uint8_t BITS_IN_BYTE = 8;
 
 void Graphics::init(Buffer buffer)
@@ -190,12 +194,7 @@ bool adjustSize(int& picPos, int& picSize, int& bufPos, int bufSize)
 void drawPictureLine(uint8_t* buf, int size, const uint8_t* bytes, int shiftRight, const int shiftLeft, bool transparent)
 {
   const uint8_t clearBitMask = ~(1 << shiftLeft) | transparent * 0xFF;
-  uint8_t byte =
-#ifdef ARDUINO
-    pgm_read_byte(bytes);
-#else
-    *bytes;
-#endif
+  uint8_t byte = pgm_read_byte(bytes);
   while (true)
   {
     *buf &= clearBitMask;
@@ -206,12 +205,7 @@ void drawPictureLine(uint8_t* buf, int size, const uint8_t* bytes, int shiftRigh
     if (!shiftRight--)
     {
       shiftRight = BITS_IN_BYTE - 1;
-      byte =
-#ifdef ARDUINO
-      pgm_read_byte(++bytes);
-#else
-      *++bytes;
-#endif
+      byte = pgm_read_byte(++bytes);
     }
   }
 }

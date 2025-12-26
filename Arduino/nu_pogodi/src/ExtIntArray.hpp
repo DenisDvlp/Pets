@@ -1,5 +1,9 @@
 #pragma once
 
+#ifdef _WIN32
+#define pgm_read_byte(ptr) uint8_t{*(ptr)}
+#endif // _WIN32
+
 // ExtIntArray allows to read a plain bytes
 // as if there was an arbitrary number of bits in each value.
 // This allows to reduce occupied place. If you know the values wouldn't be larger
@@ -25,14 +29,14 @@ public:
     T result = 0;
     size_t realOffset = offset * bitsInByte / BITS_IN_BYTE;
     const unsigned char shift = offset * bitsInByte % BITS_IN_BYTE;
-    unsigned char byte = *(bytes + realOffset) >> shift;
+    unsigned char byte = pgm_read_byte(bytes + realOffset) >> shift;
     unsigned char bitsLeft = BITS_IN_BYTE - shift;
     unsigned char count = 0;
     while (count < bitsInByte) {
       result |= (byte & 1) << count++;
       if (!--bitsLeft) {
         bitsLeft = BITS_IN_BYTE;
-        byte = *(bytes + ++realOffset);
+        byte = pgm_read_byte(bytes + ++realOffset);
       }
       else {
         byte >>= 1;
