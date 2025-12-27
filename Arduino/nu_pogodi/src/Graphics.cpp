@@ -152,15 +152,22 @@ void Graphics::drawLine(Position startPos, Position endPos)
 void Graphics::drawCircle(Position centerPos, int raduis)
 {
   Position operator+(const Position& l, const Position& r);
-  for (float i = 0; i < 90; i+=1)
+
+  constexpr auto angle = 45.f;
+  const auto step = angle / (raduis * PI<float> * 0.3f);
+  for (float i = 0; i <= angle; i += step)
   {
     const float radian = degToRad(i);
     int x = static_cast<int>(cos(radian) * raduis + 0.5f);
     int y = static_cast<int>(sin(radian) * raduis + 0.5f);
-    drawPixel(centerPos + Position{x, y});
-    drawPixel(centerPos + Position{-x, y});
-    drawPixel(centerPos + Position{x, -y});
-    drawPixel(centerPos + Position{-x, -y});
+    drawPixel(centerPos + Position{ x, y });
+    drawPixel(centerPos + Position{ -x, y });
+    drawPixel(centerPos + Position{ x, -y });
+    drawPixel(centerPos + Position{ -x, -y });
+    drawPixel(centerPos + Position{ y, x });
+    drawPixel(centerPos + Position{ -y, x });
+    drawPixel(centerPos + Position{ y, -x });
+    drawPixel(centerPos + Position{ -y, -x });
   }
 }
 
@@ -277,7 +284,7 @@ void Graphics::drawText(String text, Position pos, const Font& font)
     else
     {
       Picture pic = font.getPicture(code);
-      drawPicture(pic, pos);
+      drawPicture(pic, pos, true);
       pos.x += pic.width + font.getCharSpaceWidth();
     }
     });
@@ -291,4 +298,14 @@ int Graphics::calculateTextWidth(String text, const Font& font)
       font.getCharWidth(code) + font.getCharSpaceWidth();
     });
   return width;
+}
+
+void Graphics::fillRect(Position pos, Size size, bool color) {
+  if (!adjustSize(pos.x, size.width, pos.x, buf.width) ||
+    !adjustSize(pos.y, size.height, pos.y, buf.height))
+    return;
+  for (int y = 0; y < size.height; ++y)
+  {
+    drawHLine({ pos.x, pos.y + y }, size.width);
+  }
 }

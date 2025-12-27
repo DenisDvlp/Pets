@@ -47,20 +47,8 @@ void Application::init()
 
 void Application::update()
 {
-  delay(200);
-  //digitalWrite(LED_BUILTIN_RX, HIGH);
-  //delay(200);
-  //digitalWrite(LED_BUILTIN_RX, LOW);
-
-  static int x = 0;
-  graphics.drawPixel({x, x} );
-  ++x;
-  // if(x == 15){
-  //   graphics.drawText("     Какашка кнопкаа", {10,10}, FontCirillic{});
-  // }
-
   // core.update();
-  //controller.update();
+  controller.update();
 }
 
 void Application::draw()
@@ -73,13 +61,10 @@ constexpr size_t size(T(&)[S]) { return S; }
 
 void Application::pressDown(uint8_t button)
 {
-  FontCirillic font;
-  font.isBold = false;
-  Position pos = { (Display::WIDTH - graphics.calculateTextWidth("Ну Погоди", font)) / 2, 20 };
   switch (button) {
-  case Controller::BUTTON_X: log("BUTTON_X"); break;
-  case Controller::BUTTON_Y: log("BUTTON_Y"); break;
-  case Controller::BUTTON_A: log("BUTTON_A"); break;
-  case Controller::BUTTON_B: log("BUTTON_B"); break;
+  case Controller::BUTTON_X: graphics.drawText("Синяя кнопка", {10,10}, FontCirillic{}); break;
+  case Controller::BUTTON_Y: graphics.drawText("Зеленая кнопка", {10,10}, FontCirillic{}); break;
+  case Controller::BUTTON_A: graphics.drawText("Красная кнопка", {10,10}, FontCirillic{}); break;
+  case Controller::BUTTON_B: /*graphics.drawText("Жёлтая кнопка", { 10,10 }, FontCirillic{});*/ graphics.drawCircle({ 20, 20 }, random(10, 30)); break;
   }
 }

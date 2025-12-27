@@ -2,6 +2,8 @@
 #include "Arduino.hpp"
 #include <chrono>
 #include <thread>
+#include <algorithm>
+#include "framework.h"
 
 void delay(unsigned long ms) {
   std::chrono::milliseconds duration(ms);
@@ -18,8 +20,16 @@ unsigned long millis() {
 void digitalWrite(int, int) {
   // No implementation needed for simulation
 }
-int digitalRead(int) {
-  // Always return LOW for simulation
-  return LOW;
+int digitalRead(int key) {
+  return !GetAsyncKeyState(key);
 }
+
+long random() {
+  return rand();
+}
+
+long random(long min, long max) {
+  return rand() % (max - min + 1) + min;
+}
+
 #endif

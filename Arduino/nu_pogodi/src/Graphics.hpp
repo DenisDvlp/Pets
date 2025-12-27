@@ -22,6 +22,7 @@ public:
   void drawPicture(Picture pic, Position pos, bool transparent = false);
   void drawText(String text, Position pos, const Font& font);
   int calculateTextWidth(String text, const Font& font);
+  void fillRect(Position pos, Size size, bool color = true);
 private:
   uint8_t* bufferOffset(Position pos);
 };

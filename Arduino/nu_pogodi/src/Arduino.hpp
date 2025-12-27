@@ -3,16 +3,15 @@
 #include <Arduino.h>
 #else
 
-#define HIGH 0x1
-#define LOW  0x0
+constexpr auto HIGH = 1;
+constexpr auto LOW = 0;
 
-#define INPUT 0x0
-#define OUTPUT 0x1
-#define INPUT_PULLUP 0x2
+constexpr auto OUTPUT = 1;
+constexpr auto INPUT_PULLUP = 2;
 
-#define LED_BUILTIN 13
-#define LED_BUILTIN_RX 17
-#define LED_BUILTIN_TX 30
+constexpr auto LED_BUILTIN = 13;
+constexpr auto LED_BUILTIN_RX = 17;
+constexpr auto LED_BUILTIN_TX = 30;
 
 using byte = unsigned char;
 
@@ -20,6 +19,8 @@ void delay(unsigned long ms);
 unsigned long millis();
 void digitalWrite(int, int);
 int digitalRead(int);
+long random();
+long random(long min, long max);
 
 struct Serial_ {
   void begin(unsigned long) const {}
