@@ -11,7 +11,7 @@
 
 using namespace std;
 
-static constexpr int8_t BITS_IN_BYTE = 8;
+static constexpr uint8_t BITS_IN_BYTE = 8;
 
 class FontInfo {
 public:
@@ -23,10 +23,11 @@ public:
   unsigned char offsetsData[2000] = {};
 };
 
-DBiArray<unsigned char> convertToBitsHelper(const DImage& img, uint8 threshold, int fromLine = 0) {
+DBiArray<unsigned char> convertToBitsHelper(const DImage& img, uint8 threshold, int isFont) {
+  const auto fromLine = isFont ? 1 : 0;
+  const auto colorDepth = isFont ? 1 : 2;
   const DSize imgSize = img.size();
-  const int16 widthOut = (imgSize.width() / BITS_IN_BYTE +
-    (imgSize.width() % BITS_IN_BYTE ? 1 : 0));
+  const int16 widthOut = (imgSize.width() * colorDepth / BITS_IN_BYTE + ((imgSize.width() * colorDepth) % BITS_IN_BYTE ? 1 : 0));
 
   DBiArray<unsigned char> output;
   output.size(widthOut, imgSize.height() - fromLine);
@@ -37,7 +38,7 @@ DBiArray<unsigned char> convertToBitsHelper(const DImage& img, uint8 threshold, 
     for (size_t j = 0; j < imgSize.width(); ++k)
     {
       bits.reset();
-      for (int k = BITS_IN_BYTE - 1; k >= 0 && j < imgSize.width(); ++j, --k)
+      for (int l = BITS_IN_BYTE - 1; l >= 0 && j < imgSize.width(); ++j, l -= colorDepth)
       {
         // Turn colored pixel into grayscale. Use Luma coding Rec. 601:
         //   Y = 0.299 * R + 0.587 * G + 0.114 * B;
@@ -46,7 +47,12 @@ DBiArray<unsigned char> convertToBitsHelper(const DImage& img, uint8 threshold, 
         // Bright pixels are >=128. Dark pixels are <128.
         const DColor color = img[i][j];
         const double brightness = 0.299 * color.red() + 0.587 * color.green() + 0.114 * color.blue();
-        bits.set(k, /*isDark*/ brightness < threshold);
+        const auto isDark = (brightness < threshold);
+        bits.set(l, isDark);
+        if (isFont)
+          continue;
+        const auto isTransparent = (color.alpha() < 127);
+        bits.set(l - 1, isTransparent);
       }
       output.raw()[k] = static_cast<unsigned char>(bits.to_ulong());
     }
@@ -67,13 +73,13 @@ FontInfo readFontInfo(const DImage& img, uint8 threshold) {
   fi.offsets[k++] = imgSize.width();
   fi.offsetsSize = k * FontInfo::OFFSET_BITS / BITS_IN_BYTE + bool(k * FontInfo::OFFSET_BITS % BITS_IN_BYTE);
 
-  fi.output = convertToBitsHelper(img, threshold, 1);
+  fi.output = convertToBitsHelper(img, threshold, true);
 
   return fi;
 }
 
 DBiArray<unsigned char> convertToBits(const DImage& img, uint8 threshold) {
-  return convertToBitsHelper(img, threshold);
+  return convertToBitsHelper(img, threshold, false);
 }
 
 std::string getStringArray(const unsigned char* output, size_t size, std::string name) {
@@ -99,7 +105,7 @@ std::string getStringArray(const unsigned char* output, size_t size, std::string
   return ss.str();
 }
 
-std::string getBitmapString(const unsigned char* output, int realWidth, int width, int height, std::string name) {
+std::string getBitmapString(const unsigned char* output, int realWidth, int width, int height, std::string name, bool isFont) {
   size_t outSize = width * height;
   if (outSize == 0) {
     return "";
@@ -115,7 +121,7 @@ std::string getBitmapString(const unsigned char* output, int realWidth, int widt
   std::string picName("pic_");
   picName.append(name);
   ss << "const Bitmap " << bmpName << "(" << pngName << ", "
-    << (width * 8) << ", " << height << ");\n"
+    << (width * (isFont ? 8 : 4)) << ", " << height << ");\n"
     "const Picture " << picName << "(" << bmpName << ", 0, 0, "
     << realWidth << ", " << height << ");\n\n";
 
@@ -269,7 +275,7 @@ imglist.txt flags:
     if (isFont) {
       FontInfo fi = readFontInfo(img, threshold);
       totalNumberOfBytes += fi.output.size().square() + fi.offsetsSize;
-      std::string bitmapArray = getBitmapString(fi.output.raw(), img.size().width(), fi.output.size().width(), fi.output.size().height(), command.data());
+      std::string bitmapArray = getBitmapString(fi.output.raw(), img.size().width(), fi.output.size().width(), fi.output.size().height(), command.data(), isFont);
       DString offsetName = "font_offsets_" + command;
       std::string offsetsArray = getStringArray(fi.offsetsData, fi.offsetsSize, offsetName.data());
       stringstream ss;
@@ -295,7 +301,7 @@ imglist.txt flags:
     else {
       DBiArray<unsigned char> output = convertToBits(img, threshold);
       totalNumberOfBytes += output.size().square();
-      std::string array = getBitmapString(output.raw(), img.size().width(), output.size().width(), output.size().height(), command.data());
+      std::string array = getBitmapString(output.raw(), img.size().width(), output.size().width(), output.size().height(), command.data(), isFont);
       if (!appendToFile(cppStr, array)) {
         std::cout << "Unable to write to file `" << cppStr << "`." << endl;
         return 1;
