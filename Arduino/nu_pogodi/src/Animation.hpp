@@ -1,10 +1,43 @@
 #pragma once
 #include "Function.hpp"
+#include "Arduino.hpp"
 
-using milliseconds = unsigned long;
-
-void delay(milliseconds ms);
-milliseconds millis();
+class AnimatedPicture {
+private:
+  const Picture* pictures = nullptr;
+  const Picture* inactivePicture = nullptr;
+  int size = 0;
+  bool active = false;
+  milliseconds startMs = 0;
+  milliseconds duration = 0;
+  int times = 0;
+public:
+  const Picture* currentPicture = nullptr;
+  template<size_t S>
+  AnimatedPicture(const Picture(&pics)[S], const Picture* inactivePicture, milliseconds duration, int times = -1)
+    : pictures(pics), inactivePicture(inactivePicture), size(S), duration(duration), currentPicture(inactivePicture), times(times){}
+  void start(milliseconds now) {
+    if (!active && times != 0) {
+      active = true;
+      startMs = now;
+    }
+  }
+  void stop() {
+    active = false;
+    currentPicture = inactivePicture;
+  }
+  void update(milliseconds now) {
+    if (active) {
+      const milliseconds currentDuration = now - startMs;
+      if (times > 0 && currentDuration / duration >= times) {
+        stop();
+      } else {
+        const auto frameIndex = static_cast<int>(static_cast<float>(currentDuration % duration) / duration * size);
+        currentPicture = pictures + frameIndex;
+      }
+    }
+  }
+};
 
 class Animation {
   friend class SequenceAnimation;
@@ -19,55 +52,40 @@ public:
   Function<void()> onFinish;
 public:
   virtual ~Animation() {}
-  void start(milliseconds now)
-  {
-    if (!active)
-    {
+  void start(milliseconds now) {
+    if (!active) {
       active = true;
       onStart(now);
     }
   }
-  void stop()
-  {
+  void stop() {
     active = false;
     onStop();
   }
-  void restart(milliseconds now)
-  {
+  void restart(milliseconds now) {
     stop();
     start(now);
   }
-  bool isActive() const
-  {
+  bool isActive() const {
     return active;
   }
-  void update(milliseconds now)
-  {
-    if (active)
-    {
+  void update(milliseconds now) {
+    if (active) {
       onUpdate(now);
-      if (!active)
-      {
-        onFinish();
-        onAnimationFinish();
-      }
     }
   }
 };
 
-class DelayAnimation : public Animation {
+class DelayAnimation: public Animation {
 protected:
   milliseconds ms = 0;
   const milliseconds duration = 0;
 private:
-  void onStart(milliseconds now) override
-  {
+  void onStart(milliseconds now) override {
     ms = now;
   }
-  void onUpdate(milliseconds now) override
-  {
-    if ((now - ms) >= duration)
-    {
+  void onUpdate(milliseconds now) override {
+    if ((now - ms) >= duration) {
       stop();
     }
   }
@@ -75,23 +93,17 @@ public:
   DelayAnimation(milliseconds duration) : duration(duration) {}
 };
 
-class PeriodicAnimation : public DelayAnimation {
+class PeriodicAnimation: public DelayAnimation {
 protected:
   unsigned times = 0;
 private:
-  void onUpdate(milliseconds now) override
-  {
-    if ((now - ms) >= duration)
-    {
+  void onUpdate(milliseconds now) override {
+    if ((now - ms) >= duration) {
       onPeriod();
-      if (times)
-      {
+      if (times) {
         stop();
-      }
-      else
-      {
-        if (times > 1)
-        {
+      } else {
+        if (times > 1) {
           --times;
         }
         restart(now);
@@ -105,22 +117,18 @@ public:
     DelayAnimation(period), times(times) {}
 };
 
-class FractionAnimation : public DelayAnimation {
+class FractionAnimation: public DelayAnimation {
 protected:
   const unsigned times = 0;
 protected:
   virtual void onFraction(float fraction) {}
 private:
-  void onUpdate(milliseconds now) override
-  {
+  void onUpdate(milliseconds now) override {
     const milliseconds period = now - ms;
-    if (times && period >= duration * times)
-    {
+    if (times && period >= duration * times) {
       stop();
       onFraction(1.0f);
-    }
-    else
-    {
+    } else {
       onFraction(static_cast<float>(period % duration) / duration);
     }
   }
@@ -129,36 +137,32 @@ public:
     DelayAnimation(duration), times(times) {}
 };
 
-class FrameAnimation : public FractionAnimation {
+class FrameAnimation: public FractionAnimation {
 protected:
   unsigned frames = 10;
   unsigned frame = 0;
 private:
-  void onFraction(float part) override
-  {
+  void onFraction(float part) override {
     frame = static_cast<unsigned>(part * frames);
-    if (frame >= frames)
-    {
+    if (frame >= frames) {
       frame = frames - 1;
     }
   }
 public:
   FrameAnimation(unsigned frames, milliseconds duration, int times = -1) :
     FractionAnimation(duration, times), frames(frames) {}
-  unsigned getCurrentFrame() const
-  {
+  unsigned getCurrentFrame() const {
     return frame;
   }
 };
 
 template<typename T>
-class ValueAnimation : public FractionAnimation {
+class ValueAnimation: public FractionAnimation {
 protected:
   T& value;
   const T from, to;
 private:
-  void onFraction(float part) override
-  {
+  void onFraction(float part) override {
     value = part * (to - from) + from;
   }
 public:
@@ -167,13 +171,12 @@ public:
 };
 
 template<>
-class ValueAnimation<bool> : public FractionAnimation {
+class ValueAnimation<bool>: public FractionAnimation {
 protected:
   bool& value;
   const bool from, to;
 private:
-  void onFraction(float part) override
-  {
+  void onFraction(float part) override {
     value = (part == 1.0f) ? to : from;
   }
 public:
@@ -181,7 +184,7 @@ public:
     FractionAnimation(duration, times), value(value), from(from), to(to) {}
 };
 
-class SequenceAnimation : public Animation {
+class SequenceAnimation: public Animation {
 protected:
   Animation** animations;
   milliseconds lastNow;
@@ -190,44 +193,32 @@ protected:
   const unsigned times = 0;
   unsigned time = 0;
 private:
-  void onStart(milliseconds now) override
-  {
+  void onStart(milliseconds now) override {
     current = 0;
     time = times;
     animations[current]->onAnimationFinish.assign(this, &SequenceAnimation::onAnimationFinish);
     animations[current]->start(now);
   }
-  void onStop() override
-  {
-    if (current < size)
-    {
+  void onStop() override {
+    if (current < size) {
       animations[current]->stop();
     }
   }
-  void onUpdate(milliseconds now) override
-  {
-    if (current < size)
-    {
+  void onUpdate(milliseconds now) override {
+    if (current < size) {
       lastNow = now;
       animations[current]->update(now);
     }
   }
-  void onAnimationFinish()
-  {
-    if (++current < size)
-    {
+  void onAnimationFinish() {
+    if (++current < size) {
       animations[current]->onAnimationFinish.assign(this, &SequenceAnimation::onAnimationFinish);
       animations[current]->start(lastNow);
-    }
-    else {
-      if (time == 1)
-      {
+    } else {
+      if (time == 1) {
         stop();
-      }
-      else
-      {
-        if (time > 1)
-        {
+      } else {
+        if (time > 1) {
           --time;
         }
         restart(lastNow);
