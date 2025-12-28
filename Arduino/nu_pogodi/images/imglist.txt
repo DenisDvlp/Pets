@@ -1,12 +1,8 @@
 background.png
+wolf_body.png
+basket_up_down.png
+eggs_anim.png
 chick_anim.png
-wolf2.png
-w_basket.png
-w_lleg.png
-w_rleg.png
-dline.png
-eggs.png
-chicken.png
 font1.png -f
 font2.png -f
 font3.png -f
