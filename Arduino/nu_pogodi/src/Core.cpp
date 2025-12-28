@@ -11,7 +11,7 @@ constexpr int size(T(&)[S]) { return S; }
 class Wolf : public Sprite {
 private:
   PicPos pics[3] = {
-    { pic_w_body, {0, 0} },
+    { pic_wolf2, {0, 0} },
     { pic_w_lleg, {7, 40} },
     { pic_w_rleg, {34, 35} },
   };

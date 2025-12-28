@@ -64,7 +64,7 @@ void Application::pressDown(uint8_t button)
   switch (button) {
   case Controller::BUTTON_X: graphics.drawText("Синяя кнопка", {10,10}, FontCirillic{}); break;
   case Controller::BUTTON_Y: graphics.drawText("Зеленая кнопка", {10,10}, FontCirillic{}); break;
-  case Controller::BUTTON_A: graphics.drawText("Красная кнопка", {10,10}, FontCirillic{}); break;
-  case Controller::BUTTON_B: /*graphics.drawText("Жёлтая кнопка", { 10,10 }, FontCirillic{});*/ graphics.drawCircle({ 20, 20 }, random(10, 30)); break;
+  case Controller::BUTTON_A: graphics.drawPicture(pic_background, { 0,0 }); break;
+  case Controller::BUTTON_B: graphics.drawPicture(pic_wolf2, { 0,0 }); break;
   }
 }

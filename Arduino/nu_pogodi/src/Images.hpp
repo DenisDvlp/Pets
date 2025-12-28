@@ -1,8 +1,14 @@
 #pragma once
 #include "Picture.hpp"
 
-extern const Bitmap bmp_w_body;
-extern const Picture pic_w_body;
+extern const Bitmap bmp_background;
+extern const Picture pic_background;
+
+extern const Bitmap bmp_chick_anim;
+extern const Picture pic_chick_anim;
+
+extern const Bitmap bmp_wolf2;
+extern const Picture pic_wolf2;
 
 extern const Bitmap bmp_w_basket;
 extern const Picture pic_w_basket;

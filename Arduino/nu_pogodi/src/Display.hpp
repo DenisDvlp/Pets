@@ -15,6 +15,18 @@ private:
   static constexpr int BITS_IN_BYTE = 8;
   static constexpr int BUF_SIZE = WIDTH * HEIGHT / BITS_IN_BYTE;
 
+  // Buffer looks like 8 lines that consist of vertical lines, where each line is represented as a byte.
+  //    0  1  2  3   ...  127
+  //  0 || || || ||        || \
+  //  1 || || || ||        ||  |
+  //  2 || || || ||        ||   |
+  //  3 || || || ||  ...   ||    > one byte
+  //  4 || || || ||        ||   |
+  //  5 || || || ||        ||   |
+  //  6 || || || ||        ||  |
+  //  7 || || || ||        || /
+  // ...
+  // 64 || || || ||        ||
   uint8_t buffer[BUF_SIZE];
   SPISettings Settings;
 public:

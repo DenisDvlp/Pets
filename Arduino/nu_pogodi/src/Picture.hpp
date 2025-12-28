@@ -23,23 +23,24 @@ struct Size {
 
 struct Bitmap : Size {
   const uint8_t* data = nullptr;
+  const uint8_t colorDepth = 0; // Number of bits that are used to encode a color
   constexpr Bitmap() = default;
-  Bitmap(const uint8_t* data, int w, int h)
-    : data(data), Size(w, h) {}
+  Bitmap(const uint8_t* data, int w, int h, uint8_t colorDepth)
+    : Size(w, h), data(data), colorDepth(colorDepth){}
 };
 
 struct Picture : Position, Size {
   const Bitmap* bmp = nullptr;
   constexpr Picture() = default;
   Picture(const Bitmap& bmp)
-    : bmp(&bmp), Position(0, 0), Size(bmp) {}
+    : Position(0, 0), Size(bmp), bmp(&bmp) {}
   Picture(const Bitmap& bmp, int x, int y, int w, int h)
-    : bmp(&bmp), Position(x, y), Size(w, h) {}
+    : Position(x, y), Size(w, h), bmp(&bmp) {}
 };
 
 struct Buffer : Size {
   uint8_t* data = nullptr;
   Buffer() = default;
   Buffer(uint8_t* data, int w, int h)
-    : data(data), Size(w, h) {}
+    : Size(w, h), data(data){}
 };
