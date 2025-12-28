@@ -1,4 +1,7 @@
 #pragma once
+
+using milliseconds = unsigned long;
+
 #ifdef ARDUINO
 #include <Arduino.h>
 #else
@@ -14,6 +17,7 @@ constexpr auto LED_BUILTIN_RX = 17;
 constexpr auto LED_BUILTIN_TX = 30;
 
 using byte = unsigned char;
+
 
 void delay(unsigned long ms);
 unsigned long millis();
