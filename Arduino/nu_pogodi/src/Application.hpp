@@ -1,5 +1,4 @@
 #pragma once
-#include "stdint.h"
 #include "Graphics.hpp"
 #include "Display.hpp"
 #include "Controller.hpp"
@@ -14,6 +13,4 @@ public:
   void init();
   void update();
   void draw();
-private:
-  void pressDown(uint8_t button);
 };

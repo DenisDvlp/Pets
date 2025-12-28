@@ -22,23 +22,20 @@ void turnOffOledOnBoard()
 
 void Application::init()
 {
+  // init port for logs
+  Serial.begin(1200);
+
   // Prepare physical display for work.
   // This takes approximately 0.3 seconds.
   display.init();
 
-  //turnOffOledOnBoard();
+  turnOffOledOnBoard();
 
   // set the output source (display buffer) to drawing system
   graphics.init(display.getBuffer());
 
-  // init buttons
-  controller.init({ this, &Application::pressDown });
-
   // init game core
-  //core.init(controller, graphics);
-
-  // init port for logs
-  Serial.begin(1200);
+  core.init(controller, graphics);
 
   // clean display
   graphics.clear();
@@ -47,24 +44,10 @@ void Application::init()
 
 void Application::update()
 {
-  // core.update();
-  controller.update();
+  core.update();
 }
 
 void Application::draw()
 {
   display.update();
-}
-
-template<typename T, size_t S>
-constexpr size_t size(T(&)[S]) { return S; }
-
-void Application::pressDown(uint8_t button)
-{
-  switch (button) {
-  case Controller::BUTTON_X: graphics.drawText("Синяя кнопка", {10,10}, FontCirillic{}); break;
-  case Controller::BUTTON_Y: graphics.drawText("Зеленая кнопка", {10,10}, FontCirillic{}); break;
-  case Controller::BUTTON_A: graphics.drawPicture(pic_background, { 0,0 }); break;
-  case Controller::BUTTON_B: graphics.drawPicture(pic_wolf2, { 0,0 }); break;
-  }
 }
