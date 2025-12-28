@@ -120,10 +120,8 @@ std::string getBitmapString(const unsigned char* output, int realWidth, int widt
   bmpName.append(name);
   std::string picName("pic_");
   picName.append(name);
-  ss << "const Bitmap " << bmpName << "(" << pngName << ", "
-    << (width * (isFont ? 8 : 4)) << ", " << height << ");\n"
-    "const Picture " << picName << "(" << bmpName << ", 0, 0, "
-    << realWidth << ", " << height << ");\n\n";
+  ss << "const Bitmap " << bmpName << "(" << pngName << ", " << (width * (isFont ? 8 : 4)) << ", " << height << ", " << (isFont ? 1 : 2) << ");\n"
+    "const Picture " << picName << "(" << bmpName << ", 0, 0, " << realWidth << ", " << height << ");\n\n";
 
   return ss.str();
 }

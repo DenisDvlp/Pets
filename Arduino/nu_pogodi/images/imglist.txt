@@ -1,4 +1,6 @@
-w_body.png
+background.png
+chick_anim.png
+wolf2.png
 w_basket.png
 w_lleg.png
 w_rleg.png
