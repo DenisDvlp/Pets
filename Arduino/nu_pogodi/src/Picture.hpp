@@ -23,7 +23,7 @@ struct Size {
 
 struct Bitmap : Size {
   const uint8_t* data = nullptr;
-  const uint8_t colorDepth = 0; // Number of bits that are used to encode a color
+  const uint8_t colorDepth = 0; // Number of bits that are used to encode a color in range [1,8]
   constexpr Bitmap() = default;
   Bitmap(const uint8_t* data, int w, int h, uint8_t colorDepth)
     : Size(w, h), data(data), colorDepth(colorDepth){}

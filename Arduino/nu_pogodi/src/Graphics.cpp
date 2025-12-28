@@ -173,28 +173,23 @@ void Graphics::drawCircle(Position centerPos, int raduis)
 
 // return `false` if it is no sense to draw, because the picture is out of screen bound,
 // return `true` otherwise.
-bool adjustSize(int& picPos, int& picSize, int& bufPos, int bufSize)
-{
-  int sizeI = bufPos + picSize;
+bool adjustSize(int& picPos, int& picSize, int& bufPos, int bufSize, bool flip) {
+  if (bufPos + picSize <= 0 || bufPos >= bufSize)
+    return false;
+
   if (bufPos < 0)
   {
-    picPos -= bufPos;
+    if(!flip)
+      picPos += -bufPos;
+    picSize -= -bufPos;
     bufPos = 0;
   }
-  else if (bufPos >= bufSize)
-  {
-    return false;
-  }
 
-  if (sizeI > bufSize)
-  {
-    sizeI = bufSize;
+  if (bufPos + picSize > bufSize) {
+    if (flip)
+      picPos += bufSize - picPos;
+    picSize = bufSize - bufPos;
   }
-  if (sizeI <= 0)
-  {
-    return false;
-  }
-  picSize = sizeI - bufPos;
   return true;
 }
 
@@ -217,7 +212,7 @@ static uint8_t calcPixel2(uint8_t picByte, uint8_t picShift, uint8_t bufByte, ui
   // Get picture pixel. Alpha is on when bit is 1.
   const uint8_t alpha = (picByte >> (picShift - 1)) & 1;
   // Retain buffer pixel if alpha is on
-  if (!alpha)
+  if (alpha)
     return bufByte;
   const uint8_t color = (picByte >> picShift) & !invert;
   // Clean buffer pixel if not transparent
@@ -227,38 +222,53 @@ static uint8_t calcPixel2(uint8_t picByte, uint8_t picShift, uint8_t bufByte, ui
   return bufByte;
 }
 
-void drawPictureLine(uint8_t* buf, const int bufShift, const uint8_t* pic, const int picColorDepth, int picWidth, int picShift, const bool transparent)
+void drawPictureLine(uint8_t* buf, const int bufShift, const uint8_t* pic, const int picColorDepth, int picWidth, int picShift, const bool flip, const bool transparent)
 {
   uint8_t picByte = pgm_read_byte(pic);
   const auto calPixel = picColorDepth == 2 ? calcPixel2 : calcPixel1;
-  while (true)
-  {
-    *buf = calPixel(picByte, picShift, *buf, bufShift, transparent, false);
-    ++buf;
-    if (!--picWidth)
-      return;
-    picShift -= picColorDepth;
-    if (picShift < 0)
-    {
-      picShift = BITS_IN_BYTE - 1;
-      picByte = pgm_read_byte(++pic);
+  if (flip) {
+    while (true) {
+      *buf = calPixel(picByte, picShift, *buf, bufShift, transparent, false);
+      ++buf;
+      if (!--picWidth)
+        return;
+      picShift += picColorDepth;
+      if (picShift >= BITS_IN_BYTE) {
+        picShift = picColorDepth - 1;
+        picByte = pgm_read_byte(--pic);
+      }
+    }
+  } else {
+    while (true) {
+      *buf = calPixel(picByte, picShift, *buf, bufShift, transparent, false);
+      ++buf;
+      if (!--picWidth)
+        return;
+      picShift -= picColorDepth;
+      if (picShift < 0) {
+        picShift = BITS_IN_BYTE - 1;
+        picByte = pgm_read_byte(++pic);
+      }
     }
   }
 }
 
-void Graphics::drawPicture(Picture pic, Position pos, bool transparent /*=false*/)
+void Graphics::drawPicture(Picture pic, Position pos, bool flip /*=false*/, bool transparent /*=false*/)
 {
   // if the picture is out of visible area, then do not draw.
-  if (!adjustSize(pic.x, pic.width, pos.x, buf.width) ||
-    !adjustSize(pic.y, pic.height, pos.y, buf.height))
+  if (!adjustSize(pic.x, pic.width, pos.x, buf.width, flip) ||
+    !adjustSize(pic.y, pic.height, pos.y, buf.height, false))
     return;
+  if (flip) {
+    pic.x += pic.width - 1;
+  }
   uint8_t* b = bufferOffset(pos);
   const int bmpWidthInBytes = (pic.bmp->width * pic.bmp->colorDepth) / BITS_IN_BYTE;
-  const uint8_t* p = pic.bmp->data + pic.y * bmpWidthInBytes + pic.x / BITS_IN_BYTE;
+  const uint8_t* p = pic.bmp->data + pic.y * bmpWidthInBytes + (pic.x * pic.bmp->colorDepth) / BITS_IN_BYTE;
   const int picShift = BITS_IN_BYTE - 1 - (pic.x * pic.bmp->colorDepth) % BITS_IN_BYTE;
   while (pic.height--) {
     const int bufShift = pos.y++ % BITS_IN_BYTE;
-    drawPictureLine(b, bufShift, p, pic.bmp->colorDepth, pic.width, picShift, transparent);
+    drawPictureLine(b, bufShift, p, pic.bmp->colorDepth, pic.width, picShift, flip, transparent);
     if (bufShift == BITS_IN_BYTE - 1)
     {
       b += buf.width;
@@ -313,7 +323,7 @@ void Graphics::drawText(String text, Position pos, const Font& font)
     else
     {
       Picture pic = font.getPicture(code);
-      drawPicture(pic, pos, false);
+      drawPicture(pic, pos);
       pos.x += pic.width + font.getCharSpaceWidth();
     }
     });
@@ -330,8 +340,8 @@ int Graphics::calculateTextWidth(String text, const Font& font)
 }
 
 void Graphics::fillRect(Position pos, Size size, bool color) {
-  if (!adjustSize(pos.x, size.width, pos.x, buf.width) ||
-    !adjustSize(pos.y, size.height, pos.y, buf.height))
+  if (!adjustSize(pos.x, size.width, pos.x, buf.width, false) ||
+    !adjustSize(pos.y, size.height, pos.y, buf.height, false))
     return;
   for (int y = 0; y < size.height; ++y)
   {
