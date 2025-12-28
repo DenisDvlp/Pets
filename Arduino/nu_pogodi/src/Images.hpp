@@ -4,29 +4,17 @@
 extern const Bitmap bmp_background;
 extern const Picture pic_background;
 
+extern const Bitmap bmp_wolf_body;
+extern const Picture pic_wolf_body;
+
+extern const Bitmap bmp_basket_up_down;
+extern const Picture pic_basket_up_down;
+
+extern const Bitmap bmp_eggs_anim;
+extern const Picture pic_eggs_anim;
+
 extern const Bitmap bmp_chick_anim;
 extern const Picture pic_chick_anim;
-
-extern const Bitmap bmp_wolf2;
-extern const Picture pic_wolf2;
-
-extern const Bitmap bmp_w_basket;
-extern const Picture pic_w_basket;
-
-extern const Bitmap bmp_w_lleg;
-extern const Picture pic_w_lleg;
-
-extern const Bitmap bmp_w_rleg;
-extern const Picture pic_w_rleg;
-
-extern const Bitmap bmp_dline;
-extern const Picture pic_dline;
-
-extern const Bitmap bmp_eggs;
-extern const Picture pic_eggs;
-
-extern const Bitmap bmp_chicken;
-extern const Picture pic_chicken;
 
 extern const Bitmap bmp_font1;
 extern const Picture pic_font1;
