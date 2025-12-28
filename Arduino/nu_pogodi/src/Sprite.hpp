@@ -7,7 +7,6 @@
 using namespace std;
 #endif
 
-
 struct PicPos {
   Picture pic;
   Position pos;
@@ -15,23 +14,30 @@ struct PicPos {
 
 class Sprite {
 private:
+  const PicPos* picPos = nullptr;
+  const int picNumber = 0;
   Size size;
 public:
   Position pos;
   bool show = true;
-  virtual int numberOfPics() const { return 0; };
+  Sprite() = default;
+  template<int S>
+  Sprite(const PicPos(&pics)[S]) :picPos(pics), picNumber(S) {
+    calcSize();
+  }
+  int numberOfPics() const { return picNumber; };
   virtual const PicPos& getPic(int i) const { return *static_cast<const PicPos*>(nullptr); };
   void draw(Graphics* g) {
     if (show)
     {
       for (int i = 0; i < numberOfPics(); ++i)
       {
-        const PicPos& picPos = getPic(i);
+        const PicPos& pp = picPos[i];
         const Position pos = {
-          picPos.pos.x + this->pos.x,
-          picPos.pos.y + this->pos.y
+          pp.pos.x + this->pos.x,
+          pp.pos.y + this->pos.y
         };
-        g->drawPicture(picPos.pic, pos);
+        g->drawPicture(pp.pic, pos);
       }
       onDraw(g);
     }
@@ -39,14 +45,14 @@ public:
   virtual void onDraw(Graphics* g) {}
 
   void calcSize() {
-    const PicPos& pp = getPic(0);
+    const PicPos& pp = picPos[0];
     int minW = pp.pos.x;
     int maxW = pp.pos.x + pp.pic.width;
     int minH = pp.pos.y;
     int maxH = pp.pos.y + pp.pic.height;
-    for (int i = 1; i < numberOfPics(); ++i)
+    for (int i = 1; i < picNumber; ++i)
     {
-      const PicPos& pp = getPic(i);
+      const PicPos& pp = picPos[i];
       minW = min(minW, pp.pos.x);
       maxW = max(maxW, pp.pos.x + pp.pic.width);
       minH = min(minH, pp.pos.y);
