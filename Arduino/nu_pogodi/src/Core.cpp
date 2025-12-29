@@ -42,12 +42,14 @@ public:
   }
 };
 
-class Egg: public Position, public AnimatedPicture {
+class Egg: public Position, public ValueAnimation<int> {
   static const Picture pics[4];
+  int index = -1;
 public:
-  Egg() : AnimatedPicture(pics, &pics[0], 800, -1) {}
+  Egg() : ValueAnimation(index, 0, 3, 1000) {}
   void draw(Graphics* g) {
-    g->drawPicture(*currentPicture, *this);
+    if (index >= 0)
+      g->drawPicture(pics[index], *this);
   }
 };
 
@@ -56,6 +58,26 @@ const Picture Egg::pics[4] = {
   Picture(bmp_eggs_anim, 7, 0, 7, 7),
   Picture(bmp_eggs_anim, 14, 0, 7, 7),
   Picture(bmp_eggs_anim, 21, 0, 7, 7),
+};
+
+class Chick: public Position, public ValueAnimation<int> {
+  static const Picture pics[6];
+  int index = 0;
+public:
+  bool flip = false;
+  Chick() : ValueAnimation(index, 0, 5, 300, 1) {}
+  void draw(Graphics* g) {
+    g->drawPicture(pics[index], *this, flip);
+  }
+};
+
+const Picture Chick::pics[] = {
+  Picture(bmp_chick_anim, 0, 0, 11, 12),
+  Picture(bmp_chick_anim, 11, 0, 11, 12),
+  Picture(bmp_chick_anim, 22, 0, 11, 12),
+  Picture(bmp_chick_anim, 11, 0, 11, 12),
+  Picture(bmp_chick_anim, 22, 0, 11, 12),
+  Picture(bmp_chick_anim, 0, 0, 11, 12),
 };
 
 //class EggRolling : public Sprite, public Animation {
@@ -133,56 +155,98 @@ private:
   }
 };
 
+
 class Stage {
+  static const Path<Position> eggPath[3];
 public:
   Background background;
   Wolf wolf;
   Egg egg;
+  Chick chick[4];
+  PathAnimation<Position> eggPosAnim{egg, eggPath};
+
+  void init() {
+    wolf.x = 38;
+    wolf.y = 8;
+
+    egg.x = 10;
+    egg.y = 5;
+
+    chick[0].x = 1;
+    chick[0].y = 0;
+
+    chick[1].x = 1;
+    chick[1].y = 19;
+
+    chick[2].flip = true;
+    chick[2].x = 116;
+    chick[2].y = 0;
+
+    chick[3].flip = true;
+    chick[3].x = 116;
+    chick[3].y = 19;
+  }
+
+  void init(milliseconds now, Graphics* g) {
+    background.draw(g);
+
+    eggPosAnim.update(now);
+    egg.update(now);
+    egg.draw(g);
+
+    wolf.draw(g);
+
+    for (int i = 0; i < 4; i++) {
+      chick[i].update(now);
+      chick[i].draw(g);
+    }
+  }
+};
+
+const Path<Position> Stage::eggPath[] {
+  {{5,7}, 100},
+  {{20,28}, 2000},
+  {{20,60}, 500},
 };
 
 
 void Core::init(Controller& c, Graphics& g)
 {
-  stage = new Stage;
   controller = &c;
   graphics = &g;
 
-  stage->wolf.y = 8;
-  stage->wolf.x = 38;
-
-  stage->egg.y = 1;
-  stage->egg.x = 1;
-
   c.init({ this, &Core::pressDown });
 
+  stage = new Stage;
+  stage->init();
 }
 
 void Core::update()
 {
   graphics->clear();
-
-  stage->background.draw(graphics);
-  stage->wolf.draw(graphics);
-  stage->egg.update(millis());
-  stage->egg.draw(graphics);
-
   controller->update();
+  stage->init(millis(), graphics);
 }
 
 void Core::pressDown(uint8_t button)
 {
+  const auto now = millis();
   switch (button) {
   case Controller::BUTTON_X:
     stage->wolf.x = 38;
     stage->wolf.basketLeftUp();
-    stage->egg.start(millis());
+    stage->eggPosAnim.start(now);
+    stage->egg.start(now);
     break;
   case Controller::BUTTON_Y:
-    stage->wolf.x = 38;
+    stage->wolf.x = 37;
     stage->wolf.basketLeftDown();
+    for (int i = 0; i < 4; i++) {
+      stage->chick[i].start(now);
+    }
     break;
   case Controller::BUTTON_A:
-    stage->wolf.x = 45;
+    stage->wolf.x = 46;
     stage->wolf.basketRightDown();
     break;
   case Controller::BUTTON_B:
