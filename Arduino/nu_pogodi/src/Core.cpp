@@ -42,11 +42,44 @@ public:
   }
 };
 
-class Egg: public Position, public ValueAnimation<int> {
+class RollingEggAnimation: public Position {
+  static const Picture pic_egg[4];
+  const Path<Position> path_egg[3] = {
+    {{11,6}, 0},
+    {{31,16}, 1000},
+    {{31,64}, 700},
+  };
+
+  int index = -1;
+  int flip = false;
+  Animation<int> rotatingAnimation{index, 0, 3, 500};
+public:
+  RollingEggAnimation(bool flip) : flip(flip) {
+
+  }
+
+  void startRolling(milliseconds now) {
+    rotatingAnimation.start(now);
+  }
+
+  void draw(Graphics* g) {
+    if (index >= 0)
+      g->drawPicture(pic_egg[index], *this, flip);
+  }
+};
+
+const Picture RollingEggAnimation::pics[4] = {
+  Picture(bmp_eggs_anim, 0, 0, 7, 7),
+  Picture(bmp_eggs_anim, 7, 0, 7, 7),
+  Picture(bmp_eggs_anim, 14, 0, 7, 7),
+  Picture(bmp_eggs_anim, 21, 0, 7, 7),
+};
+
+class Egg: public Position, public Animation<int> {
   static const Picture pics[4];
   int index = -1;
 public:
-  Egg() : ValueAnimation(index, 0, 3, 1000) {}
+  Egg() : Animation(index, 0, 3, 500) {}
   void draw(Graphics* g) {
     if (index >= 0)
       g->drawPicture(pics[index], *this);
@@ -60,12 +93,12 @@ const Picture Egg::pics[4] = {
   Picture(bmp_eggs_anim, 21, 0, 7, 7),
 };
 
-class Chick: public Position, public ValueAnimation<int> {
+class Chick: public Position, public Animation<int> {
   static const Picture pics[6];
   int index = 0;
 public:
   bool flip = false;
-  Chick() : ValueAnimation(index, 0, 5, 300, 1) {}
+  Chick() : Animation(index, 0, 5, 400, 1) {}
   void draw(Graphics* g) {
     g->drawPicture(pics[index], *this, flip);
   }
@@ -80,69 +113,6 @@ const Picture Chick::pics[] = {
   Picture(bmp_chick_anim, 0, 0, 11, 12),
 };
 
-//class EggRolling : public Sprite, public Animation {
-//private:
-//  Chicken chicken;
-//  Egg egg;
-//  FrameAnimation fa;
-//  ValueAnimation<Position> animPos, animPos2;
-//  ValueAnimation<bool> animShow;
-//  Animation* anims[4] = {
-//    &fa, &animShow, &animPos, &animPos2
-//  };
-//  SequenceAnimation sa;
-//public:
-//  Position pos;
-//  EggRolling() :
-//    fa(2, 300, 3),
-//    animPos(egg.pos, { 10, 5 }, { 30, 15 }, 1500, 1),
-//    animPos2(egg.pos, { 30, 15 }, { 30, 60 }, 1000, 1),
-//    animShow(egg.show, false, true, 0, 1),
-//    sa(anims, ::size(anims), 1) {
-//    egg.show = false;
-//    egg.pos = { 10, 5 };
-//  }
-//  void setPosition(Position pos)
-//  {
-//  }
-//  void onStart(milliseconds now) override
-//  {
-//    sa.start(now);
-//    egg.start(now);
-//  }
-//  void onStop() override
-//  {
-//    sa.stop();
-//    chicken.frame = 0;
-//    egg.show = false;
-//    egg.stop();
-//  }
-//  void onUpdate(milliseconds now)
-//  {
-//    sa.update(now);
-//    chicken.frame = fa.getCurrentFrame();
-//    egg.update(now);
-//  }
-//  void onDraw(Graphics* g)
-//  {
-//    chicken.draw(g);
-//    egg.draw(g);
-//  }
-//};
-
-Position operator+(const Position& l, const Position& r) {
-  return { l.x + r.x, l.y + r.y };
-}
-Position operator-(const Position& l, const Position& r) {
-  return { l.x - r.x, l.y - r.y };
-}
-Position operator*(const Position& l, float r) {
-  return { static_cast<int>(l.x * r), static_cast<int>(l.y * r) };
-}
-Position operator*(float l, const Position& r) {
-  return r * l;
-}
-
 class Text : public Sprite {
 private:
 public:
@@ -155,7 +125,6 @@ private:
   }
 };
 
-
 class Stage {
   static const Path<Position> eggPath[3];
 public:
@@ -163,7 +132,7 @@ public:
   Wolf wolf;
   Egg egg;
   Chick chick[4];
-  PathAnimation<Position> eggPosAnim{egg, eggPath};
+  Animation<Position> eggPosAnim{egg, eggPath};
 
   void init() {
     wolf.x = 38;
@@ -204,9 +173,9 @@ public:
 };
 
 const Path<Position> Stage::eggPath[] {
-  {{5,7}, 100},
-  {{20,28}, 2000},
-  {{20,60}, 500},
+  {{11,6}, 0},
+  {{31,16}, 1000},
+  {{31,64}, 700},
 };
 
 
@@ -235,6 +204,7 @@ void Core::pressDown(uint8_t button)
   case Controller::BUTTON_X:
     stage->wolf.x = 38;
     stage->wolf.basketLeftUp();
+    stage->eggPosAnim.stop();
     stage->eggPosAnim.start(now);
     stage->egg.start(now);
     break;
