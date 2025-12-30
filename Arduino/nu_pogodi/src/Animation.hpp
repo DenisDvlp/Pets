@@ -63,7 +63,7 @@ public:
       startMs += (current + 1)->duration;
       ++current;
       if (current == last) {
-        if (currentTimes < 0 || currentTimes-- > 0) {
+        if (currentTimes < 0 || currentTimes-- > 1) {
           auto tmpTimes = currentTimes;
           startMs = 0;
           start(now);
