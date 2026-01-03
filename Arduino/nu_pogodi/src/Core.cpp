@@ -29,6 +29,18 @@ public:
     currentBasket.x = 0;
     basketRight = true;
   }
+  bool checkCatch(Position eggPos) {
+    const bool isUp = (currentBasket.x == 0);
+    Position basketPos = { x + (basketRight ? 46 : -3), y + (isUp ? 13 : 30) };
+    constexpr int distance = 2;
+    const int dx = eggPos.x - basketPos.x;
+    const int dy = eggPos.y - basketPos.y;
+    const bool caught = (dx * dx + dy * dy <= distance * distance);
+    if (caught) {
+      return true;
+    }
+    return (dx * dx + dy * dy <= distance * distance);
+  }
   void draw(Graphics* g) {
     g->drawPicture(pic_wolf_body, *this, basketRight);
     g->drawPicture(currentBasket, {x - 7 + 30 * basketRight, y + 6}, basketRight);
@@ -47,16 +59,16 @@ class RollingEgg: public Position {
   Path<Position> path_egg[3];
 
   int index = 0;
-  int flip = false;
-  Animation<int> rotatingAnimation{ index, 0, 3, 450, 3 };
+  Animation<int> rotatingAnimation{ index, 0, 3, 400, 3, 400 };
   Animation<Position> rollingAnimation{ *this, path_egg, 1 };
 public:
-  RollingEgg(bool flip) : flip(flip) {}
+  int flip = false;
 
   void startRolling(milliseconds now) {
-    path_egg[0] = { *this, 0 };
-    path_egg[1] = { *this + Position{20,11}, 1000 };
-    path_egg[2] = { *this + Position{20,64}, 500 };
+    path_egg[0] = { *this, 400 };
+    path_egg[1] = { *this + Position{20 * (-flip + !flip),11}, 1200 };
+    path_egg[2] = { *this + Position{20 * (-flip + !flip), 64}, 500 };
+    index = 0;
     rotatingAnimation.start(now);
     rollingAnimation.start(now);
   }
@@ -116,14 +128,35 @@ private:
   }
 };
 
+class EggSpawner {
+  milliseconds spawnsAfterMs[4]{};
+public:
+  Function<void(int, milliseconds)> onEggSpawn;
+
+  void start(milliseconds now) {
+    for (size_t i = 0; i < 4; i++) {
+      spawnsAfterMs[i] = now + random(2000, 5000);
+    }
+  }
+
+  void update(milliseconds now) {
+    for (size_t i = 0; i < 4; i++) {
+      if (now >= spawnsAfterMs[i]) {
+        onEggSpawn(i, now);
+        spawnsAfterMs[i] = now + random(2200, 5000);
+      }
+    }
+  }
+};
+
 class Stage {
   static const Path<Position> eggPath[3];
 public:
   Background background;
   Wolf wolf;
-  RollingEgg egg{ false };
-  RollingEgg egg2{ false };
+  RollingEgg egg[4];
   Chick chick[4];
+  EggSpawner eggSpawner;
 
   void init() {
     wolf.x = 38;
@@ -131,12 +164,6 @@ public:
 
     chick[0].x = 1;
     chick[0].y = 0;
-
-    egg.x = 11;
-    egg.y = 6;
-
-    egg2.x = 11;
-    egg2.y = 25;
 
     chick[1].x = 1;
     chick[1].y = 19;
@@ -148,26 +175,70 @@ public:
     chick[3].flip = true;
     chick[3].x = 116;
     chick[3].y = 19;
+
+    for( int i = 0; i < 4; i++) {
+      egg[i].x = -10;
+      egg[i].y = -10;
+    }
+    egg[2].flip = true;
+    egg[3].flip = true;
+
+    eggSpawner.onEggSpawn = [this](int i, milliseconds now) {
+      Position pos{};
+      switch (i) {
+        case 0:
+          pos.x = 11;
+          pos.y = 6;
+          break;
+        case 1:
+          pos.x = 11;
+          pos.y = 25;
+          break;
+        case 2:
+          pos.x = 110;
+          pos.y = 6;
+          break;
+        case 3:
+          pos.x = 110;
+          pos.y = 25;
+          break;
+      }
+      chick[i].start(now);
+      egg[i].x = pos.x;
+      egg[i].y = pos.y;
+      egg[i].startRolling(now);
+    };
+    eggSpawner.start(millis());
   }
 
-  void init(milliseconds now, Graphics* g) {
-    background.draw(g);
+  void update(milliseconds now, Graphics* g) {
+    // add objects
+    eggSpawner.update(now);
 
-    egg.updateAnimation(now);
-    egg.draw(g);
-
-    egg2.updateAnimation(now);
-    egg2.draw(g);
-
-    wolf.draw(g);
-
+    // change positions
     for (int i = 0; i < 4; i++) {
       chick[i].update(now);
+      egg[i].updateAnimation(now);
+    }
+
+    // check collisions
+    for (int i = 0; i < 4; i++) {
+      if (wolf.checkCatch(egg[i] + Position{3, 3})) {
+        egg[i].stopRolling();
+        egg[i].x = -10;
+        egg[i].y = -10;
+      }
+    }
+
+    // draw results
+    background.draw(g);
+    wolf.draw(g);
+    for (int i = 0; i < 4; i++) {
       chick[i].draw(g);
+      egg[i].draw(g);
     }
   }
 };
-
 
 void Core::init(Controller& c, Graphics& g)
 {
@@ -182,9 +253,12 @@ void Core::init(Controller& c, Graphics& g)
 
 void Core::update()
 {
+  // Clean screen
   graphics->clear();
+  // Check inputs from keyboard/controller
   controller->update();
-  stage->init(millis(), graphics);
+  // Update game stage
+  stage->update(millis(), graphics);
 }
 
 void Core::pressDown(uint8_t button)
@@ -194,12 +268,6 @@ void Core::pressDown(uint8_t button)
   case Controller::BUTTON_X:
     stage->wolf.x = 38;
     stage->wolf.basketLeftUp();
-    stage->egg.x = 11;
-    stage->egg.y = 6;
-    stage->egg.startRolling(now);
-    stage->egg2.x = 11;
-    stage->egg2.y = 25;
-    stage->egg2.startRolling(now);
     break;
   case Controller::BUTTON_Y:
     stage->wolf.x = 37;

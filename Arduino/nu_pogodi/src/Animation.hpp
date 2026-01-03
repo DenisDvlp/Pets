@@ -42,8 +42,8 @@ public:
       current = first;
       currentTimes = times;
       startMs = now + first->duration;
-      if(first->duration == 0)
-        value = current->value;
+      if (first->duration == 0)
+        value = first->value;
     }
   }
 
@@ -64,11 +64,10 @@ public:
       ++current;
       if (current == last) {
         if (currentTimes < 0 || currentTimes-- > 1) {
-          auto tmpTimes = currentTimes;
-          startMs = 0;
-          start(now);
-          // Restore currentTimes because start() resets it.
-          currentTimes = tmpTimes;
+          // Start over
+          current = first;
+          startMs = now;
+          value = first->value;
         } else {
           stop();
         }
