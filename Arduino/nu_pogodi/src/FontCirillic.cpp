@@ -7,16 +7,10 @@
 FontCirillic::FontCirillic() :
   bmps{
     &bmp_font1,
-    &bmp_font2,
-    &bmp_font3,
-    &bmp_font4,
     &bmp_font5,
   },
   offsets{
     font_offsets_font1,
-    font_offsets_font2,
-    font_offsets_font3,
-    font_offsets_font4,
     font_offsets_font5,
   }
 {

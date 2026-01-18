@@ -158,53 +158,53 @@ public:
 };
 
 static FontCirillic font;
-//
-//class ScoreTable {
-//  static const Picture pics[2];
-//  int positiveScore = 0;
-//  int negativeScore = 0;
-//public:
-//  ScoreTable() {}
-//
-//  void operator++() {
-//    ++positiveScore;
-//  }
-//
-//  void operator--() {
-//    ++negativeScore;
-//  }
-//
-//  void draw(Graphics* g) {
-//    font.isBold = false;
-//    font.size = 0;
-//
-//    g->fillRect({ 102, 54 }, { 27, 10 }, false);
-//    g->fillRect({ 103, 55 }, { 25, 8 }, true);
-//
-//    g->drawPicture(pics[0], {104, 56});
-//    char scoreStr[] = {
-//      static_cast<char>(positiveScore / 100 % 10 + 48),
-//      static_cast<char>(positiveScore / 10 % 10 + 48),
-//      static_cast<char>(positiveScore % 10 + 48),
-//      0
-//    };
-//    g->drawText(scoreStr, { 112, 55 }, font);
-//
-//    g->fillRect({ -1, 54 }, { 26, 9 }, false);
-//    g->fillRect({ 0, 55 }, { 25, 8 }, true);
-//
-//    g->drawPicture(pics[1], { 1, 56 });
-//    scoreStr[0] = static_cast<char>(negativeScore / 100 % 10 + 48);
-//    scoreStr[1] = static_cast<char>(negativeScore / 10 % 10 + 48);
-//    scoreStr[2] = static_cast<char>(negativeScore % 10 + 48);
-//    g->drawText(scoreStr, { 9, 55 }, font);
-//  }
-//};
-//
-//const Picture ScoreTable::pics[2] = {
-//  Picture(bmp_eggs_anim, 0, 0, 7, 7),
-//  Picture(bmp_eggs_anim, 28, 0, 7, 7),
-//};
+
+class ScoreTable {
+  static const Picture pics[2];
+  int positiveScore = 0;
+  int negativeScore = 0;
+public:
+  ScoreTable() {}
+
+  void operator++() {
+    ++positiveScore;
+  }
+
+  void operator--() {
+    ++negativeScore;
+  }
+
+  void draw(Graphics* g) {
+    font.isBold = false;
+    font.size = 0;
+
+    g->fillRect({ 102, 54 }, { 27, 10 }, false);
+    g->fillRect({ 103, 55 }, { 25, 8 }, true);
+
+    g->drawPicture(pics[0], {104, 56});
+    char scoreStr[] = {
+      static_cast<char>(positiveScore / 100 % 10 + 48),
+      static_cast<char>(positiveScore / 10 % 10 + 48),
+      static_cast<char>(positiveScore % 10 + 48),
+      0
+    };
+    g->drawText(scoreStr, { 112, 55 }, font);
+
+    g->fillRect({ -1, 54 }, { 26, 9 }, false);
+    g->fillRect({ 0, 55 }, { 25, 8 }, true);
+
+    g->drawPicture(pics[1], { 1, 56 });
+    scoreStr[0] = static_cast<char>(negativeScore / 100 % 10 + 48);
+    scoreStr[1] = static_cast<char>(negativeScore / 10 % 10 + 48);
+    scoreStr[2] = static_cast<char>(negativeScore % 10 + 48);
+    g->drawText(scoreStr, { 9, 55 }, font);
+  }
+};
+
+const Picture ScoreTable::pics[2] = {
+  Picture(bmp_eggs_anim, 0, 0, 7, 7),
+  Picture(bmp_eggs_anim, 28, 0, 7, 7),
+};
 
 constexpr auto stageTypeUnknown = 0;
 constexpr auto stageTypeStart = 1;
@@ -235,7 +235,7 @@ public:
   RollingEgg egg[4];
   Chick chick[4];
   EggSpawner eggSpawner;
-  //ScoreTable score;
+  ScoreTable score;
 
   GameStage() : Stage(stageTypeGame), egg{
   Function<void()>{[this]() {onAnimationFinish(); }},
@@ -245,7 +245,7 @@ public:
   } {}
 
   void onAnimationFinish() {
-    //--score;
+    --score;
   }
 
   void init() {
@@ -317,7 +317,7 @@ public:
         egg[i].stopRolling();
         egg[i].x = -10;
         egg[i].y = -10;
-        //++score;
+        ++score;
       }
     }
 
@@ -330,7 +330,7 @@ public:
     }
 
     // draw score
-    //score.draw(g);
+    score.draw(g);
   }
 };
 
@@ -344,7 +344,7 @@ public:
     g->fillRect({ 2, 2 }, bufSize - 4, false);
     g->fillRect({ 5, 5 }, bufSize - 10, true);
     font.isBold = true;
-    font.size = 4;
+    font.size = 1;
     g->drawText(captionText, { 22, 20 }, font);
     font.isBold = false;
     font.size = 0;

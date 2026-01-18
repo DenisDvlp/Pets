@@ -4,7 +4,4 @@ basket_up_down.png
 eggs_anim.png
 chick_anim.png
 font1.png -f
-font2.png -f
-font3.png -f
-font4.png -f
 font5.png -f
