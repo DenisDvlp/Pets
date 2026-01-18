@@ -15,6 +15,10 @@ void Graphics::init(Buffer buffer)
   buf = buffer;
 }
 
+Size Graphics::size() const {
+  return buf;
+}
+
 void Graphics::clear()
 {
   memset(buf.data, 0, (buf.width * buf.height / BITS_IN_BYTE));
@@ -46,18 +50,18 @@ void Graphics::drawPixel(Position pos)
 
 // return `false` if it is no sense to draw, because the line is out of screen bound,
 // return `true` otherwise.
-static bool adjustLine(int& a, int b, int& size, int bufA, int bufB)
+static bool adjustLine(int& x, int y, int& size, int bufW, int bufH)
 {
-  if (isOutOfRange(b, 0, bufB))
+  if (isOutOfRange(y, 0, bufH))
     return false;
-  if (a < 0)
+  if (x < 0)
   {
-    size += a;
-    a = 0;
+    size += x;
+    x = 0;
   }
-  if (a + size > bufA)
+  if (x + size > bufW)
   {
-    size = bufA - a;
+    size = bufW - y;
   }
   return (size >= 0);
 }
@@ -222,13 +226,14 @@ static uint8_t calcPixel2(uint8_t picByte, uint8_t picShift, uint8_t bufByte, ui
   return bufByte;
 }
 
+auto* calcPixel = calcPixel1;
+
 void drawPictureLine(uint8_t* buf, const int bufShift, const uint8_t* pic, const int picColorDepth, int picWidth, int picShift, const bool flip, const bool transparent)
 {
   uint8_t picByte = pgm_read_byte(pic);
-  const auto calPixel = picColorDepth == 2 ? calcPixel2 : calcPixel1;
   if (flip) {
     while (true) {
-      *buf = calPixel(picByte, picShift, *buf, bufShift, transparent, false);
+      *buf = calcPixel(picByte, picShift, *buf, bufShift, transparent, false);
       ++buf;
       if (!--picWidth)
         return;
@@ -240,7 +245,7 @@ void drawPictureLine(uint8_t* buf, const int bufShift, const uint8_t* pic, const
     }
   } else {
     while (true) {
-      *buf = calPixel(picByte, picShift, *buf, bufShift, transparent, false);
+      *buf = calcPixel(picByte, picShift, *buf, bufShift, transparent, false);
       ++buf;
       if (!--picWidth)
         return;
@@ -266,6 +271,7 @@ void Graphics::drawPicture(Picture pic, Position pos, bool flip /*=false*/, bool
   const int bmpWidthInBytes = (pic.bmp->width * pic.bmp->colorDepth) / BITS_IN_BYTE;
   const uint8_t* p = pic.bmp->data + pic.y * bmpWidthInBytes + (pic.x * pic.bmp->colorDepth) / BITS_IN_BYTE;
   const int picShift = BITS_IN_BYTE - 1 - (pic.x * pic.bmp->colorDepth) % BITS_IN_BYTE;
+  calcPixel = pic.bmp->colorDepth == 2 ? calcPixel2 : calcPixel1;
   while (pic.height--) {
     const int bufShift = pos.y++ % BITS_IN_BYTE;
     drawPictureLine(b, bufShift, p, pic.bmp->colorDepth, pic.width, picShift, flip, transparent);
@@ -323,7 +329,12 @@ void Graphics::drawText(String text, Position pos, const Font& font)
     else
     {
       Picture pic = font.getPicture(code);
-      drawPicture(pic, pos);
+      drawPicture(pic, pos, false, font.isBold);
+      if (font.isBold) {
+        drawPicture(pic, pos + Position{ 0, 1 }, false, true);
+        drawPicture(pic, pos + Position{ 1, 0 }, false, true);
+        drawPicture(pic, pos + 1, false, true);
+      }
       pos.x += pic.width + font.getCharSpaceWidth();
     }
     });
@@ -339,12 +350,42 @@ int Graphics::calculateTextWidth(String text, const Font& font)
   return width;
 }
 
-void Graphics::fillRect(Position pos, Size size, bool color) {
-  if (!adjustSize(pos.x, size.width, pos.x, buf.width, false) ||
-    !adjustSize(pos.y, size.height, pos.y, buf.height, false))
+void Graphics::fillRect(Position pos, Size size, bool invert /*=false*/) {
+  adjust_line(pos.x, size.width, buf.width);
+  adjust_line(pos.y, size.height, buf.height);
+  if (!size.width || !size.height)
     return;
-  for (int y = 0; y < size.height; ++y)
-  {
-    drawHLine({ pos.x, pos.y + y }, size.width);
-  }
+
+  int bitWidth = 0;
+  do {
+    // Shift to the next line
+    pos.y += bitWidth;
+    size.height -= bitWidth;
+
+    // Calculate mask
+    uint8_t mask = 1;
+    bitWidth = BITS_IN_BYTE - pos.y % BITS_IN_BYTE;
+    int tmpBitWidth = ::min(bitWidth, size.height);
+    while (tmpBitWidth--) {
+      mask <<= 1;
+      mask |= 1;
+    }
+    mask <<= pos.y % BITS_IN_BYTE;
+
+    // Apply mask
+    uint8_t* b = bufferOffset(pos);
+    int tmpWidth = size.width;
+    if (invert) {
+      mask = ~mask;
+      while (tmpWidth--) {
+        *b &= mask;
+        ++b;
+      }
+    } else {
+      while (tmpWidth--) {
+        *b |= mask;
+        ++b;
+      }
+    }
+  } while (size.height > bitWidth);
 }

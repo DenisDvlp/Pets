@@ -27,6 +27,8 @@ protected:
   int times = -1;
   int currentTimes = 0;
 public:
+  Function<void()> onFinish;
+
   // Edge case. Has an embedded Path array of two items.
   Animation(T& value, T from, T to, milliseconds duration, int times = -1, milliseconds delay = 0)
     : simplePath{ {from, delay}, {to, duration} }, value(value), first(simplePath), last(simplePath + 1), times(times) {}
@@ -69,6 +71,7 @@ public:
           startMs = now;
           value = first->value;
         } else {
+          onFinish();
           stop();
         }
         return;

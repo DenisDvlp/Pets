@@ -15,6 +15,10 @@ struct Position {
 
 Position operator+(const Position& l, const Position& r);
 Position operator-(const Position& l, const Position& r);
+Position operator+(const Position& l, int r);
+Position operator+(int l, const Position& r);
+Position operator-(const Position& l, int r);
+Position operator-(int l, const Position& r);
 Position operator*(const Position& l, float r);
 Position operator*(float l, const Position& r);
 
@@ -24,7 +28,19 @@ struct Size {
   constexpr Size() = default;
   constexpr Size(int w, int h)
     : width(w), height(h) {}
+  constexpr explicit operator Position() const {
+    return { width, height };
+  }
 };
+
+Size operator+(const Size& l, const Size& r);
+Size operator-(const Size& l, const Size& r);
+Size operator+(const Size& l, int r);
+Size operator+(int l, const Size& r);
+Size operator-(const Size& l, int r);
+Size operator-(int l, const Size& r);
+Size operator*(const Size& l, float r);
+Size operator*(float l, const Size& r);
 
 struct Bitmap : Size {
   const uint8_t* data = nullptr;

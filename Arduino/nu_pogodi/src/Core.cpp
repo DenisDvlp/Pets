@@ -1,9 +1,13 @@
-#include "Core.hpp"
+﻿#include "Core.hpp"
 #include "FontCirillic.hpp"
 #include "Images.hpp"
 #include "Sprite.hpp"
 #include "Animation.hpp"
 #include "stl.hpp"
+
+static constexpr char scoreText[] = u8"счёт:";
+static constexpr char captionText[] = u8"НУ ПОГОДИ";
+static constexpr char captionHelpText[] = u8"(нажми любую кнопку)";
 
 class Wolf : public Position {
   Picture currentBasket{ pic_basket_up_down };
@@ -32,7 +36,7 @@ public:
   bool checkCatch(Position eggPos) {
     const bool isUp = (currentBasket.x == 0);
     Position basketPos = { x + (basketRight ? 46 : -3), y + (isUp ? 13 : 30) };
-    constexpr int distance = 2;
+    constexpr int distance = 4;
     const int dx = eggPos.x - basketPos.x;
     const int dy = eggPos.y - basketPos.y;
     const bool caught = (dx * dx + dy * dy <= distance * distance);
@@ -64,6 +68,10 @@ class RollingEgg: public Position {
 public:
   int flip = false;
 
+  RollingEgg(Function<void()> onFinish) {
+    rollingAnimation.onFinish = onFinish;
+  }
+
   void startRolling(milliseconds now) {
     path_egg[0] = { *this, 400 };
     path_egg[1] = { *this + Position{20 * (-flip + !flip),11}, 1200 };
@@ -78,7 +86,7 @@ public:
     rollingAnimation.stop();
   }
 
-  void updateAnimation(milliseconds now) {
+  void update(milliseconds now) {
     rotatingAnimation.update(now);
     rollingAnimation.update(now);
   }
@@ -143,20 +151,102 @@ public:
     for (size_t i = 0; i < 4; i++) {
       if (now >= spawnsAfterMs[i]) {
         onEggSpawn(i, now);
-        spawnsAfterMs[i] = now + random(2200, 5000);
+        spawnsAfterMs[i] = now + random(2000, 5000);
       }
     }
   }
 };
 
+static FontCirillic font;
+//
+//class ScoreTable {
+//  static const Picture pics[2];
+//  int positiveScore = 0;
+//  int negativeScore = 0;
+//public:
+//  ScoreTable() {}
+//
+//  void operator++() {
+//    ++positiveScore;
+//  }
+//
+//  void operator--() {
+//    ++negativeScore;
+//  }
+//
+//  void draw(Graphics* g) {
+//    font.isBold = false;
+//    font.size = 0;
+//
+//    g->fillRect({ 102, 54 }, { 27, 10 }, false);
+//    g->fillRect({ 103, 55 }, { 25, 8 }, true);
+//
+//    g->drawPicture(pics[0], {104, 56});
+//    char scoreStr[] = {
+//      static_cast<char>(positiveScore / 100 % 10 + 48),
+//      static_cast<char>(positiveScore / 10 % 10 + 48),
+//      static_cast<char>(positiveScore % 10 + 48),
+//      0
+//    };
+//    g->drawText(scoreStr, { 112, 55 }, font);
+//
+//    g->fillRect({ -1, 54 }, { 26, 9 }, false);
+//    g->fillRect({ 0, 55 }, { 25, 8 }, true);
+//
+//    g->drawPicture(pics[1], { 1, 56 });
+//    scoreStr[0] = static_cast<char>(negativeScore / 100 % 10 + 48);
+//    scoreStr[1] = static_cast<char>(negativeScore / 10 % 10 + 48);
+//    scoreStr[2] = static_cast<char>(negativeScore % 10 + 48);
+//    g->drawText(scoreStr, { 9, 55 }, font);
+//  }
+//};
+//
+//const Picture ScoreTable::pics[2] = {
+//  Picture(bmp_eggs_anim, 0, 0, 7, 7),
+//  Picture(bmp_eggs_anim, 28, 0, 7, 7),
+//};
+
+constexpr auto stageTypeUnknown = 0;
+constexpr auto stageTypeStart = 1;
+constexpr auto stageTypeGame = 2;
+
 class Stage {
+public:
+  static constexpr int stageType = stageTypeUnknown;
+  const int type = stageTypeUnknown;
+  Stage(int type) : type(type) {}
+  virtual ~Stage() = default;
+  virtual void init() = 0;
+  virtual void update(milliseconds, Graphics*) = 0;
+  template<typename T>
+  T* castAs() {
+    if (T::stageType != type)
+      return nullptr;
+    return (T*)(this);
+  };
+};
+
+class GameStage: public Stage {
   static const Path<Position> eggPath[3];
 public:
+  static constexpr int stageType = stageTypeGame;
   Background background;
   Wolf wolf;
   RollingEgg egg[4];
   Chick chick[4];
   EggSpawner eggSpawner;
+  //ScoreTable score;
+
+  GameStage() : Stage(stageTypeGame), egg{
+  Function<void()>{[this]() {onAnimationFinish(); }},
+  Function<void()>{[this]() {onAnimationFinish(); }},
+  Function<void()>{[this]() {onAnimationFinish(); }},
+  Function<void()>{[this]() {onAnimationFinish(); }},
+  } {}
+
+  void onAnimationFinish() {
+    //--score;
+  }
 
   void init() {
     wolf.x = 38;
@@ -218,7 +308,7 @@ public:
     // change positions
     for (int i = 0; i < 4; i++) {
       chick[i].update(now);
-      egg[i].updateAnimation(now);
+      egg[i].update(now);
     }
 
     // check collisions
@@ -227,6 +317,7 @@ public:
         egg[i].stopRolling();
         egg[i].x = -10;
         egg[i].y = -10;
+        //++score;
       }
     }
 
@@ -237,6 +328,27 @@ public:
       chick[i].draw(g);
       egg[i].draw(g);
     }
+
+    // draw score
+    //score.draw(g);
+  }
+};
+
+class StartStage: public Stage {
+public:
+  static constexpr int stageType = stageTypeStart;
+  StartStage() : Stage(stageType) {}
+  void init() {}
+  void update(milliseconds now, Graphics* g) {
+    const auto bufSize = g->size();
+    g->fillRect({ 2, 2 }, bufSize - 4, false);
+    g->fillRect({ 5, 5 }, bufSize - 10, true);
+    font.isBold = true;
+    font.size = 4;
+    g->drawText(captionText, { 22, 20 }, font);
+    font.isBold = false;
+    font.size = 0;
+    g->drawText(captionHelpText, { 18, 40 }, font);
   }
 };
 
@@ -247,8 +359,7 @@ void Core::init(Controller& c, Graphics& g)
 
   c.init({ this, &Core::pressDown });
 
-  stage = new Stage;
-  stage->init();
+  stage = new StartStage;
 }
 
 void Core::update()
@@ -257,32 +368,36 @@ void Core::update()
   graphics->clear();
   // Check inputs from keyboard/controller
   controller->update();
-  // Update game stage
+  // Update stage
   stage->update(millis(), graphics);
 }
 
 void Core::pressDown(uint8_t button)
 {
-  const auto now = millis();
+  auto startStage = stage->castAs<StartStage>();
+  if (startStage) {
+    delete stage;
+    stage = new GameStage;
+    stage->init();
+    return;
+  }
+  auto gameStage = stage->castAs<GameStage>();
   switch (button) {
   case Controller::BUTTON_X:
-    stage->wolf.x = 38;
-    stage->wolf.basketLeftUp();
+    gameStage->wolf.x = 38;
+    gameStage->wolf.basketLeftUp();
     break;
   case Controller::BUTTON_Y:
-    stage->wolf.x = 37;
-    stage->wolf.basketLeftDown();
-    for (int i = 0; i < 4; i++) {
-      stage->chick[i].start(now);
-    }
+    gameStage->wolf.x = 37;
+    gameStage->wolf.basketLeftDown();
     break;
   case Controller::BUTTON_A:
-    stage->wolf.x = 46;
-    stage->wolf.basketRightDown();
+    gameStage->wolf.x = 46;
+    gameStage->wolf.basketRightDown();
     break;
   case Controller::BUTTON_B:
-    stage->wolf.x = 45;
-    stage->wolf.basketRightUp();
+    gameStage->wolf.x = 45;
+    gameStage->wolf.basketRightUp();
     break;
   }
 }

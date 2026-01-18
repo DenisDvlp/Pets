@@ -72,5 +72,5 @@ int FontCirillic::getSpaceWidth() const
 
 int FontCirillic::getCharSpaceWidth() const
 {
-  return 1;
+  return 1 + isBold;
 }
