@@ -10,7 +10,7 @@ static Application app;
 // sizeof(long long) 8
 // sizeof(void*)     2
 
-//CPU ATmega32u4: 16 MGz
+//CPU ATmega32u4: 16 MHz
 //Loader : Arduino Leonardo
 //Flash Memory : 32 kb (4 kb used by loader)
 //SRAM : 2,5 kb

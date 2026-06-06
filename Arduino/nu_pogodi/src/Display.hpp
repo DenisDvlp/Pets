@@ -11,8 +11,8 @@ public:
   static constexpr int WIDTH = 128;
   static constexpr int HEIGHT = 64;
 private:
-  static constexpr int NUM_PAGE = 8;
   static constexpr int BITS_IN_BYTE = 8;
+  static constexpr int NUM_PAGE = HEIGHT / BITS_IN_BYTE;
   static constexpr int BUF_SIZE = WIDTH * HEIGHT / BITS_IN_BYTE;
 
   // Buffer looks like 8 lines that consist of vertical lines, where each line is represented as a byte.
@@ -54,8 +54,8 @@ public:
   static constexpr int canvasWidth = WIDTH * (pixelSize + pixelInterval) + offsetHorizontal * 2;
   static constexpr int canvasHeight = HEIGHT * (pixelSize + pixelInterval) + offsetVertical * 2;
 private:
-  static constexpr int NUM_PAGE = 8;
   static constexpr int BITS_IN_BYTE = 8;
+  static constexpr int NUM_PAGE = HEIGHT / BITS_IN_BYTE;
   static constexpr int BUF_SIZE = WIDTH * HEIGHT / BITS_IN_BYTE;
 
   uint8_t buffer[BUF_SIZE];
