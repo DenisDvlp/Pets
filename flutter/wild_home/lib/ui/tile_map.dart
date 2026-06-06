@@ -1,7 +1,7 @@
 import 'package:flame/components.dart';
+import 'package:flame/effects.dart';
 import 'package:flame/events.dart';
 import 'package:flame/flame.dart';
-import 'package:flame/sprite.dart';
 import 'package:flutter/foundation.dart';
 import '../common/int_vector.dart';
 import '../common/interpolator.dart';
@@ -11,6 +11,7 @@ class TileSet {
   final IntVector2 tileSize;
   final IntVector2 _mapSizeInTiles;
   late final List<Sprite> sprites;
+  bool isLoaded = false;
 
   TileSet({
     required String imagePath,
@@ -20,6 +21,9 @@ class TileSet {
        _mapSizeInTiles = mapSizeInTiles;
 
   Future<void> load() async {
+    if (isLoaded) {
+      return; // Already loaded
+    }
     final image = await Flame.images.load(_imagePath);
     sprites = List<Sprite>.generate(_mapSizeInTiles.y * _mapSizeInTiles.x, (
       index,
@@ -52,7 +56,7 @@ class TileCell extends SpriteComponent with TapCallbacks, HoverCallbacks {
     required this.tilePosition,
     required this.onTapUpCallback,
     required this.onTapDownCallback,
-  }) : _tileValue = tileValue;
+  }) : _tileValue = tileValue, super(anchor: Anchor.center);
 
   set tileValue (int newValue) {
     _tileValue = newValue;
@@ -95,7 +99,7 @@ class TileMap extends PositionComponent with PointerMoveCallbacks  {
   final IntVector2 mapSize;
   List<List<int>> mapValues = [];
   List<TileCell> cells = [];
-  final interpolator = Interpolator(2.0, Interpolation.cubic, false);
+  final interpolator = Interpolator(0.5, inOutFactor: 1, reverse: false, loop: true);
 
   TileMap({
     required this.tileSet,
@@ -114,22 +118,26 @@ class TileMap extends PositionComponent with PointerMoveCallbacks  {
   }
 
   void update(double dt) {
-    interpolator.update(dt);
+    //interpolator.update(dt);
   }
 
   void onTileTapDownCallback(TileCell tileCell) {
     if(tileCell.tileValue == 0){
-      interpolator.onUpdate?.call(1.0);
-      interpolator.onEnd?.call();
-      interpolator.onUpdate = (double value){
-        tileCell.width = 256 * value;
-        tileCell.height = 256 * value;
-      };
-      interpolator.onEnd = (){
-        tileCell.sprite = tileSet.sprites[0];
-        tileCell.tileValue = 0;
-      };
-      interpolator.fromStart();
+      tileCell.add(ScaleEffect.by(
+        Vector2.all(1.5),
+        EffectController(duration: 0.3),
+      ));
+      // interpolator.onUpdate?.call(1.0);
+      // interpolator.onEnd?.call();
+      // interpolator.onUpdate = (double value){
+      //   tileCell.width = 256 * value;
+      //   tileCell.height = 256 * value;
+      // };
+      // interpolator.onEnd = (){
+      //   tileCell.sprite = tileSet.sprites[0];
+      //   tileCell.tileValue = 0;
+      // };
+      // interpolator.fromStart();
       tileCell.sprite = tileSet.sprites[11];
       tileCell.tileValue = 11;
     }
@@ -146,15 +154,13 @@ class TileMap extends PositionComponent with PointerMoveCallbacks  {
 
   @override
   void onLoad() async {
-    await tileSet.load();
-
     final tileSize = tileSet.tileSize;
     cells = List<TileCell>.generate((mapSize.x * mapSize.y).toInt(), (
       index,
     ) {
       var position = Vector2(
-        (index % mapSize.x) * tileSize.x.toDouble(),
-        (index ~/ mapSize.x) * tileSize.y.toDouble(),
+        (index % mapSize.x) * tileSize.x.toDouble() + (tileSize.x / 2),
+        (index ~/ mapSize.x) * tileSize.y.toDouble() + (tileSize.y / 2),
       );
       final x = index ~/ mapSize.x;
       final y = index % mapSize.x;

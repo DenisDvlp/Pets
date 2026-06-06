@@ -1,5 +1,5 @@
 import 'package:flame/camera.dart';
-
-class MyCamera extends CameraComponent {
-  MyCamera() : super.withFixedResolution(width: 256, height: 256);
+import 'common/constants.dart';
+class MainCamera extends CameraComponent {
+  MainCamera() : super.withFixedResolution(width: screenWidth, height: screenHeight);
 }
