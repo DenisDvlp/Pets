@@ -12,12 +12,159 @@
 *
 ******************************************************************************/
 #include "LCD_Touch.h"
-#include <stdlib.h>
 
 extern LCD_DIS sLCD_DIS;
 extern uint8_t id;
 static TP_DEV sTP_DEV;
 static TP_DRAW sTP_Draw;
+
+#define TP_TOUCH_SPI_BAUDRATE 1000000
+#define TP_LCD_SPI_BAUDRATE   18000000
+#define TP_ADC_VALID_MIN      80
+#define TP_ADC_VALID_MAX      4015
+#define TP_STABLE_READS       5
+#define TP_MIN_STABLE_READS   3
+#define TP_SCREEN_MARGIN      20
+#define TP_POINT_JITTER       2
+#define TP_POINT_SMOOTH_RANGE 30
+
+static bool sTP_DrawValid = false;
+static POINT sTP_LastXpoint = 0;
+static POINT sTP_LastYpoint = 0;
+static bool sTP_StrokeValid = false;
+static POINT sTP_StrokeXpoint = 0;
+static POINT sTP_StrokeYpoint = 0;
+
+static uint16_t TP_AbsDiff(uint16_t Value1, uint16_t Value2)
+{
+    return (Value1 > Value2) ? (Value1 - Value2) : (Value2 - Value1);
+}
+
+static void TP_Sort_ADC(uint16_t *pData, uint8_t Count)
+{
+    uint8_t i, j;
+    uint16_t Temp;
+
+    if (Count < 2)
+        return;
+
+    for (i = 0; i < Count - 1; i++)
+    {
+        for (j = i + 1; j < Count; j++)
+        {
+            if (pData[i] > pData[j])
+            {
+                Temp = pData[i];
+                pData[i] = pData[j];
+                pData[j] = Temp;
+            }
+        }
+    }
+}
+
+static bool TP_Is_ADC_Valid(uint16_t Xpoint, uint16_t Ypoint)
+{
+    return Xpoint > TP_ADC_VALID_MIN && Xpoint < TP_ADC_VALID_MAX &&
+           Ypoint > TP_ADC_VALID_MIN && Ypoint < TP_ADC_VALID_MAX;
+}
+
+static void TP_Reset_Stroke(void)
+{
+    sTP_StrokeValid = false;
+}
+
+static void TP_Reset_Draw_Filter(void)
+{
+    sTP_DrawValid = false;
+    TP_Reset_Stroke();
+}
+
+static void TP_DrawStroke(POINT Xpoint, POINT Ypoint)
+{
+    if (sTP_StrokeValid)
+    {
+        GUI_DrawLine(sTP_StrokeXpoint, sTP_StrokeYpoint,
+                     Xpoint, Ypoint,
+                     sTP_Draw.Color, LINE_SOLID, DOT_PIXEL_2X2);
+    }
+    else
+    {
+        GUI_DrawPoint(Xpoint, Ypoint,
+                      sTP_Draw.Color, DOT_PIXEL_2X2, DOT_FILL_RIGHTUP);
+    }
+
+    sTP_StrokeXpoint = Xpoint;
+    sTP_StrokeYpoint = Ypoint;
+    sTP_StrokeValid = true;
+}
+
+static POINT TP_Clamp_To_Screen(int32_t Value, POINT Max)
+{
+    if (Value <= 0)
+        return 0;
+
+    if (Max == 0)
+        return 0;
+
+    if (Value >= Max)
+        return Max - 1;
+
+    return (POINT)Value;
+}
+
+static int32_t TP_Round_Float(float Value)
+{
+    if (Value >= 0)
+        return (int32_t)(Value + 0.5f);
+
+    return (int32_t)(Value - 0.5f);
+}
+
+static void TP_Filter_Draw_Point(void)
+{
+    uint16_t Dx, Dy;
+
+    if (!sTP_DrawValid || 0 == (sTP_DEV.chStatus & TP_PRESS_DOWN))
+    {
+        sTP_DrawValid = true;
+        sTP_LastXpoint = sTP_Draw.Xpoint;
+        sTP_LastYpoint = sTP_Draw.Ypoint;
+        return;
+    }
+
+    Dx = TP_AbsDiff(sTP_Draw.Xpoint, sTP_LastXpoint);
+    Dy = TP_AbsDiff(sTP_Draw.Ypoint, sTP_LastYpoint);
+
+    if (Dx <= TP_POINT_JITTER && Dy <= TP_POINT_JITTER)
+    {
+        sTP_Draw.Xpoint = sTP_LastXpoint;
+        sTP_Draw.Ypoint = sTP_LastYpoint;
+    }
+    else if (Dx <= TP_POINT_SMOOTH_RANGE && Dy <= TP_POINT_SMOOTH_RANGE)
+    {
+        sTP_Draw.Xpoint = (POINT)(((uint32_t)sTP_LastXpoint + (uint32_t)sTP_Draw.Xpoint * 2) / 3);
+        sTP_Draw.Ypoint = (POINT)(((uint32_t)sTP_LastYpoint + (uint32_t)sTP_Draw.Ypoint * 2) / 3);
+    }
+
+    sTP_LastXpoint = sTP_Draw.Xpoint;
+    sTP_LastYpoint = sTP_Draw.Ypoint;
+}
+
+static bool TP_Update_Draw_Point(int32_t Xpoint, int32_t Ypoint)
+{
+    if (Xpoint < -TP_SCREEN_MARGIN || Ypoint < -TP_SCREEN_MARGIN ||
+        Xpoint > sLCD_DIS.LCD_Dis_Column + TP_SCREEN_MARGIN ||
+        Ypoint > sLCD_DIS.LCD_Dis_Page + TP_SCREEN_MARGIN)
+    {
+        return false;
+    }
+
+    sTP_Draw.Xpoint = TP_Clamp_To_Screen(Xpoint, sLCD_DIS.LCD_Dis_Column);
+    sTP_Draw.Ypoint = TP_Clamp_To_Screen(Ypoint, sLCD_DIS.LCD_Dis_Page);
+    TP_Filter_Draw_Point();
+
+    return true;
+}
 /*******************************************************************************
 function:
 		Read the ADC of the channel
@@ -48,21 +195,22 @@ static uint16_t TP_Read_ADC(uint8_t CMD)
 
 /*******************************************************************************
 function:
-		Read the 5th channel value and exclude the maximum and minimum returns the average
+		Read the channel several times and return the trimmed average
 parameter:
 	Channel_Cmd :	0x90 :Read channel Y +
 					0xd0 :Read channel x +
 *******************************************************************************/
-#define READ_TIMES 5 //Number of readings
-#define LOST_NUM 1   //Discard value
-static uint16_t
+#define READ_TIMES 9 //Number of readings
+#define LOST_NUM 2   //Discard value
+static uint16_t 
 TP_Read_ADC_Average(uint8_t Channel_Cmd)
 {
-    uint8_t i, j;
+    uint8_t i;
     uint16_t Read_Buff[READ_TIMES];
-    uint16_t Read_Sum = 0, Read_Temp = 0;
-    //LCD SPI speed = 3 MHz
-    spi_set_baudrate(SPI_PORT, 3000000);
+    uint32_t Read_Sum = 0;
+    uint16_t Read_Temp = 0;
+    //The touch controller is more stable at a lower SPI clock, especially with a light press.
+    spi_set_baudrate(SPI_PORT, TP_TOUCH_SPI_BAUDRATE);
     //Read and save multiple samples
     for (i = 0; i < READ_TIMES; i++)
     {
@@ -70,27 +218,16 @@ TP_Read_ADC_Average(uint8_t Channel_Cmd)
         Driver_Delay_us(200);
     }
     //LCD SPI speed = 18 MHz
-    spi_set_baudrate(SPI_PORT, 18000000);
+    spi_set_baudrate(SPI_PORT, TP_LCD_SPI_BAUDRATE);
     //Sort from small to large
-    for (i = 0; i < READ_TIMES - 1; i++)
-    {
-        for (j = i + 1; j < READ_TIMES; j++)
-        {
-            if (Read_Buff[i] > Read_Buff[j])
-            {
-                Read_Temp = Read_Buff[i];
-                Read_Buff[i] = Read_Buff[j];
-                Read_Buff[j] = Read_Temp;
-            }
-        }
-    }
+    TP_Sort_ADC(Read_Buff, READ_TIMES);
 
     //Exclude the largest and the smallest
     for (i = LOST_NUM; i < READ_TIMES - LOST_NUM; i++)
         Read_Sum += Read_Buff[i];
 
     //Averaging
-    Read_Temp = Read_Sum / (READ_TIMES - 2 * LOST_NUM);
+    Read_Temp = (uint16_t)(Read_Sum / (READ_TIMES - 2 * LOST_NUM));
 
     return Read_Temp;
 }
@@ -110,36 +247,67 @@ static void TP_Read_ADC_XY(uint16_t *pXCh_Adc, uint16_t *pYCh_Adc)
 
 /*******************************************************************************
 function:
-		2 times to read the touch screen IC, and the two can not exceed the deviation,
-		ERR_RANGE, meet the conditions, then that the correct reading, otherwise the reading error.
+		Read several XY samples and average the samples clustered around the median.
+		This rejects unstable light-touch outliers before coordinates are reported.
 parameter:
 	Channel_Cmd :	pYCh_Adc = 0x90 :Read channel Y +
 					pXCh_Adc = 0xd0 :Read channel x +
 *******************************************************************************/
-#define ERR_RANGE 50 //tolerance scope
+#define ERR_RANGE 120 //tolerance scope
 static bool TP_Read_TwiceADC(uint16_t *pXCh_Adc, uint16_t *pYCh_Adc)
 {
-    uint16_t XCh_Adc1, YCh_Adc1, XCh_Adc2, YCh_Adc2;
+    uint8_t i, Count = 0, StableCount = 0;
+    uint16_t X_Buff[TP_STABLE_READS];
+    uint16_t Y_Buff[TP_STABLE_READS];
+    uint16_t X_Sort[TP_STABLE_READS];
+    uint16_t Y_Sort[TP_STABLE_READS];
+    uint16_t X_Median, Y_Median;
+    uint32_t X_Sum = 0, Y_Sum = 0;
 
-    //Read the ADC values Read the ADC values twice
-    TP_Read_ADC_XY(&XCh_Adc1, &YCh_Adc1);
-    Driver_Delay_us(10);
-    TP_Read_ADC_XY(&XCh_Adc2, &YCh_Adc2);
-    Driver_Delay_us(10);
-
-    //The ADC error used twice is greater than ERR_RANGE to take the average
-    if (((XCh_Adc2 <= XCh_Adc1 && XCh_Adc1 < XCh_Adc2 + ERR_RANGE) ||
-         (XCh_Adc1 <= XCh_Adc2 && XCh_Adc2 < XCh_Adc1 + ERR_RANGE)) &&
-        ((YCh_Adc2 <= YCh_Adc1 && YCh_Adc1 < YCh_Adc2 + ERR_RANGE) ||
-         (YCh_Adc1 <= YCh_Adc2 && YCh_Adc2 < YCh_Adc1 + ERR_RANGE)))
+    for (i = 0; i < TP_STABLE_READS; i++)
     {
-        *pXCh_Adc = (XCh_Adc1 + XCh_Adc2) / 2;
-        *pYCh_Adc = (YCh_Adc1 + YCh_Adc2) / 2;
-        return true;
+        uint16_t Xpoint, Ypoint;
+
+        if (DEV_Digital_Read(TP_IRQ_PIN))
+            break;
+
+        TP_Read_ADC_XY(&Xpoint, &Ypoint);
+        if (TP_Is_ADC_Valid(Xpoint, Ypoint))
+        {
+            X_Buff[Count] = Xpoint;
+            Y_Buff[Count] = Ypoint;
+            X_Sort[Count] = Xpoint;
+            Y_Sort[Count] = Ypoint;
+            Count++;
+        }
+        Driver_Delay_us(200);
     }
 
-    //The ADC error used twice is less than ERR_RANGE returns failed
-    return false;
+    if (Count < TP_MIN_STABLE_READS)
+        return false;
+
+    TP_Sort_ADC(X_Sort, Count);
+    TP_Sort_ADC(Y_Sort, Count);
+    X_Median = X_Sort[Count / 2];
+    Y_Median = Y_Sort[Count / 2];
+
+    for (i = 0; i < Count; i++)
+    {
+        if (TP_AbsDiff(X_Buff[i], X_Median) <= ERR_RANGE &&
+            TP_AbsDiff(Y_Buff[i], Y_Median) <= ERR_RANGE)
+        {
+            X_Sum += X_Buff[i];
+            Y_Sum += Y_Buff[i];
+            StableCount++;
+        }
+    }
+
+    if (StableCount < TP_MIN_STABLE_READS)
+        return false;
+
+    *pXCh_Adc = (uint16_t)(X_Sum / StableCount);
+    *pYCh_Adc = (uint16_t)(Y_Sum / StableCount);
+    return true;
 }
 
 /*******************************************************************************
@@ -152,66 +320,75 @@ parameter:
 *******************************************************************************/
 static uint8_t TP_Scan(uint8_t chCoordType)
 {
+    bool CoordOk = false;
+
     //In X, Y coordinate measurement, IRQ is disabled and output is low
     if (!DEV_Digital_Read(TP_IRQ_PIN))
     { //Press the button to press
         //Read the physical coordinates
-        if (chCoordType)
+        if (TP_Read_TwiceADC(&sTP_DEV.Xpoint, &sTP_DEV.Ypoint))
         {
-            TP_Read_TwiceADC(&sTP_DEV.Xpoint, &sTP_DEV.Ypoint);
-            //Read the screen coordinates
-        }
-        else if (TP_Read_TwiceADC(&sTP_DEV.Xpoint, &sTP_DEV.Ypoint))
-        {
-
-            if (LCD_2_8 == id)
+            if (chCoordType)
             {
-                sTP_Draw.Xpoint = sLCD_DIS.LCD_Dis_Column -
-                                  sTP_DEV.fXfac * sTP_DEV.Xpoint -
-                                  sTP_DEV.iXoff;
-                sTP_Draw.Ypoint = sLCD_DIS.LCD_Dis_Page -
-                                  sTP_DEV.fYfac * sTP_DEV.Ypoint -
-                                  sTP_DEV.iYoff;
+                CoordOk = true;
+                //Read the screen coordinates
             }
             else
             {
-                //DEBUG("(Xad,Yad) = %d,%d\r\n",sTP_DEV.Xpoint,sTP_DEV.Ypoint);
-                if (sTP_DEV.TP_Scan_Dir == R2L_D2U)
-                { //Converts the result to screen coordinates
-                    sTP_Draw.Xpoint = sTP_DEV.fXfac * sTP_DEV.Xpoint +
-                                      sTP_DEV.iXoff;
-                    sTP_Draw.Ypoint = sTP_DEV.fYfac * sTP_DEV.Ypoint +
-                                      sTP_DEV.iYoff;
-                }
-                else if (sTP_DEV.TP_Scan_Dir == L2R_U2D)
+                int32_t Draw_Xpoint;
+                int32_t Draw_Ypoint;
+
+                if (LCD_2_8 == id)
                 {
-                    sTP_Draw.Xpoint = sLCD_DIS.LCD_Dis_Column -
-                                      sTP_DEV.fXfac * sTP_DEV.Xpoint -
-                                      sTP_DEV.iXoff;
-                    sTP_Draw.Ypoint = sLCD_DIS.LCD_Dis_Page -
-                                      sTP_DEV.fYfac * sTP_DEV.Ypoint -
-                                      sTP_DEV.iYoff;
-                }
-                else if (sTP_DEV.TP_Scan_Dir == U2D_R2L)
-                {
-                    sTP_Draw.Xpoint = sTP_DEV.fXfac * sTP_DEV.Ypoint +
-                                      sTP_DEV.iXoff;
-                    sTP_Draw.Ypoint = sTP_DEV.fYfac * sTP_DEV.Xpoint +
-                                      sTP_DEV.iYoff;
+                    Draw_Xpoint = TP_Round_Float(sLCD_DIS.LCD_Dis_Column -
+                                                 sTP_DEV.fXfac * sTP_DEV.Xpoint -
+                                                 sTP_DEV.iXoff);
+                    Draw_Ypoint = TP_Round_Float(sLCD_DIS.LCD_Dis_Page -
+                                                 sTP_DEV.fYfac * sTP_DEV.Ypoint -
+                                                 sTP_DEV.iYoff);
                 }
                 else
                 {
-                    sTP_Draw.Xpoint = sLCD_DIS.LCD_Dis_Column -
-                                      sTP_DEV.fXfac * sTP_DEV.Ypoint -
-                                      sTP_DEV.iXoff;
-                    sTP_Draw.Ypoint = sLCD_DIS.LCD_Dis_Page -
-                                      sTP_DEV.fYfac * sTP_DEV.Xpoint -
-                                      sTP_DEV.iYoff;
+                    //DEBUG("(Xad,Yad) = %d,%d\r\n",sTP_DEV.Xpoint,sTP_DEV.Ypoint);
+                    if (sTP_DEV.TP_Scan_Dir == R2L_D2U)
+                    { //Converts the result to screen coordinates
+                        Draw_Xpoint = TP_Round_Float(sTP_DEV.fXfac * sTP_DEV.Xpoint +
+                                                     sTP_DEV.iXoff);
+                        Draw_Ypoint = TP_Round_Float(sTP_DEV.fYfac * sTP_DEV.Ypoint +
+                                                     sTP_DEV.iYoff);
+                    }
+                    else if (sTP_DEV.TP_Scan_Dir == L2R_U2D)
+                    {
+                        Draw_Xpoint = TP_Round_Float(sLCD_DIS.LCD_Dis_Column -
+                                                     sTP_DEV.fXfac * sTP_DEV.Xpoint -
+                                                     sTP_DEV.iXoff);
+                        Draw_Ypoint = TP_Round_Float(sLCD_DIS.LCD_Dis_Page -
+                                                     sTP_DEV.fYfac * sTP_DEV.Ypoint -
+                                                     sTP_DEV.iYoff);
+                    }
+                    else if (sTP_DEV.TP_Scan_Dir == U2D_R2L)
+                    {
+                        Draw_Xpoint = TP_Round_Float(sTP_DEV.fXfac * sTP_DEV.Ypoint +
+                                                     sTP_DEV.iXoff);
+                        Draw_Ypoint = TP_Round_Float(sTP_DEV.fYfac * sTP_DEV.Xpoint +
+                                                     sTP_DEV.iYoff);
+                    }
+                    else
+                    {
+                        Draw_Xpoint = TP_Round_Float(sLCD_DIS.LCD_Dis_Column -
+                                                     sTP_DEV.fXfac * sTP_DEV.Ypoint -
+                                                     sTP_DEV.iXoff);
+                        Draw_Ypoint = TP_Round_Float(sLCD_DIS.LCD_Dis_Page -
+                                                     sTP_DEV.fYfac * sTP_DEV.Xpoint -
+                                                     sTP_DEV.iYoff);
+                    }
+                    // DEBUG("( x , y ) = %d,%d\r\n",sTP_Draw.Xpoint,sTP_Draw.Ypoint);
                 }
-                // DEBUG("( x , y ) = %d,%d\r\n",sTP_Draw.Xpoint,sTP_Draw.Ypoint);
+
+                CoordOk = TP_Update_Draw_Point(Draw_Xpoint, Draw_Ypoint);
             }
         }
-        if (0 == (sTP_DEV.chStatus & TP_PRESS_DOWN))
+        if (CoordOk && 0 == (sTP_DEV.chStatus & TP_PRESS_DOWN))
         { //Not being pressed
             sTP_DEV.chStatus = TP_PRESS_DOWN | TP_PRESSED;
             sTP_DEV.Xpoint0 = sTP_DEV.Xpoint;
@@ -223,6 +400,7 @@ static uint8_t TP_Scan(uint8_t chCoordType)
         if (sTP_DEV.chStatus & TP_PRESS_DOWN)
         {                                  //0x80
             sTP_DEV.chStatus &= ~(1 << 7); //0x00
+            TP_Reset_Draw_Filter();
         }
         else
         {
@@ -230,6 +408,7 @@ static uint8_t TP_Scan(uint8_t chCoordType)
             sTP_DEV.Ypoint0 = 0;
             sTP_DEV.Xpoint = 0xffff;
             sTP_DEV.Ypoint = 0xffff;
+            TP_Reset_Draw_Filter();
         }
     }
 
@@ -721,12 +900,14 @@ void TP_DrawBoard(void)
                 if (sTP_Draw.Xpoint > (sLCD_DIS.LCD_Dis_Column - 60) &&
                     sTP_Draw.Ypoint < 16)
                 { //Clear Board
+                    TP_Reset_Stroke();
                     TP_Dialog();
                 }
                 else if (sTP_Draw.Xpoint > (sLCD_DIS.LCD_Dis_Column - 120) &&
                          sTP_Draw.Xpoint < (sLCD_DIS.LCD_Dis_Column - 80) &&
                          sTP_Draw.Ypoint < 24)
                 { //afresh adjustment
+                    TP_Reset_Stroke();
                     TP_Adjust();
                     TP_Dialog();
                 }
@@ -735,6 +916,7 @@ void TP_DrawBoard(void)
                          sTP_Draw.Ypoint > 20 &&
                          sTP_Draw.Ypoint < 70)
                 {
+                    TP_Reset_Stroke();
                     sTP_Draw.Color = BLUE;
                 }
                 else if (sTP_Draw.Xpoint > (sLCD_DIS.LCD_Dis_Column - 50) &&
@@ -742,6 +924,7 @@ void TP_DrawBoard(void)
                          sTP_Draw.Ypoint > 80 &&
                          sTP_Draw.Ypoint < 130)
                 {
+                    TP_Reset_Stroke();
                     sTP_Draw.Color = GREEN;
                 }
                 else if (sTP_Draw.Xpoint > (sLCD_DIS.LCD_Dis_Column - 50) &&
@@ -749,12 +932,14 @@ void TP_DrawBoard(void)
                          sTP_Draw.Ypoint > 140 &&
                          sTP_Draw.Ypoint < 190)
                 {
+                    TP_Reset_Stroke();
                     sTP_Draw.Color = RED;
                 }
                 else if (sTP_Draw.Xpoint > (sLCD_DIS.LCD_Dis_Column - 50) &&
                          sTP_Draw.Xpoint < sLCD_DIS.LCD_Dis_Column &&
                          sTP_Draw.Ypoint > 200 && sTP_Draw.Ypoint < 250)
                 {
+                    TP_Reset_Stroke();
                     sTP_Draw.Color = YELLOW;
                 }
                 else if (sTP_Draw.Xpoint > (sLCD_DIS.LCD_Dis_Column - 50) &&
@@ -762,20 +947,12 @@ void TP_DrawBoard(void)
                          sTP_Draw.Ypoint > 260 &&
                          sTP_Draw.Ypoint < 310)
                 {
+                    TP_Reset_Stroke();
                     sTP_Draw.Color = BLACK;
                 }
                 else
                 {
-                    GUI_DrawPoint(sTP_Draw.Xpoint, sTP_Draw.Ypoint,
-                                  sTP_Draw.Color, DOT_PIXEL_1X1, DOT_FILL_RIGHTUP);
-                    GUI_DrawPoint(sTP_Draw.Xpoint + 1, sTP_Draw.Ypoint,
-                                  sTP_Draw.Color, DOT_PIXEL_1X1, DOT_FILL_RIGHTUP);
-                    GUI_DrawPoint(sTP_Draw.Xpoint, sTP_Draw.Ypoint + 1,
-                                  sTP_Draw.Color, DOT_PIXEL_1X1, DOT_FILL_RIGHTUP);
-                    GUI_DrawPoint(sTP_Draw.Xpoint + 1, sTP_Draw.Ypoint + 1,
-                                  sTP_Draw.Color, DOT_PIXEL_1X1, DOT_FILL_RIGHTUP);
-                    GUI_DrawPoint(sTP_Draw.Xpoint, sTP_Draw.Ypoint,
-                                  sTP_Draw.Color, DOT_PIXEL_2X2, DOT_FILL_RIGHTUP);
+                    TP_DrawStroke(sTP_Draw.Xpoint, sTP_Draw.Ypoint);
                 }
                 //Vertical screen
             }
@@ -785,45 +962,50 @@ void TP_DrawBoard(void)
                 if (sTP_Draw.Xpoint > (sLCD_DIS.LCD_Dis_Column - 60) &&
                     sTP_Draw.Ypoint < 16)
                 { //Clear Board
+                    TP_Reset_Stroke();
                     TP_Dialog();
                 }
                 else if (sTP_Draw.Xpoint > (sLCD_DIS.LCD_Dis_Column - 120) &&
                          sTP_Draw.Xpoint < (sLCD_DIS.LCD_Dis_Column - 80) &&
                          sTP_Draw.Ypoint < 24)
                 { //afresh adjustment
+                    TP_Reset_Stroke();
                     TP_Adjust();
                     TP_Dialog();
                 }
                 else if (sTP_Draw.Xpoint > 20 && sTP_Draw.Xpoint < 70 &&
                          sTP_Draw.Ypoint > 20 && sTP_Draw.Ypoint < 70)
                 {
+                    TP_Reset_Stroke();
                     sTP_Draw.Color = BLUE;
                 }
                 else if (sTP_Draw.Xpoint > 80 && sTP_Draw.Xpoint < 130 &&
                          sTP_Draw.Ypoint > 20 && sTP_Draw.Ypoint < 70)
                 {
+                    TP_Reset_Stroke();
                     sTP_Draw.Color = GREEN;
                 }
                 else if (sTP_Draw.Xpoint > 140 && sTP_Draw.Xpoint < 190 &&
                          sTP_Draw.Ypoint > 20 && sTP_Draw.Ypoint < 70)
                 {
+                    TP_Reset_Stroke();
                     sTP_Draw.Color = RED;
                 }
                 else if (sTP_Draw.Xpoint > 200 && sTP_Draw.Xpoint < 250 &&
                          sTP_Draw.Ypoint > 20 && sTP_Draw.Ypoint < 70)
                 {
+                    TP_Reset_Stroke();
                     sTP_Draw.Color = YELLOW;
                 }
                 else if (sTP_Draw.Xpoint > 260 && sTP_Draw.Xpoint < 310 &&
                          sTP_Draw.Ypoint > 20 && sTP_Draw.Ypoint < 70)
                 {
+                    TP_Reset_Stroke();
                     sTP_Draw.Color = BLACK;
                 }
                 else
                 {
-                    GUI_DrawPoint(sTP_Draw.Xpoint, sTP_Draw.Ypoint,
-                                  sTP_Draw.Color, DOT_PIXEL_2X2,
-                                  DOT_FILL_RIGHTUP);
+                    TP_DrawStroke(sTP_Draw.Xpoint, sTP_Draw.Ypoint);
                 }
             }
             //}

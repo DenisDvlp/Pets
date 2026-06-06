@@ -1,7 +1,7 @@
 /*****************************************************************************
 * |	This version:   V1.0
 * | Date        :   2021-04-20
-* | Info        :
+* | Info        :   
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documnetation files (the "Software"), to deal
@@ -39,18 +39,18 @@
 
 
 // Audio format definition
-typedef struct audio_format
+typedef struct audio_format 
 {
-    uint32_t sample_freq;
-    uint16_t channel_count;
+    uint32_t sample_freq;        
+    uint16_t channel_count; 
 	uint8_t  audio_data;
 	uint8_t  audio_clock;
 	PIO	     pio;
-	uint8_t  sm;
+	uint8_t  sm; 
 } audio_format_t;
 
 static audio_format_t audio_format ={
-										.sample_freq = PICO_AUDIO_FREQ ,
+										.sample_freq = PICO_AUDIO_FREQ , 
 										.channel_count = PICO_AUDIO_COUNT ,
 										.audio_data = PICO_AUDIO_DATA_PIN ,
 										.audio_clock = PICO_AUDIO_CLOCK_PIN_BASE ,
@@ -73,7 +73,7 @@ int32_t* Volume_321(int32_t *samples,uint32_t len,uint8_t volume);
 void free_32(int32_t *samples);
 void free_16(int16_t *samples);
 
-void Happy_birthday_out(int32_t *samples);
+void Happy_birthday_out();
 
 
 #endif //_PICO_AUDIO_PIO_H
