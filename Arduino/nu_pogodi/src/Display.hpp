@@ -2,14 +2,17 @@
 #include "stdint.h"
 #include "Picture.hpp"
 
+static constexpr int displayWidth = 128;
+static constexpr int displayHeight = 64;
+
 #ifdef ARDUINO
 #include <SPI.h>
 
 class Display {
 public:
   // Display dimentions.
-  static constexpr int WIDTH = 128;
-  static constexpr int HEIGHT = 64;
+  static constexpr int WIDTH = displayWidth;
+  static constexpr int HEIGHT = displayHeight;
 private:
   static constexpr int BITS_IN_BYTE = 8;
   static constexpr int NUM_PAGE = HEIGHT / BITS_IN_BYTE;
@@ -49,8 +52,8 @@ private:
   static constexpr int offsetHorizontal = 3;
   static constexpr int offsetVertical = 3;
 public:
-  static constexpr int WIDTH = 128;
-  static constexpr int HEIGHT = 64;
+  static constexpr int WIDTH = displayWidth;
+  static constexpr int HEIGHT = displayHeight;
   static constexpr int canvasWidth = WIDTH * (pixelSize + pixelInterval) + offsetHorizontal * 2;
   static constexpr int canvasHeight = HEIGHT * (pixelSize + pixelInterval) + offsetVertical * 2;
 private:
