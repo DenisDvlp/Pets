@@ -45,6 +45,7 @@ pico_enable_stdio_uart(sample FALSE)
 pico_enable_stdio_usb(sample TRUE)
 
 # Add the standard library to the build
+# pico_stdlib contains pico_runtime, hardware_gpio, hardware_uart and others
 target_link_libraries(sample pico_stdlib)
 
 pico_add_extra_outputs(sample)
