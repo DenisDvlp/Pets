@@ -16,6 +16,7 @@
 
 - ptr: 4
 - char: 1
+- short:
 - int: 4
 - long: 4
 - long long: 8

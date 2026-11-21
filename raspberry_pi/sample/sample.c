@@ -1,13 +1,15 @@
 #include <stdio.h>
-#include "pico/stdlib.h"
+#include <pico/stdlib.h>
 
 int main()
 {
+    // Enable IO (USB) so we can print
     stdio_init_all();
 
     while (true) {
         printf("Size ptr: %zu\n", sizeof(int *));
         printf("Size int: %zu\n", sizeof(int));
+        printf("Size short: %zu\n", sizeof(short));
         printf("Size char: %zu\n", sizeof(char));
         printf("Size float: %zu\n", sizeof(float));
         printf("Size double: %zu\n", sizeof(double));
