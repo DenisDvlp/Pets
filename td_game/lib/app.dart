@@ -4,6 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'game/defense_game.dart';
 import 'game/model.dart';
+import 'lobby/lobby_screen.dart';
+import 'network/lan_session.dart';
 import 'services/settings_store.dart';
 
 class MonkeyDefenseApp extends StatefulWidget {
@@ -27,6 +29,7 @@ class _MonkeyDefenseAppState extends State<MonkeyDefenseApp> {
   int page = 0;
   int levelIndex = 0;
   int runId = 0;
+  LanSession? lan;
   bool edited = false;
   bool exiting = false;
   Future<void> pendingSave = Future<void>.value();
@@ -58,12 +61,55 @@ class _MonkeyDefenseAppState extends State<MonkeyDefenseApp> {
     page = 2;
   });
 
+  void _lanChanged() {
+    final connection = lan;
+    if (!mounted || connection == null) return;
+    if (!connection.connected || !connection.started) {
+      setState(() => page = 3);
+    }
+  }
+
+  void _startCoop(LanSession connection) {
+    lan?.removeListener(_lanChanged);
+    lan = connection;
+    connection.addListener(_lanChanged);
+    connection.game!.autoStart = connection.isHost
+        ? settings.autoStart
+        : connection.game!.autoStart;
+    setState(() {
+      levelIndex = connection.levelIndex;
+      runId++;
+      page = 2;
+    });
+  }
+
+  void _leaveCoop({bool menu = false}) {
+    final connection = lan;
+    connection?.removeListener(_lanChanged);
+    lan = null;
+    connection?.close();
+    setState(() => page = menu ? 0 : 3);
+  }
+
+  void _restartCoop({int? next}) {
+    lan?.returnToLobby(levelIndex: next);
+    if (next != null) lan?.start();
+  }
+
+  @override
+  void dispose() {
+    lan?.removeListener(_lanChanged);
+    lan?.close();
+    super.dispose();
+  }
+
   Future<void> _exit() async {
     if (exiting) return;
     setState(() => exiting = true);
     try {
       await pendingSave.catchError((Object _) {});
       await store.save(settings);
+      await lan?.close();
       if (widget.exitAction != null) {
         await widget.exitAction!();
       } else {
@@ -112,6 +158,7 @@ class _MonkeyDefenseAppState extends State<MonkeyDefenseApp> {
         if (page == 0) {
           return _MainMenu(
             onPlay: () => setState(() => page = 1),
+            onCoop: () => setState(() => page = 3),
             onSettings: () => _showSettings(context, settings, _save),
             onExit: exiting ? null : _exit,
           );
@@ -123,21 +170,34 @@ class _MonkeyDefenseAppState extends State<MonkeyDefenseApp> {
             onBack: () => setState(() => page = 0),
           );
         }
+        if (page == 3) {
+          return LobbyScreen(
+            session: lan,
+            onBack: () => _leaveCoop(menu: true),
+            onStart: _startCoop,
+          );
+        }
         return _GameScreen(
           key: ValueKey(runId),
           audioEnabled: widget.audioEnabled,
           levelIndex: levelIndex,
           settings: settings,
+          connection: lan,
           onSettings: _save,
           onComplete: () => _save(
             settings.copyWith(completed: {...settings.completed, levelIndex}),
           ),
-          onRestart: () => _play(levelIndex),
-          onNext: levelIndex + 1 < levels.length
-              ? () => _play(levelIndex + 1)
+          onRestart: lan != null
+              ? () => _restartCoop()
+              : () => _play(levelIndex),
+          onNext: levelIndex + 1 < levels.length && (lan?.isHost ?? true)
+              ? () => lan != null
+                    ? _restartCoop(next: levelIndex + 1)
+                    : _play(levelIndex + 1)
               : null,
-          onMenu: () => setState(() => page = 0),
-          onLevels: () => setState(() => page = 1),
+          onMenu: () =>
+              lan != null ? _leaveCoop(menu: true) : setState(() => page = 0),
+          onLevels: () => lan != null ? _leaveCoop() : setState(() => page = 1),
         );
       },
     ),
@@ -151,10 +211,12 @@ const _paper = Color(0xFFF4F6F4);
 class _MainMenu extends StatelessWidget {
   const _MainMenu({
     required this.onPlay,
+    required this.onCoop,
     required this.onSettings,
     this.onExit,
   });
   final VoidCallback onPlay;
+  final VoidCallback onCoop;
   final VoidCallback onSettings;
   final VoidCallback? onExit;
   @override
@@ -191,6 +253,15 @@ class _MainMenu extends StatelessWidget {
                       onPressed: onPlay,
                       icon: const Icon(Icons.play_arrow_rounded),
                       label: const Text('Play'),
+                    ),
+                  ),
+                  const SizedBox(height: 10),
+                  SizedBox(
+                    width: 240,
+                    child: OutlinedButton.icon(
+                      onPressed: onCoop,
+                      icon: const Icon(Icons.groups_outlined),
+                      label: const Text('Co-op Lobby'),
                     ),
                   ),
                   const SizedBox(height: 10),
@@ -450,6 +521,7 @@ class _GameScreen extends StatefulWidget {
     required this.onMenu,
     required this.onLevels,
     this.onNext,
+    this.connection,
   });
   final int levelIndex;
   final bool audioEnabled;
@@ -460,6 +532,7 @@ class _GameScreen extends StatefulWidget {
   final VoidCallback onMenu;
   final VoidCallback onLevels;
   final VoidCallback? onNext;
+  final LanSession? connection;
   @override
   State<_GameScreen> createState() => _GameScreenState();
 }
@@ -469,17 +542,21 @@ class _GameScreenState extends State<_GameScreen> with WidgetsBindingObserver {
   late final DefenseGame game;
   bool dialogOpen = false;
   bool resultShown = false;
+  bool sessionEnded = false;
   @override
   void initState() {
     super.initState();
-    session = GameSession(levels[widget.levelIndex])
-      ..autoStart = widget.settings.autoStart;
+    session =
+        widget.connection?.game ??
+        (GameSession(levels[widget.levelIndex])
+          ..autoStart = widget.settings.autoStart);
     game = DefenseGame(
       audioEnabled: widget.audioEnabled,
       session: session,
       settings: widget.settings,
       onChanged: _changed,
-    );
+    )..sharedSession = widget.connection != null;
+    widget.connection?.addListener(_networkChanged);
     WidgetsBinding.instance.addObserver(this);
   }
 
@@ -487,12 +564,15 @@ class _GameScreenState extends State<_GameScreen> with WidgetsBindingObserver {
   void didUpdateWidget(covariant _GameScreen oldWidget) {
     super.didUpdateWidget(oldWidget);
     game.settings = widget.settings;
-    session.autoStart = widget.settings.autoStart;
+    if (widget.connection == null || widget.connection!.isHost) {
+      session.autoStart = widget.settings.autoStart;
+    }
   }
 
   @override
   void dispose() {
     WidgetsBinding.instance.removeObserver(this);
+    widget.connection?.removeListener(_networkChanged);
     game.dispose();
     super.dispose();
   }
@@ -502,13 +582,24 @@ class _GameScreenState extends State<_GameScreen> with WidgetsBindingObserver {
     if (state == AppLifecycleState.inactive ||
         state == AppLifecycleState.paused ||
         state == AppLifecycleState.hidden) {
-      if (session.editable) _pause();
+      if (session.editable && (widget.connection?.isHost ?? true)) _pause();
     }
   }
 
   void _command(VoidCallback command) {
     command();
+    widget.connection?.publish();
     game.notify();
+  }
+
+  void _networkChanged() {
+    if (!mounted) return;
+    if (!widget.connection!.connected || !widget.connection!.started) {
+      sessionEnded = true;
+      if (dialogOpen) Navigator.of(context).pop();
+      return;
+    }
+    _changed();
   }
 
   void _changed() {
@@ -528,11 +619,25 @@ class _GameScreenState extends State<_GameScreen> with WidgetsBindingObserver {
 
   void _pause() {
     if (dialogOpen || !session.editable) return;
+    if (widget.connection != null) {
+      _command(session.pause);
+      return;
+    }
     dialogOpen = true;
     _command(session.pause);
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (mounted) _pauseDialog();
     });
+  }
+
+  Future<void> _coopSettings() async {
+    if (dialogOpen) return;
+    dialogOpen = true;
+    await _showSettings(context, widget.settings, widget.onSettings);
+    if (mounted) {
+      dialogOpen = false;
+      _changed();
+    }
   }
 
   Future<void> _pauseDialog() async {
@@ -566,12 +671,19 @@ class _GameScreenState extends State<_GameScreen> with WidgetsBindingObserver {
 
   Future<void> _result() async {
     final won = session.phase == SessionPhase.won;
+    final coop = widget.connection != null;
+    final host = widget.connection?.isHost ?? true;
     if (won) {
       try {
         await widget.onComplete();
       } catch (_) {}
     }
-    if (!mounted) return;
+    if (!mounted ||
+        sessionEnded ||
+        (coop &&
+            (!widget.connection!.connected || !widget.connection!.started))) {
+      return;
+    }
     final action = await showDialog<_GameAction>(
       context: context,
       barrierDismissible: false,
@@ -583,14 +695,28 @@ class _GameScreenState extends State<_GameScreen> with WidgetsBindingObserver {
         actions: [
           if (won && widget.onNext != null)
             (_GameAction.next, Icons.arrow_forward, 'Next Level'),
-          (_GameAction.restart, Icons.refresh, 'Retry'),
-          (_GameAction.levels, Icons.map_outlined, 'Level Select'),
+          if (host)
+            (
+              _GameAction.restart,
+              Icons.refresh,
+              coop ? 'Retry with Team' : 'Retry',
+            ),
+          (
+            _GameAction.levels,
+            Icons.map_outlined,
+            coop ? 'Leave to Lobby' : 'Level Select',
+          ),
           (_GameAction.menu, Icons.home_outlined, 'Main Menu'),
         ],
       ),
     );
     if (!mounted) return;
     dialogOpen = false;
+    if (sessionEnded ||
+        (coop &&
+            (!widget.connection!.connected || !widget.connection!.started))) {
+      return;
+    }
     _navigate(action ?? _GameAction.levels);
   }
 
@@ -716,6 +842,13 @@ class _GameScreenState extends State<_GameScreen> with WidgetsBindingObserver {
             session.level.name,
             style: const TextStyle(fontWeight: FontWeight.w700),
           ),
+          if (widget.connection case final connection?)
+            _Counter(
+              icon: Icons.groups_outlined,
+              text:
+                  '${connection.players.length} / ${NetworkConfig.maxPlayers}',
+              color: _green,
+            ),
           _Counter(
             icon: Icons.payments_outlined,
             text: '\$${session.money}',
@@ -750,25 +883,50 @@ class _GameScreenState extends State<_GameScreen> with WidgetsBindingObserver {
                   : 'Start Wave',
             ),
           ),
-          SegmentedButton<int>(
-            segments: const [
-              ButtonSegment(value: 1, label: Text('1x')),
-              ButtonSegment(value: 2, label: Text('2x')),
-            ],
-            selected: {session.speed},
-            showSelectedIcon: false,
-            onSelectionChanged: session.editable
-                ? (selection) => _command(() {
-                    session.speed = selection.first;
-                  })
-                : null,
-            style: const ButtonStyle(visualDensity: VisualDensity.compact),
+          Tooltip(
+            message: 'Game speed',
+            child: SizedBox(
+              width: 96,
+              child: DropdownButton<int>(
+                value: session.speed,
+                isExpanded: true,
+                items: [
+                  for (final speed in SimulationConfig.supportedSpeeds)
+                    DropdownMenuItem(value: speed, child: Text('${speed}x')),
+                ],
+                onChanged: session.editable
+                    ? (value) {
+                        if (value != null) {
+                          _command(() => session.setSpeed(value));
+                        }
+                      }
+                    : null,
+              ),
+            ),
           ),
           IconButton(
             onPressed: session.editable ? _pause : null,
             tooltip: 'Pause',
             icon: const Icon(Icons.pause),
           ),
+          if (widget.connection != null)
+            IconButton(
+              onPressed: _coopSettings,
+              tooltip: 'Settings',
+              icon: const Icon(Icons.tune),
+            ),
+          if (widget.connection != null)
+            IconButton(
+              onPressed: widget.onLevels,
+              tooltip: 'Leave game',
+              icon: const Icon(Icons.logout),
+            ),
+          if (widget.connection != null && session.phase == SessionPhase.paused)
+            FilledButton.icon(
+              onPressed: () => _command(session.resume),
+              icon: const Icon(Icons.play_arrow),
+              label: const Text('Resume'),
+            ),
         ],
       ),
     ),
@@ -845,7 +1003,7 @@ class _GameScreenState extends State<_GameScreen> with WidgetsBindingObserver {
   );
 
   Widget _inspector(Monkey monkey) {
-    final maxed = monkey.level >= 5;
+    final maxed = monkey.level >= TowerConfig.maxLevel;
     final cost = maxed ? 0 : monkey.spec.upgradeCost(monkey.level);
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -882,7 +1040,9 @@ class _GameScreenState extends State<_GameScreen> with WidgetsBindingObserver {
               ),
             ),
             Text(
-              maxed ? 'L5 / MAX' : 'L${monkey.level}  >  L${monkey.level + 1}',
+              maxed
+                  ? 'L${TowerConfig.maxLevel} / MAX'
+                  : 'L${monkey.level}  >  L${monkey.level + 1}',
               style: const TextStyle(color: _green),
             ),
           ],
@@ -918,9 +1078,7 @@ class _GameScreenState extends State<_GameScreen> with WidgetsBindingObserver {
             onChanged: session.editable
                 ? (mode) => _command(() {
                     if (mode != null) {
-                      monkey.targetMode = mode;
-                      monkey.targetId = null;
-                      session.revision++;
+                      session.setTargetMode(mode);
                     }
                   })
                 : null,
@@ -961,7 +1119,7 @@ class _GameScreenState extends State<_GameScreen> with WidgetsBindingObserver {
     if (spec.kind == TowerKind.farm) {
       rows.add(
         _statRow(
-          'Income / 8s',
+          'Income / ${_number(TowerConfig.farmInterval)}s',
           '\$${spec.incomeAt(current)}',
           next == null ? null : '\$${spec.incomeAt(next)}',
         ),
@@ -992,8 +1150,8 @@ class _GameScreenState extends State<_GameScreen> with WidgetsBindingObserver {
         rows.add(
           _statRow(
             'Splash radius',
-            _number([.9, 1.0, 1.1, 1.25, 1.5][current - 1]),
-            next == null ? null : _number([.9, 1.0, 1.1, 1.25, 1.5][next - 1]),
+            _number(TowerConfig.splashRadii[current - 1]),
+            next == null ? null : _number(TowerConfig.splashRadii[next - 1]),
           ),
         );
       }
@@ -1001,15 +1159,19 @@ class _GameScreenState extends State<_GameScreen> with WidgetsBindingObserver {
         rows.add(
           _statRow(
             'Slow',
-            '${30 + (current - 1) * 5}%',
-            next == null ? null : '${30 + (next - 1) * 5}%',
+            '${_number(100 * (TowerConfig.slowFraction + (current - 1) * TowerConfig.slowFractionPerLevel))}%',
+            next == null
+                ? null
+                : '${_number(100 * (TowerConfig.slowFraction + (next - 1) * TowerConfig.slowFractionPerLevel))}%',
           ),
         );
         rows.add(
           _statRow(
             'Slow duration',
-            '${_number(2 + (current - 1) * .25)}s',
-            next == null ? null : '${_number(2 + (next - 1) * .25)}s',
+            '${_number(TowerConfig.slowDuration + (current - 1) * TowerConfig.slowDurationPerLevel)}s',
+            next == null
+                ? null
+                : '${_number(TowerConfig.slowDuration + (next - 1) * TowerConfig.slowDurationPerLevel)}s',
           ),
         );
       }
@@ -1024,8 +1186,10 @@ class _GameScreenState extends State<_GameScreen> with WidgetsBindingObserver {
         rows.add(
           _statRow(
             'Attack bonus',
-            '${10 + (current - 1) * 5}%',
-            next == null ? null : '${10 + (next - 1) * 5}%',
+            '${_number(100 * (TowerConfig.supportAttackSpeedBonus + (current - 1) * TowerConfig.supportAttackSpeedPerLevel))}%',
+            next == null
+                ? null
+                : '${_number(100 * (TowerConfig.supportAttackSpeedBonus + (next - 1) * TowerConfig.supportAttackSpeedPerLevel))}%',
           ),
         );
       }
@@ -1042,15 +1206,25 @@ class _GameScreenState extends State<_GameScreen> with WidgetsBindingObserver {
         rows.add(
           _statRow(
             'Toxin burst',
-            _number(spec.damageAt(current) * .5),
-            next == null ? null : _number(spec.damageAt(next) * .5),
+            _number(
+              spec.damageAt(current) *
+                  TowerConfig.poisonInitialDamageMultiplier,
+            ),
+            next == null
+                ? null
+                : _number(
+                    spec.damageAt(next) *
+                        TowerConfig.poisonInitialDamageMultiplier,
+                  ),
           ),
         );
         rows.add(
           _statRow(
             'Toxin duration',
-            '${_number(3 + current * .25)}s',
-            next == null ? null : '${_number(3 + next * .25)}s',
+            '${_number(TowerConfig.poisonDuration + current * TowerConfig.poisonDurationPerLevel)}s',
+            next == null
+                ? null
+                : '${_number(TowerConfig.poisonDuration + next * TowerConfig.poisonDurationPerLevel)}s',
           ),
         );
       }

@@ -11,6 +11,68 @@ import 'package:td_game/game/model.dart';
 import 'package:td_game/services/settings_store.dart';
 
 void main() {
+  testWidgets('defeat retry and victory next level create fresh games', (
+    tester,
+  ) async {
+    final store = MemorySettingsStore();
+    await tester.pumpWidget(
+      MonkeyDefenseApp(settingsStore: store, audioEnabled: false),
+    );
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Play'));
+    await tester.pumpAndSettle();
+
+    Future<DefenseGame> loadGame() async {
+      late DefenseGame game;
+      await tester.runAsync(() async {
+        await tester.pump();
+        final state = tester.state<GameWidgetState<DefenseGame>>(
+          find.byType(GameWidget<DefenseGame>),
+        );
+        await state.loaderFuture.timeout(const Duration(seconds: 15));
+        game = tester
+            .widget<GameWidget<DefenseGame>>(
+              find.byType(GameWidget<DefenseGame>),
+            )
+            .game!;
+      });
+      await tester.pump();
+      return game;
+    }
+
+    await tester.tap(find.text('Play').first);
+    final lostGame = await loadGame();
+    lostGame.session.phase = SessionPhase.lost;
+    lostGame.session.lives = 0;
+    lostGame.notify();
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 300));
+    expect(find.text('Defense defeated'), findsOneWidget);
+    expect(find.text('Retry'), findsOneWidget);
+    expect(find.text('Level Select'), findsOneWidget);
+    expect(find.text('Next Level'), findsNothing);
+    await tester.tap(find.text('Retry'));
+    final retried = await loadGame();
+    expect(retried, isNot(same(lostGame)));
+    expect(retried.session.level, levels.first);
+    expect(retried.session.lives, EconomyConfig.initialLives);
+
+    retried.session.phase = SessionPhase.won;
+    retried.notify();
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 300));
+    expect(find.text('Campaign secured!'), findsOneWidget);
+    await tester.tap(find.text('Next Level'));
+    final next = await loadGame();
+    expect(next.session.level, levels[1]);
+    expect(next.session.phase, SessionPhase.ready);
+    expect(next.session.wave, 0);
+    expect(store.value.completed, contains(0));
+    expect(find.byType(Dialog), findsNothing);
+    await tester.pumpWidget(const SizedBox.shrink());
+    await tester.pump(const Duration(milliseconds: 100));
+  });
+
   for (final size in [const Size(960, 640), const Size(1920, 1080)]) {
     testWidgets('complete menu and gameplay flow at ${size.width}', (
       tester,

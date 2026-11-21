@@ -1,0 +1,35 @@
+abstract final class NetworkConfig {
+  static const magic = 'monkey-defense-lan';
+  static const protocolVersion = 2;
+  static const balanceVersion = 1;
+  static const discoveryPort = 45873;
+  static const maxPlayers = 4;
+  static const minPlayers = 2;
+  static const maxPendingPeers = 16;
+  static const maxFrameBytes = 256 * 1024;
+  static const maxQueueBytes = 1024 * 1024;
+  static const maxDatagramBytes = 4096;
+  static const maxListings = 256;
+  static const maxFramesPerWindow = 240;
+  static const maxCommandsPerWindow = 120;
+  static const maxNameLength = 80;
+  static const maxAddressLength = 253;
+  static const maxReasonLength = 256;
+  static const maxIdentifierLength = 128;
+  static const maxJsonDepth = 6;
+  static const maxJsonStringLength = 128;
+  static const maxJsonListLength = 32;
+  static const maxJsonFields = 16;
+  static const maxJsonKeyLength = 40;
+  static const maxJsonNumber = 1000000000;
+  static const maxCommandId = 9007199254740991;
+  static const maxPort = 65535;
+  static const timeout = Duration(seconds: 8);
+  static const rateWindow = Duration(seconds: 1);
+  static const closeTimeout = Duration(seconds: 1);
+  static const heartbeatCheckInterval = Duration(seconds: 1);
+  static const heartbeatInterval = Duration(seconds: 2);
+  static const discoveryInterval = Duration(seconds: 1);
+  static const listingLifetime = Duration(seconds: 3);
+  static const broadcastAddress = '255.255.255.255';
+}

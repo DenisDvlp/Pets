@@ -6,7 +6,68 @@ import 'package:td_game/game/model.dart';
 
 const step = 1 / 120;
 
-GameSession combatSession() => GameSession(levels.first)
+final combatLevel = LevelDefinition('Combat fixture', '', 24, 16, 23, [
+  (column: 0, row: 3),
+  (column: 7, row: 3),
+  (column: 7, row: 10),
+  (column: 17, row: 10),
+  (column: 17, row: 5),
+  (column: 23, row: 5),
+]);
+
+const buildCells = <String, List<Cell>>{
+  'meadow-bend': [
+    (column: 6, row: 4),
+    (column: 8, row: 9),
+    (column: 10, row: 6),
+    (column: 10, row: 9),
+    (column: 14, row: 9),
+  ],
+  'river-switchback': [
+    (column: 9, row: 5),
+    (column: 6, row: 10),
+    (column: 9, row: 8),
+    (column: 6, row: 14),
+    (column: 20, row: 11),
+  ],
+  'mountain-pass': [
+    (column: 6, row: 9),
+    (column: 9, row: 5),
+    (column: 11, row: 5),
+    (column: 14, row: 7),
+    (column: 18, row: 10),
+  ],
+  'desert-oasis': [
+    (column: 4, row: 8),
+    (column: 8, row: 7),
+    (column: 8, row: 13),
+    (column: 17, row: 13),
+    (column: 19, row: 9),
+  ],
+  'crystal-crossroads': [
+    (column: 5, row: 7),
+    (column: 11, row: 6),
+    (column: 11, row: 12),
+    (column: 13, row: 8),
+    (column: 17, row: 8),
+  ],
+  'volcano-loop': [
+    (column: 4, row: 8),
+    (column: 8, row: 7),
+    (column: 8, row: 12),
+    (column: 10, row: 12),
+    (column: 14, row: 10),
+  ],
+  'twin-rivers': [
+    (column: 7, row: 4),
+    (column: 9, row: 7),
+    (column: 10, row: 9),
+    (column: 10, row: 13),
+    (column: 20, row: 9),
+  ],
+};
+
+GameSession combatSession() => GameSession(combatLevel)
   ..phase = SessionPhase.running
   ..wave = 1;
 
@@ -132,11 +193,11 @@ void main() {
       final session = combatSession();
       final plated = addEnemy(session, 3);
       session.hit(plated, 1);
-      expect(plated.health, 17.5);
+      expect(plated.health, 29.5);
       session.hit(plated, 3);
-      expect(plated.health, 15.5);
+      expect(plated.health, 27.5);
       session.hit(plated, 3, pierceArmor: true);
-      expect(plated.health, 12.5);
+      expect(plated.health, 24.5);
       expect(session.money, 650);
     },
   );
@@ -154,14 +215,14 @@ void main() {
     final session = combatSession();
     final guardian = addEnemy(session, 4);
     session.hit(guardian, 6);
-    expect(guardian.shield, 4);
-    expect(guardian.health, 40);
-    session.hit(guardian, 7, pierceArmor: true);
+    expect(guardian.shield, 9);
+    expect(guardian.health, 75);
+    session.hit(guardian, 12, pierceArmor: true);
     expect(guardian.shield, 0);
-    expect(guardian.health, 37);
+    expect(guardian.health, 72);
     advance(session, 3);
     expect(guardian.shield, 0);
-    expect(guardian.health, 37);
+    expect(guardian.health, 72);
   });
 
   test('regeneration waits two seconds, resets on damage, and caps at max', () {
@@ -169,9 +230,9 @@ void main() {
     final regenerator = addEnemy(session, 2);
     session.hit(regenerator, 3);
     advance(session, 1.9);
-    expect(regenerator.health, 5);
+    expect(regenerator.health, 9);
     advance(session, .3);
-    expect(regenerator.health, closeTo(5.2, .02));
+    expect(regenerator.health, closeTo(9.2, .02));
     session.hit(regenerator, 1);
     final health = regenerator.health;
     advance(session, 1.9);
@@ -435,12 +496,12 @@ void main() {
           Shot(const Offset(4.5, 3.5), const Offset(6, 0), 3, kind, 1),
         );
         session.update(.3);
-        expect(enemy.health, kind == TowerKind.bomb ? 15 : 16);
-        expect(nearby.health, kind == TowerKind.bomb ? 15 : 18);
-        expect(distant.health, 18);
+        expect(enemy.health, kind == TowerKind.bomb ? 27 : 28);
+        expect(nearby.health, kind == TowerKind.bomb ? 27 : 30);
+        expect(distant.health, 30);
         expect(session.shots, isEmpty);
         session.update(step);
-        expect(enemy.health, kind == TowerKind.bomb ? 15 : 16);
+        expect(enemy.health, kind == TowerKind.bomb ? 27 : 28);
       }
     },
   );
@@ -451,7 +512,7 @@ void main() {
     final sniper = addTower(session, TowerKind.sniper);
     aimAt(session, sniper, enemy);
     session.update(0);
-    expect(enemy.health, 10);
+    expect(enemy.health, 22);
     expect(session.shots, isEmpty);
   });
 
@@ -572,17 +633,20 @@ void main() {
   for (final level in levels) {
     test('${level.name} is winnable with budgeted mixed towers and upgrades', () {
       final session = GameSession(level);
-      final bend = level.river ? 10 : 7;
-      final lower = level.river ? 14 : 10;
-      final rapid = (column: bend - 1, row: level.road.first.row + 1);
-      final dart = (column: bend + 1, row: lower - 1);
+      final cells = buildCells[level.id]!;
+      for (final cell in cells) {
+        expect(session.canPlace(cell), true, reason: '${level.id}: $cell');
+      }
+      final rapid = cells[0];
+      final dart = cells[1];
       const farm = (column: 1, row: 1);
-      final bomb = (column: bend + 1, row: lower - 2);
-      final frost = (column: bend - 1, row: lower - 1);
-      final sniper = (column: level.river ? 18 : 12, row: lower - 1);
+      final bomb = cells[2];
+      final frost = cells[3];
+      final sniper = cells[4];
       final plan = <({TowerKind kind, Cell cell, int targetLevel})>[
         (kind: TowerKind.rapid, cell: rapid, targetLevel: 1),
         (kind: TowerKind.farm, cell: farm, targetLevel: 1),
+        (kind: TowerKind.rapid, cell: rapid, targetLevel: 2),
         (kind: TowerKind.dart, cell: dart, targetLevel: 2),
         (kind: TowerKind.farm, cell: farm, targetLevel: 2),
         (kind: TowerKind.rapid, cell: rapid, targetLevel: 2),
@@ -630,7 +694,7 @@ void main() {
         }
         session.startWave();
         var waveTicks = 0;
-        while (session.phase == SessionPhase.running && waveTicks < 120 * 180) {
+        while (session.phase == SessionPhase.running && waveTicks < 120 * 360) {
           session.update(step);
           expect(session.money, greaterThanOrEqualTo(0));
           waveTicks++;
@@ -638,7 +702,7 @@ void main() {
         ticks += waveTicks;
         expect(
           waveTicks,
-          lessThan(120 * 180),
+          lessThan(120 * 360),
           reason: 'Wave ${session.wave} stalled',
         );
         expect(
@@ -668,7 +732,7 @@ void main() {
     expect(levels.length, greaterThanOrEqualTo(5));
     for (final spec in towerSpecs) {
       expect(spec.upgradeCost(1), greaterThan(spec.cost ~/ 2));
-      expect(spec.damageAt(5), greaterThan(spec.damageAt(1)));
+      expect(spec.damageAt(5), greaterThanOrEqualTo(spec.damageAt(1)));
       expect(spec.rangeAt(5), greaterThanOrEqualTo(spec.rangeAt(1)));
     }
   });

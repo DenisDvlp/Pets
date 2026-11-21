@@ -1,5 +1,6 @@
 import 'dart:math' as math;
 
+import 'package:flame/cache.dart';
 import 'package:flame/components.dart';
 import 'package:flame/events.dart';
 import 'package:flame/game.dart';
@@ -30,18 +31,22 @@ class DefenseGame extends FlameGame with KeyboardEvents {
   DefenseSettings settings;
   final VoidCallback onChanged;
   final bool audioEnabled;
+  bool sharedSession = false;
   final Map<Terrain, Sprite> terrainSprites = {};
   final Map<String, AudioPool> _sounds = {};
   double _accumulator = 0;
   int _revision = -1;
   bool _disposed = false;
+  double renderDistance(Balloon enemy) => enemy.distance;
+
+  double renderAngle(Monkey monkey) => monkey.angle;
 
   @override
   Color backgroundColor() => const Color(0xFFDAE8DE);
 
   @override
   Future<void> onLoad() async {
-    images.prefix = 'assets/PNG/Default size/';
+    images = Images(prefix: 'assets/PNG/Default size/');
     const tileIds = {
       Terrain.grass: '024',
       Terrain.road: '050',
@@ -87,11 +92,18 @@ class DefenseGame extends FlameGame with KeyboardEvents {
   @override
   void update(double dt) {
     super.update(dt);
-    session.autoStart = settings.autoStart;
-    _accumulator += math.min(dt, .1) * session.speed;
-    while (_accumulator >= 1 / 120) {
-      session.update(1 / 120);
-      _accumulator -= 1 / 120;
+    if (!sharedSession && !session.replica) {
+      session.autoStart = settings.autoStart;
+    }
+    _accumulator +=
+        math.min(dt, SimulationConfig.maxFrameSeconds) * session.speed;
+    while (_accumulator >= SimulationConfig.tickSeconds) {
+      if (session.replica) {
+        session.predict(SimulationConfig.tickSeconds);
+      } else {
+        session.update(SimulationConfig.tickSeconds);
+      }
+      _accumulator -= SimulationConfig.tickSeconds;
     }
     if (_revision != session.revision) notify();
   }
@@ -167,6 +179,7 @@ class _Board extends PositionComponent
 
   @override
   void render(Canvas canvas) {
+    if (game._disposed) return;
     final level = session.level;
     for (var row = 0; row < level.rows; row++) {
       for (var column = 0; column < level.columns; column++) {
@@ -228,7 +241,7 @@ class _Board extends PositionComponent
         monkey.position * tile,
         tile,
         monkey.spec,
-        monkey.angle,
+        game.renderAngle(monkey),
         monkey.level,
         selected == monkey,
       );
@@ -309,7 +322,7 @@ class _Board extends PositionComponent
   }
 
   void _balloon(Canvas canvas, Balloon enemy) {
-    final center = session.level.positionAt(enemy.distance) * tile;
+    final center = session.level.positionAt(game.renderDistance(enemy)) * tile;
     canvas.drawOval(
       Rect.fromCenter(center: center.translate(1, 3), width: 15, height: 17),
       Paint()..color = const Color(0x33233F35),
@@ -360,7 +373,7 @@ class _Board extends PositionComponent
           ..strokeWidth = 1,
       );
     }
-    if (enemy.health < enemy.spec.health) {
+    if (enemy.health < enemy.maxHealth) {
       canvas.drawRect(
         Rect.fromLTWH(center.dx - 7, center.dy - 13, 14, 2),
         Paint()..color = const Color(0xFF293A34),
@@ -369,7 +382,7 @@ class _Board extends PositionComponent
         Rect.fromLTWH(
           center.dx - 7,
           center.dy - 13,
-          14 * (enemy.health / enemy.spec.health).clamp(0, 1),
+          14 * (enemy.health / enemy.maxHealth).clamp(0, 1),
           2,
         ),
         Paint()..color = const Color(0xFFC8F1B0),

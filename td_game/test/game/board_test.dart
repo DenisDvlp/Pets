@@ -10,6 +10,68 @@ import 'package:td_game/game/model.dart';
 import 'package:td_game/services/settings_store.dart';
 
 void main() {
+  test('replica frames simulate motion while preserving shared stats', () {
+    final host = GameSession(levels.first)
+      ..phase = SessionPhase.running
+      ..wave = 1
+      ..speed = SimulationConfig.supportedSpeeds.last
+      ..autoStart = true;
+    final enemy = Balloon(1, 2)
+      ..distance = 2
+      ..health = 4;
+    final monkey = Monkey(2, towerSpecs.first, (column: 1, row: 2))..angle = 3;
+    host.enemies.add(enemy);
+    host.towers.add(monkey);
+    final replica = GameSession(levels.first)..replica = true;
+    final game = DefenseGame(
+      session: replica,
+      settings: const DefenseSettings(autoStart: false),
+      onChanged: () {},
+      audioEnabled: false,
+    );
+    addTearDown(game.dispose);
+
+    replica.applySnapshot(host.toSnapshot());
+    final stats = (
+      replica.money,
+      replica.lives,
+      replica.wave,
+      replica.popped,
+      replica.remaining,
+      replica.phase,
+    );
+    game.update(.1);
+    expect(
+      game.renderDistance(replica.enemies.single),
+      closeTo(2 + enemy.spec.speed * .1 * replica.speed, .02),
+    );
+    expect((
+      replica.money,
+      replica.lives,
+      replica.wave,
+      replica.popped,
+      replica.remaining,
+      replica.phase,
+    ), stats);
+    expect(replica.autoStart, isTrue);
+
+    for (final phase in [
+      SessionPhase.paused,
+      SessionPhase.won,
+      SessionPhase.lost,
+    ]) {
+      host.phase = phase;
+      enemy.distance += 1;
+      monkey.angle += .1;
+      replica.applySnapshot(host.toSnapshot());
+      final stopped = replica.toSnapshot();
+      expect(game.renderDistance(replica.enemies.first), enemy.distance);
+      expect(game.renderAngle(replica.towers.single), monkey.angle);
+      game.update(.025);
+      expect(replica.toSnapshot(), equals(stopped));
+    }
+  });
+
   testWidgets(
     'downloaded tiles load and board clicks remain aligned after resize',
     (tester) async {

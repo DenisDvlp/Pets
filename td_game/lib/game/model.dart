@@ -1,359 +1,8 @@
 import 'dart:math' as math;
 import 'dart:ui';
 
-enum TowerKind {
-  dart,
-  rapid,
-  bomb,
-  frost,
-  sniper,
-  farm,
-  laser,
-  support,
-  poison,
-}
-
-enum TargetMode { first, strongest, nearest }
-
-enum SessionPhase { ready, running, paused, won, lost }
-
-enum Terrain { grass, road, water, rock }
-
-typedef Cell = ({int column, int row});
-
-class TowerSpec {
-  const TowerSpec(
-    this.kind,
-    this.name,
-    this.role,
-    this.cost,
-    this.damage,
-    this.interval,
-    this.range,
-    this.color,
-  );
-  final TowerKind kind;
-  final String name;
-  final String role;
-  final int cost;
-  final double damage;
-  final double interval;
-  final double range;
-  final Color color;
-  double damageAt(int level) => damage * [1, 1.5, 2.25, 3.5, 5][level - 1];
-  double intervalAt(int level) => interval * [1, .9, .8, .7, .6][level - 1];
-  double rangeAt(int level) => range + (level - 1) * .25;
-  int upgradeCost(int level) => (cost * [.75, 1.1, 1.6, 2.3][level - 1]).ceil();
-  int incomeAt(int level) => [20, 35, 55, 80, 120][level - 1];
-}
-
-const towerSpecs = <TowerSpec>[
-  TowerSpec(
-    TowerKind.dart,
-    'Dart Scout',
-    'Balanced dart attacks',
-    100,
-    1,
-    .65,
-    3,
-    Color(0xFF187E69),
-  ),
-  TowerSpec(
-    TowerKind.rapid,
-    'Rapid Gunner',
-    'Fast single-target fire',
-    220,
-    1,
-    .22,
-    2.75,
-    Color(0xFFE8AB33),
-  ),
-  TowerSpec(
-    TowerKind.bomb,
-    'Bomb Lobber',
-    'Splash damage • armor piercing',
-    280,
-    3,
-    1.3,
-    3.5,
-    Color(0xFFE96750),
-  ),
-  TowerSpec(
-    TowerKind.frost,
-    'Frost Monkey',
-    'Area pulse • slows balloons',
-    180,
-    1,
-    1.4,
-    2.5,
-    Color(0xFF58C5DC),
-  ),
-  TowerSpec(
-    TowerKind.sniper,
-    'Longshot',
-    'Long range • armor piercing',
-    350,
-    8,
-    1.8,
-    7,
-    Color(0xFF57668C),
-  ),
-  TowerSpec(
-    TowerKind.farm,
-    'Banana Farmer',
-    'Cash every 8 active-wave seconds',
-    250,
-    0,
-    8,
-    0,
-    Color(0xFF94BA46),
-  ),
-  TowerSpec(
-    TowerKind.laser,
-    'Laser Monk',
-    'Continuous piercing beam',
-    320,
-    2.5,
-    .9,
-    4,
-    Color(0xFF9A67E8),
-  ),
-  TowerSpec(
-    TowerKind.support,
-    'Drum Captain',
-    'Nearby monkeys attack faster',
-    300,
-    0,
-    8,
-    3.5,
-    Color(0xFFCF7F3C),
-  ),
-  TowerSpec(
-    TowerKind.poison,
-    'Toxin Slinger',
-    'Damage over time • strong against armor',
-    240,
-    1.5,
-    1.1,
-    3,
-    Color(0xFF6DBB5A),
-  ),
-];
-
-class EnemySpec {
-  const EnemySpec(
-    this.name,
-    this.health,
-    this.speed,
-    this.reward,
-    this.leak,
-    this.color, {
-    this.shield = 0,
-  });
-  final String name;
-  final double health;
-  final double speed;
-  final int reward;
-  final int leak;
-  final Color color;
-  final double shield;
-}
-
-const enemySpecs = <EnemySpec>[
-  EnemySpec('Red Basic', 1, 1, 5, 1, Color(0xFFEF5966)),
-  EnemySpec('Blue Swift', 3, 1.5, 8, 2, Color(0xFF399EEB)),
-  EnemySpec('Green Regenerator', 8, 1.2, 14, 3, Color(0xFF55BD78)),
-  EnemySpec('Yellow Plated', 18, 1, 24, 5, Color(0xFFF7CC48)),
-  EnemySpec('Violet Guardian', 40, .85, 45, 10, Color(0xFFB574DB), shield: 10),
-];
-
-class LevelDefinition {
-  LevelDefinition(
-    this.name,
-    this.subtitle,
-    this.columns,
-    this.rows,
-    this.waves,
-    List<Cell> corners, {
-    this.river = false,
-  }) {
-    if (columns <= 0 ||
-        columns > 30 ||
-        rows <= 0 ||
-        rows > 20 ||
-        waves <= 0 ||
-        corners.length < 2 ||
-        corners.any((cell) => !contains(cell))) {
-      throw ArgumentError('Invalid map dimensions or route');
-    }
-    for (var index = 0; index < corners.length - 1; index++) {
-      final start = corners[index];
-      final end = corners[index + 1];
-      if (start.column != end.column && start.row != end.row) {
-        throw ArgumentError('Road segments must be orthogonal');
-      }
-      final steps =
-          (end.column - start.column).abs() + (end.row - start.row).abs();
-      for (var step = 0; step < steps; step++) {
-        road.add((
-          column: start.column + (end.column - start.column).sign * step,
-          row: start.row + (end.row - start.row).sign * step,
-        ));
-      }
-    }
-    road.add(corners.last);
-    if (road.length < 2 || road.toSet().length != road.length) {
-      throw ArgumentError('Invalid map dimensions or route');
-    }
-    roadSet = road.toSet();
-  }
-  final String name;
-  final String subtitle;
-  final int columns;
-  final int rows;
-  final int waves;
-  final bool river;
-  final List<Cell> road = [];
-  late final Set<Cell> roadSet;
-  bool contains(Cell cell) =>
-      cell.column >= 0 &&
-      cell.row >= 0 &&
-      cell.column < columns &&
-      cell.row < rows;
-  Terrain terrain(Cell cell) {
-    if (roadSet.contains(cell)) return Terrain.road;
-    if (river && cell.column >= 14 && cell.column <= 16) return Terrain.water;
-    if ((cell.column * 13 + cell.row * 7) % 71 == 0 && cell.row > 0) {
-      return Terrain.rock;
-    }
-    return Terrain.grass;
-  }
-
-  Offset positionAt(double distance) {
-    final clamped = distance.clamp(0.0, road.length - 1.0);
-    final index = clamped.floor();
-    final start = road[index];
-    if (index == road.length - 1) {
-      return Offset(start.column + .5, start.row + .5);
-    }
-    final end = road[index + 1];
-    final fraction = clamped - index;
-    return Offset(
-      start.column + .5 + (end.column - start.column) * fraction,
-      start.row + .5 + (end.row - start.row) * fraction,
-    );
-  }
-}
-
-final levels = <LevelDefinition>[
-  LevelDefinition(
-    'Meadow Bend',
-    'A winding trail through open grassland',
-    24,
-    16,
-    15,
-    [
-      (column: 0, row: 3),
-      (column: 7, row: 3),
-      (column: 7, row: 10),
-      (column: 17, row: 10),
-      (column: 17, row: 5),
-      (column: 23, row: 5),
-    ],
-  ),
-  LevelDefinition(
-    'River Switchback',
-    'A longer route divided by a blue river',
-    30,
-    20,
-    20,
-    [
-      (column: 0, row: 4),
-      (column: 10, row: 4),
-      (column: 10, row: 14),
-      (column: 22, row: 14),
-      (column: 22, row: 7),
-      (column: 29, row: 7),
-    ],
-    river: true,
-  ),
-  LevelDefinition(
-    'Mountain Pass',
-    'A steep route through the mountains',
-    30,
-    20,
-    25,
-    [
-      (column: 0, row: 10),
-      (column: 5, row: 10),
-      (column: 5, row: 0),
-      (column: 25, row: 0),
-      (column: 25, row: 10),
-      (column: 29, row: 10),
-    ],
-  ),
-  LevelDefinition(
-    'Desert Oasis',
-    'A dry route around a hidden oasis',
-    28,
-    18,
-    18,
-    [
-      (column: 0, row: 9),
-      (column: 7, row: 9),
-      (column: 7, row: 3),
-      (column: 20, row: 3),
-      (column: 20, row: 14),
-      (column: 27, row: 14),
-    ],
-  ),
-  LevelDefinition(
-    'Crystal Crossroads',
-    'Four open lanes around a crystal clearing',
-    25,
-    17,
-    20,
-    [
-      (column: 0, row: 8),
-      (column: 6, row: 8),
-      (column: 6, row: 3),
-      (column: 14, row: 3),
-      (column: 14, row: 13),
-      (column: 24, row: 13),
-    ],
-  ),
-  LevelDefinition(
-    'Volcano Loop',
-    'A compact route around a volcanic ridge',
-    22,
-    18,
-    22,
-    [
-      (column: 0, row: 9),
-      (column: 5, row: 9),
-      (column: 5, row: 3),
-      (column: 16, row: 3),
-      (column: 16, row: 14),
-      (column: 21, row: 14),
-    ],
-  ),
-  LevelDefinition(
-    'Twin Rivers',
-    'Two waterways split a long final course',
-    28,
-    20,
-    24,
-    [
-      (column: 0, row: 5),
-      (column: 8, row: 5),
-      (column: 8, row: 16),
-      (column: 19, row: 16),
-      (column: 19, row: 8),
-      (column: 27, row: 8),
-    ],
-    river: true,
-  ),
-];
+import 'game_config.dart';
+export 'game_config.dart';
 
 class Monkey {
   Monkey(this.id, this.spec, this.cell) : spent = spec.cost;
@@ -369,17 +18,26 @@ class Monkey {
   int? targetId;
   Offset get position => Offset(cell.column + .5, cell.row + .5);
   double get range => spec.rangeAt(level);
-  int get refund => (spent * .7).floor();
+  int get refund => (spent * EconomyConfig.refundRate).floor();
 }
 
 class Balloon {
-  Balloon(this.id, this.tier)
-    : health = enemySpecs[tier].health,
-      shield = enemySpecs[tier].shield;
+  Balloon(this.id, this.tier, {int wave = 1})
+    : maxHealth =
+          enemySpecs[tier].health *
+          (1 + tierWaveRates[tier] * (math.max(1, wave) - 1)),
+      maxShield =
+          enemySpecs[tier].shield *
+          (1 + tierWaveRates[tier] * (math.max(1, wave) - 1)) {
+    health = maxHealth;
+    shield = maxShield;
+  }
   final int id;
   final int tier;
-  double health;
-  double shield;
+  final double maxHealth;
+  final double maxShield;
+  late double health;
+  late double shield;
   double distance = 0;
   double sinceDamage = 0;
   double slow = 0;
@@ -397,7 +55,7 @@ class Shot {
   final double damage;
   final TowerKind kind;
   final int level;
-  double life = 4;
+  double life = TowerConfig.projectileLifetime;
 }
 
 class GameEffect {
@@ -408,7 +66,8 @@ class GameEffect {
     this.lineEnd,
     this.label,
     this.life = .35,
-  }) : duration = life;
+    double? duration,
+  }) : duration = duration ?? life;
   final Offset position;
   final Color color;
   final double radius;
@@ -427,25 +86,42 @@ class GameSession {
   final List<GameEffect> effects = [];
   SessionPhase phase = SessionPhase.ready;
   SessionPhase _beforePause = SessionPhase.ready;
-  int money = 650;
-  int lives = 100;
+  int money = EconomyConfig.initialMoney;
+  int lives = EconomyConfig.initialLives;
   int wave = 0;
   int popped = 0;
   int revision = 0;
-  int speed = 1;
+  int _speed = SimulationConfig.supportedSpeeds.first;
+  int get speed => _speed;
+  set speed(int value) => setSpeed(value);
   int _nextId = 1;
   int _spawned = 0;
   List<int> _schedule = [];
   double _spawnTime = 0;
-  double _autoTime = 3;
+  double _autoTime = WaveConfig.autoStartDelay;
   bool autoStart = false;
+  bool replica = false;
+  void Function(Map<String, dynamic>)? sendCommand;
+  bool _applyingCommand = false;
+  int? _replicaRemaining;
   Monkey? selected;
   TowerSpec? buying;
   String message = '';
   void Function(String sound)? onSound;
   bool get editable =>
       phase == SessionPhase.ready || phase == SessionPhase.running;
-  int get remaining => enemies.length + _schedule.length - _spawned;
+  int get remaining => replica && _replicaRemaining != null
+      ? _replicaRemaining!
+      : enemies.length + _schedule.length - _spawned;
+
+  bool _send(Map<String, dynamic> command) {
+    if (!replica || _applyingCommand) {
+      return false;
+    }
+    sendCommand?.call(command);
+    return true;
+  }
+
   bool canPlace(Cell cell) =>
       level.contains(cell) &&
       level.terrain(cell) == Terrain.grass &&
@@ -484,6 +160,14 @@ class GameSession {
       revision++;
       return false;
     }
+    if (_send({
+      'action': 'place',
+      'kind': spec.kind.index,
+      'column': cell.column,
+      'row': cell.row,
+    })) {
+      return true;
+    }
     money -= spec.cost;
     final monkey = Monkey(_nextId++, spec, cell);
     towers.add(monkey);
@@ -500,11 +184,12 @@ class GameSession {
     if (!editable ||
         monkey == null ||
         !towers.contains(monkey) ||
-        monkey.level >= 5) {
+        monkey.level >= TowerConfig.maxLevel) {
       return false;
     }
     final cost = monkey.spec.upgradeCost(monkey.level);
     if (money < cost) return false;
+    if (_send({'action': 'upgrade', 'id': monkey.id})) return true;
     money -= cost;
     monkey.spent += cost;
     monkey.level++;
@@ -515,7 +200,9 @@ class GameSession {
 
   bool sell() {
     final monkey = selected;
-    if (!editable || monkey == null || !towers.remove(monkey)) return false;
+    if (!editable || monkey == null || !towers.contains(monkey)) return false;
+    if (_send({'action': 'sell', 'id': monkey.id})) return true;
+    towers.remove(monkey);
     money += monkey.refund;
     selected = null;
     revision++;
@@ -524,6 +211,7 @@ class GameSession {
 
   void pause() {
     if (!editable) return;
+    if (_send({'action': 'pause'})) return;
     _beforePause = phase;
     phase = SessionPhase.paused;
     revision++;
@@ -531,26 +219,33 @@ class GameSession {
 
   void resume() {
     if (phase != SessionPhase.paused) return;
+    if (_send({'action': 'resume'})) return;
     phase = _beforePause;
     revision++;
   }
 
   void startWave() {
     if (phase != SessionPhase.ready || wave >= level.waves) return;
+    if (_send({'action': 'wave'})) return;
     wave++;
-    final maxTier = wave >= 14
+    final maxTier = wave >= WaveConfig.tierThresholds[3]
         ? 4
-        : wave >= 10
+        : wave >= WaveConfig.tierThresholds[2]
         ? 3
-        : wave >= 6
+        : wave >= WaveConfig.tierThresholds[1]
         ? 2
-        : wave >= 3
+        : wave >= WaveConfig.tierThresholds[0]
         ? 1
         : 0;
-    final count = 8 + wave * 2 + (level.river ? 4 : 0);
+    final count =
+        WaveConfig.baseEnemyCount +
+        wave * WaveConfig.enemiesPerWave +
+        (level.river ? WaveConfig.riverEnemyBonus : 0);
     _schedule = List.generate(
       count,
-      (index) => index % 3 == 0 ? maxTier : (index + wave) % (maxTier + 1),
+      (index) => index % WaveConfig.strongestTierFrequency == 0
+          ? maxTier
+          : (index + wave) % (maxTier + 1),
     );
     _spawned = 0;
     _spawnTime = 0;
@@ -561,16 +256,523 @@ class GameSession {
     revision++;
   }
 
+  void setSpeed(int value) {
+    if (!SimulationConfig.supportsSpeed(value) ||
+        phase == SessionPhase.won ||
+        phase == SessionPhase.lost) {
+      return;
+    }
+    if (_send({'action': 'speed', 'value': value})) return;
+    if (speed == value) return;
+    _speed = value;
+    revision++;
+  }
+
+  void setTargetMode(TargetMode value) {
+    final monkey = selected;
+    if (!editable || monkey == null || !towers.contains(monkey)) return;
+    if (_send({'action': 'target', 'id': monkey.id, 'value': value.index})) {
+      return;
+    }
+    if (monkey.targetMode == value) return;
+    monkey.targetMode = value;
+    monkey.targetId = null;
+    revision++;
+  }
+
+  static bool _integer(dynamic value, int minimum, int maximum) =>
+      value is int && value >= minimum && value <= maximum;
+
+  bool applyCommand(Map<String, dynamic> command) {
+    if (replica || _applyingCommand) return false;
+    final localSelected = selected;
+    final localBuying = buying;
+    final localMessage = message;
+    _applyingCommand = true;
+    try {
+      final action = command['action'];
+      if (action == 'place') {
+        if (!_integer(command['kind'], 0, TowerKind.values.length - 1) ||
+            !_integer(command['column'], 0, level.columns - 1) ||
+            !_integer(command['row'], 0, level.rows - 1)) {
+          return false;
+        }
+        final spec = towerSpecs[command['kind'] as int];
+        final cell = (
+          column: command['column'] as int,
+          row: command['row'] as int,
+        );
+        if (!editable || !canPlace(cell) || money < spec.cost) return false;
+        buying = spec;
+        return place(cell);
+      }
+      if (action == 'upgrade' || action == 'sell' || action == 'target') {
+        if (!_integer(command['id'], 1, SnapshotConfig.maxInteger)) {
+          return false;
+        }
+        selected = towers
+            .where((tower) => tower.id == command['id'])
+            .firstOrNull;
+        if (selected == null) return false;
+        if (action == 'upgrade') return upgrade();
+        if (action == 'sell') return sell();
+        if (!editable ||
+            !_integer(command['value'], 0, TargetMode.values.length - 1)) {
+          return false;
+        }
+        setTargetMode(TargetMode.values[command['value'] as int]);
+        return true;
+      }
+      switch (action) {
+        case 'wave':
+          if (phase != SessionPhase.ready || wave >= level.waves) return false;
+          startWave();
+          return true;
+        case 'pause':
+          if (!editable) return false;
+          pause();
+          return true;
+        case 'resume':
+          if (phase != SessionPhase.paused) return false;
+          resume();
+          return true;
+        case 'speed':
+          if (!SimulationConfig.supportsSpeed(command['value']) ||
+              phase == SessionPhase.won ||
+              phase == SessionPhase.lost) {
+            return false;
+          }
+          setSpeed(command['value'] as int);
+          return true;
+        default:
+          return false;
+      }
+    } finally {
+      selected = localSelected != null && towers.contains(localSelected)
+          ? localSelected
+          : null;
+      buying = localBuying;
+      message = localMessage;
+      _applyingCommand = false;
+    }
+  }
+
+  Map<String, dynamic> toSnapshot({bool includePresentation = true}) => {
+    'mapId': level.id,
+    'money': money,
+    'lives': lives,
+    'wave': wave,
+    'popped': popped,
+    'phase': phase.index,
+    'speed': speed,
+    'autoStart': autoStart,
+    'remaining': remaining,
+    'revision': revision,
+    'towers': towers
+        .map(
+          (tower) => {
+            'id': tower.id,
+            'kind': tower.spec.kind.index,
+            'column': tower.cell.column,
+            'row': tower.cell.row,
+            'level': tower.level,
+            'spent': tower.spent,
+            'angle': tower.angle,
+            'targetMode': tower.targetMode.index,
+            'targetId': tower.targetId,
+          },
+        )
+        .toList(),
+    'enemies': enemies
+        .map(
+          (enemy) => {
+            'id': enemy.id,
+            'tier': enemy.tier,
+            'health': enemy.health,
+            'maxHealth': enemy.maxHealth,
+            'shield': enemy.shield,
+            'maxShield': enemy.maxShield,
+            'distance': enemy.distance,
+            'sinceDamage': enemy.sinceDamage,
+            'slow': enemy.slow,
+            'slowTime': enemy.slowTime,
+            'poison': enemy.poison,
+            'poisonTime': enemy.poisonTime,
+            'resolved': enemy.resolved,
+          },
+        )
+        .toList(),
+    'shots': shots
+        .take(includePresentation ? SnapshotConfig.maxShots : 0)
+        .map(
+          (shot) => {
+            'position': [shot.position.dx, shot.position.dy],
+            'velocity': [shot.velocity.dx, shot.velocity.dy],
+            'damage': shot.damage,
+            'kind': shot.kind.index,
+            'level': shot.level,
+            'life': shot.life,
+          },
+        )
+        .toList(),
+    'effects': effects
+        .skip(
+          includePresentation
+              ? math.max(0, effects.length - SnapshotConfig.maxEffects)
+              : effects.length,
+        )
+        .map(
+          (effect) => {
+            'position': [effect.position.dx, effect.position.dy],
+            'color': effect.color.toARGB32(),
+            'radius': effect.radius,
+            'lineEnd': effect.lineEnd == null
+                ? null
+                : [effect.lineEnd!.dx, effect.lineEnd!.dy],
+            'label': effect.label,
+            'life': effect.life,
+            'duration': effect.duration,
+          },
+        )
+        .toList(),
+  };
+
+  void applySnapshot(
+    Map<String, dynamic> snapshot, {
+    bool preservePresentation = false,
+    bool refreshEnemies = true,
+  }) {
+    if (!replica || snapshot['mapId'] != level.id) return;
+    try {
+      int integer(Map data, String key, int minimum, int maximum) {
+        final value = data[key];
+        if (!_integer(value, minimum, maximum)) throw const FormatException();
+        return value as int;
+      }
+
+      double number(
+        Map data,
+        String key, {
+        double minimum = 0,
+        double maximum = SnapshotConfig.maxNumber,
+      }) {
+        final value = data[key];
+        if (value is! num ||
+            !value.isFinite ||
+            value < minimum ||
+            value > maximum) {
+          throw const FormatException();
+        }
+        return value.toDouble();
+      }
+
+      bool boolean(Map data, String key) {
+        final value = data[key];
+        if (value is! bool) throw const FormatException();
+        return value;
+      }
+
+      List<Map> records(String key) {
+        final value = snapshot[key];
+        if (value is! List ||
+            value.length > SnapshotConfig.maxEntities ||
+            value.any((item) => item is! Map)) {
+          throw const FormatException();
+        }
+        return value.cast<Map>();
+      }
+
+      Offset point(dynamic value) {
+        if (value is! List || value.length != 2) throw const FormatException();
+        return Offset(
+          number(
+            {'x': value[0]},
+            'x',
+            minimum: -SnapshotConfig.maxCoordinate,
+            maximum: SnapshotConfig.maxCoordinate,
+          ),
+          number(
+            {'y': value[1]},
+            'y',
+            minimum: -SnapshotConfig.maxCoordinate,
+            maximum: SnapshotConfig.maxCoordinate,
+          ),
+        );
+      }
+
+      final newMoney = integer(snapshot, 'money', 0, SnapshotConfig.maxInteger);
+      final newLives = integer(
+        snapshot,
+        'lives',
+        0,
+        EconomyConfig.initialLives,
+      );
+      final newWave = integer(snapshot, 'wave', 0, level.waves);
+      final newPopped = integer(
+        snapshot,
+        'popped',
+        0,
+        SnapshotConfig.maxInteger,
+      );
+      final newPhase =
+          SessionPhase.values[integer(
+            snapshot,
+            'phase',
+            0,
+            SessionPhase.values.length - 1,
+          )];
+      if (!SimulationConfig.supportsSpeed(snapshot['speed'])) {
+        throw const FormatException();
+      }
+      final newSpeed = snapshot['speed'] as int;
+      final newAutoStart = boolean(snapshot, 'autoStart');
+      final newRemaining = integer(
+        snapshot,
+        'remaining',
+        0,
+        SnapshotConfig.maxEntities,
+      );
+      final newRevision = integer(
+        snapshot,
+        'revision',
+        0,
+        SnapshotConfig.maxInteger,
+      );
+      final ids = <int>{};
+      final cells = <Cell>{};
+      int entityId(Map data) {
+        final value = integer(data, 'id', 1, SnapshotConfig.maxInteger);
+        if (!ids.add(value)) throw const FormatException();
+        return value;
+      }
+
+      final newTowers = records('towers').map((data) {
+        final cell = (
+          column: integer(data, 'column', 0, level.columns - 1),
+          row: integer(data, 'row', 0, level.rows - 1),
+        );
+        if (level.terrain(cell) != Terrain.grass || !cells.add(cell)) {
+          throw const FormatException();
+        }
+        final tower =
+            Monkey(
+                entityId(data),
+                towerSpecs[integer(data, 'kind', 0, towerSpecs.length - 1)],
+                cell,
+              )
+              ..level = integer(data, 'level', 1, TowerConfig.maxLevel)
+              ..spent = integer(data, 'spent', 0, SnapshotConfig.maxInteger)
+              ..angle = number(
+                data,
+                'angle',
+                minimum: -SnapshotConfig.maxNumber,
+              )
+              ..targetMode =
+                  TargetMode.values[integer(
+                    data,
+                    'targetMode',
+                    0,
+                    TargetMode.values.length - 1,
+                  )];
+        if (data['targetId'] != null) {
+          tower.targetId = integer(
+            data,
+            'targetId',
+            1,
+            SnapshotConfig.maxInteger,
+          );
+        }
+        return tower;
+      }).toList();
+      final newEnemies = records('enemies').map((data) {
+        final enemy = Balloon(
+          entityId(data),
+          integer(data, 'tier', 0, enemySpecs.length - 1),
+          wave: newWave,
+        );
+        if ((number(data, 'maxHealth') - enemy.maxHealth).abs() >
+                SnapshotConfig.healthTolerance ||
+            (number(data, 'maxShield') - enemy.maxShield).abs() >
+                SnapshotConfig.healthTolerance) {
+          throw const FormatException();
+        }
+        enemy
+          ..health = number(
+            data,
+            'health',
+            minimum: -SnapshotConfig.maxNumber,
+            maximum: enemy.maxHealth,
+          )
+          ..shield = number(data, 'shield', maximum: enemy.maxShield)
+          ..distance = number(
+            data,
+            'distance',
+            maximum: level.road.length.toDouble(),
+          )
+          ..sinceDamage = number(data, 'sinceDamage')
+          ..slow = number(data, 'slow', maximum: BalloonConfig.maximumSlow)
+          ..slowTime = number(
+            data,
+            'slowTime',
+            minimum: -SnapshotConfig.maxNumber,
+          )
+          ..poison = number(data, 'poison')
+          ..poisonTime = number(
+            data,
+            'poisonTime',
+            minimum: -SnapshotConfig.maxNumber,
+          )
+          ..resolved = boolean(data, 'resolved');
+        return enemy;
+      }).toList();
+      final newShots = records('shots')
+          .map(
+            (data) => Shot(
+              point(data['position']),
+              point(data['velocity']),
+              number(data, 'damage'),
+              TowerKind.values[integer(
+                data,
+                'kind',
+                0,
+                TowerKind.values.length - 1,
+              )],
+              integer(data, 'level', 1, TowerConfig.maxLevel),
+            )..life = number(data, 'life', minimum: -SnapshotConfig.maxNumber),
+          )
+          .toList();
+      final newEffects = records('effects').map((data) {
+        final label = data['label'];
+        if (label != null &&
+            (label is! String ||
+                label.length > SnapshotConfig.maxLabelLength)) {
+          throw const FormatException();
+        }
+        return GameEffect(
+          point(data['position']),
+          Color(integer(data, 'color', 0, SnapshotConfig.maxColor)),
+          radius: number(data, 'radius'),
+          lineEnd: data['lineEnd'] == null ? null : point(data['lineEnd']),
+          label: label as String?,
+          life: number(data, 'life', minimum: -SnapshotConfig.maxNumber),
+          duration: number(data, 'duration'),
+        );
+      }).toList();
+      final selectedId = selected?.id;
+      if (preservePresentation) {
+        final existingEnemies = {for (final enemy in enemies) enemy.id: enemy};
+        final existingTowers = {for (final tower in towers) tower.id: tower};
+        final activeEnemyIds = newEnemies
+            .where((enemy) => !enemy.resolved)
+            .map((enemy) => enemy.id)
+            .toSet();
+        final incomingEnemyIds = newEnemies.map((enemy) => enemy.id).toSet();
+        for (final enemy in enemies) {
+          if (!incomingEnemyIds.contains(enemy.id) && !enemy.resolved) {
+            effects.add(
+              GameEffect(level.positionAt(enemy.distance), enemy.spec.color),
+            );
+          }
+        }
+        for (var index = 0; index < newEnemies.length; index++) {
+          final incoming = newEnemies[index];
+          final existing = existingEnemies[incoming.id];
+          if (existing == null ||
+              existing.tier != incoming.tier ||
+              existing.maxHealth != incoming.maxHealth ||
+              existing.maxShield != incoming.maxShield) {
+            continue;
+          }
+          if (newPhase != SessionPhase.running) {
+            existing.distance = incoming.distance;
+          }
+          if (refreshEnemies) {
+            existing
+              ..health = incoming.health
+              ..shield = incoming.shield
+              ..sinceDamage = incoming.sinceDamage
+              ..slow = incoming.slow
+              ..slowTime = incoming.slowTime
+              ..poison = incoming.poison
+              ..poisonTime = incoming.poisonTime
+              ..resolved = incoming.resolved;
+          }
+          newEnemies[index] = existing;
+        }
+        for (var index = 0; index < newTowers.length; index++) {
+          final incoming = newTowers[index];
+          final existing = existingTowers[incoming.id];
+          if (existing == null ||
+              existing.spec.kind != incoming.spec.kind ||
+              existing.cell != incoming.cell) {
+            if (!activeEnemyIds.contains(incoming.targetId)) {
+              incoming.targetId = null;
+            }
+            continue;
+          }
+          existing
+            ..level = incoming.level
+            ..spent = incoming.spent
+            ..targetMode = incoming.targetMode;
+          if (!activeEnemyIds.contains(existing.targetId)) {
+            existing.targetId = null;
+          }
+          newTowers[index] = existing;
+        }
+      }
+      towers
+        ..clear()
+        ..addAll(newTowers);
+      enemies
+        ..clear()
+        ..addAll(newEnemies);
+      if (!preservePresentation) {
+        shots
+          ..clear()
+          ..addAll(newShots);
+        effects
+          ..clear()
+          ..addAll(newEffects);
+      } else if (newPhase == SessionPhase.ready ||
+          newPhase == SessionPhase.won ||
+          newPhase == SessionPhase.lost) {
+        shots.clear();
+      }
+      money = newMoney;
+      lives = newLives;
+      wave = newWave;
+      popped = newPopped;
+      phase = newPhase;
+      _speed = newSpeed;
+      autoStart = newAutoStart;
+      _replicaRemaining = newRemaining;
+      revision = newRevision;
+      selected = towers.where((tower) => tower.id == selectedId).firstOrNull;
+    } on FormatException {
+      return;
+    }
+  }
+
   void hit(Balloon enemy, double damage, {bool pierceArmor = false}) {
     if (enemy.resolved || !enemies.contains(enemy)) return;
     enemy.sinceDamage = 0;
-    var applied = enemy.tier == 3 && !pierceArmor
-        ? math.max(.5, damage - 1)
+    var applied = enemy.tier == BalloonConfig.armoredTier && !pierceArmor
+        ? math.max(
+            BalloonConfig.minimumArmoredDamage,
+            damage - BalloonConfig.armorDamageReduction,
+          )
         : damage;
     final shieldDamage = math.min(enemy.shield, applied);
     enemy.shield -= shieldDamage;
     applied -= shieldDamage;
     enemy.health -= applied;
+    if (replica) {
+      enemy.health = math.max(
+        SnapshotConfig.minimumPredictedHealth,
+        enemy.health,
+      );
+      return;
+    }
     if (enemy.health <= 0) {
       enemy.resolved = true;
       money += enemy.spec.reward;
@@ -581,6 +783,10 @@ class GameSession {
       revision++;
       onSound?.call('pop');
     }
+  }
+
+  void predict(double dt) {
+    if (replica) update(dt);
   }
 
   void update(double dt) {
@@ -594,23 +800,33 @@ class GameSession {
     }
     effects.removeWhere((effect) => effect.life <= 0);
     if (phase == SessionPhase.ready) {
-      if (autoStart && wave > 0) {
+      if (!replica && autoStart && wave > 0) {
         _autoTime -= dt;
         if (_autoTime <= 0) startWave();
       }
       return;
     }
-    _spawnTime -= dt;
-    while (_spawnTime <= 0 && _spawned < _schedule.length) {
-      enemies.add(Balloon(_nextId++, _schedule[_spawned++]));
-      _spawnTime += math.max(.35, .9 - wave * .025);
-      revision++;
+    if (!replica) {
+      _spawnTime -= dt;
+      while (_spawnTime <= 0 && _spawned < _schedule.length) {
+        enemies.add(Balloon(_nextId++, _schedule[_spawned++], wave: wave));
+        _spawnTime += math.max(
+          WaveConfig.minimumSpawnInterval,
+          WaveConfig.initialSpawnInterval -
+              wave * WaveConfig.spawnIntervalReduction,
+        );
+        revision++;
+      }
     }
     for (final enemy in enemies) {
       if (enemy.resolved) continue;
       enemy.sinceDamage += dt;
-      if (enemy.tier == 2 && enemy.sinceDamage > 2) {
-        enemy.health = math.min(enemy.spec.health, enemy.health + dt);
+      if (enemy.tier == BalloonConfig.regeneratingTier &&
+          enemy.sinceDamage > BalloonConfig.regenerationDelay) {
+        enemy.health = math.min(
+          enemy.maxHealth,
+          enemy.health + dt * BalloonConfig.regenerationRate,
+        );
       }
       if (enemy.slowTime > 0) {
         enemy.slowTime -= dt;
@@ -618,12 +834,16 @@ class GameSession {
       if (enemy.slowTime <= 0) enemy.slow = 0;
       enemy.distance += enemy.spec.speed * (1 - enemy.slow) * dt;
       if (enemy.distance >= level.road.length - 1) {
-        enemy.resolved = true;
-        lives = math.max(0, lives - enemy.spec.leak);
-        revision++;
+        if (replica) {
+          enemy.distance = (level.road.length - 1).toDouble();
+        } else {
+          enemy.resolved = true;
+          lives = math.max(0, lives - enemy.spec.leak);
+          revision++;
+        }
       }
     }
-    if (lives <= 0) {
+    if (!replica && lives <= 0) {
       phase = SessionPhase.lost;
       buying = null;
       revision++;
@@ -640,9 +860,12 @@ class GameSession {
       for (final enemy in enemies) {
         if (enemy.resolved) continue;
         final position = level.positionAt(enemy.distance);
-        if (_segmentDistance(position, previous, shot.position) > .25) continue;
+        if (_segmentDistance(position, previous, shot.position) >
+            TowerConfig.projectileHitRadius) {
+          continue;
+        }
         if (shot.kind == TowerKind.bomb) {
-          final radius = [.9, 1, 1.1, 1.25, 1.5][shot.level - 1].toDouble();
+          final radius = TowerConfig.splashRadii[shot.level - 1];
           effects.add(
             GameEffect(position, const Color(0xFFFFA94A), radius: radius),
           );
@@ -660,11 +883,12 @@ class GameSession {
       }
     }
     shots.removeWhere((shot) => shot.life <= 0);
+    if (replica) return;
     enemies.removeWhere((enemy) => enemy.resolved);
     if (_spawned == _schedule.length && enemies.isEmpty) {
       shots.clear();
       phase = wave == level.waves ? SessionPhase.won : SessionPhase.ready;
-      _autoTime = 3;
+      _autoTime = WaveConfig.autoStartDelay;
       revision++;
       if (phase == SessionPhase.won) onSound?.call('win');
     }
@@ -683,9 +907,10 @@ class GameSession {
       return;
     }
     if (monkey.spec.kind == TowerKind.farm) {
+      if (replica) return;
       monkey.farmTime += dt;
-      while (monkey.farmTime >= 8) {
-        monkey.farmTime -= 8;
+      while (monkey.farmTime >= TowerConfig.farmInterval) {
+        monkey.farmTime -= TowerConfig.farmInterval;
         final income = monkey.spec.incomeAt(monkey.level);
         money += income;
         effects.add(
@@ -701,11 +926,13 @@ class GameSession {
       return;
     }
     monkey.cooldown = math.max(0, monkey.cooldown - dt);
-    var attackSpeed = 1.0;
+    var attackSpeed = TowerConfig.baseAttackSpeed;
     for (final support in towers) {
       if (support.spec.kind == TowerKind.support &&
           (support.position - monkey.position).distance <= support.range) {
-        attackSpeed += .1 + (support.level - 1) * .05;
+        attackSpeed +=
+            TowerConfig.supportAttackSpeedBonus +
+            (support.level - 1) * TowerConfig.supportAttackSpeedPerLevel;
       }
     }
     monkey.cooldown = math.max(0, monkey.cooldown - dt * attackSpeed);
@@ -746,8 +973,13 @@ class GameSession {
       math.sin(desired - monkey.angle),
       math.cos(desired - monkey.angle),
     );
-    monkey.angle += difference.clamp(-7 * dt, 7 * dt);
-    if (difference.abs() > .15 || monkey.cooldown > 0) return;
+    monkey.angle += difference.clamp(
+      -TowerConfig.rotationSpeed * dt,
+      TowerConfig.rotationSpeed * dt,
+    );
+    if (difference.abs() > TowerConfig.aimingTolerance || monkey.cooldown > 0) {
+      return;
+    }
     monkey.cooldown = monkey.spec.intervalAt(monkey.level);
     final damage = monkey.spec.damageAt(monkey.level);
     if (monkey.spec.kind == TowerKind.sniper) {
@@ -771,9 +1003,15 @@ class GameSession {
         ),
       );
     } else if (monkey.spec.kind == TowerKind.poison) {
-      target.poison = damage * 1.5;
-      target.poisonTime = 3 + monkey.level * .25;
-      hit(target, damage * .5, pierceArmor: true);
+      target.poison = damage * TowerConfig.poisonDamageMultiplier;
+      target.poisonTime =
+          TowerConfig.poisonDuration +
+          monkey.level * TowerConfig.poisonDurationPerLevel;
+      hit(
+        target,
+        damage * TowerConfig.poisonInitialDamageMultiplier,
+        pierceArmor: true,
+      );
       effects.add(
         GameEffect(
           targetPosition,
@@ -793,12 +1031,17 @@ class GameSession {
       for (final enemy in candidates) {
         hit(enemy, damage);
         final slow =
-            (.3 + (monkey.level - 1) * .05) * (enemy.tier == 4 ? .5 : 1);
+            (TowerConfig.slowFraction +
+                (monkey.level - 1) * TowerConfig.slowFractionPerLevel) *
+            (enemy.tier == BalloonConfig.guardianTier
+                ? BalloonConfig.guardianSlowMultiplier
+                : 1);
         if (slow >= enemy.slow) {
           enemy.slow = slow;
           enemy.slowTime = math.max(
             enemy.slowTime,
-            2 + (monkey.level - 1) * .25,
+            TowerConfig.slowDuration +
+                (monkey.level - 1) * TowerConfig.slowDurationPerLevel,
           );
         }
       }
@@ -806,8 +1049,8 @@ class GameSession {
       final direction = Offset(math.cos(monkey.angle), math.sin(monkey.angle));
       shots.add(
         Shot(
-          monkey.position + direction * .35,
-          direction * 6,
+          monkey.position + direction * TowerConfig.projectileOffset,
+          direction * TowerConfig.projectileSpeed,
           damage,
           monkey.spec.kind,
           monkey.level,
