@@ -335,8 +335,10 @@ Future<void> _showSettings(
 
 class _SettingsDialog extends StatefulWidget {
   const _SettingsDialog({required this.settings, required this.onChanged});
+
   final DefenseSettings settings;
   final Future<void> Function(DefenseSettings) onChanged;
+
   @override
   State<_SettingsDialog> createState() => _SettingsDialogState();
 }
@@ -346,6 +348,7 @@ class _SettingsDialogState extends State<_SettingsDialog> {
   Future<void> pending = Future<void>.value();
   bool saving = false;
   String? error;
+
   void _change(DefenseSettings settings) {
     setState(() {
       value = settings;
@@ -363,72 +366,74 @@ class _SettingsDialogState extends State<_SettingsDialog> {
   }
 
   @override
-  Widget build(BuildContext context) => Dialog(
-    child: ConstrainedBox(
-      constraints: const BoxConstraints(maxWidth: 420),
-      child: SingleChildScrollView(
-        padding: const EdgeInsets.all(24),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const Text(
-              'Settings',
-              style: TextStyle(fontSize: 24, fontWeight: FontWeight.w700),
-            ),
-            const SizedBox(height: 24),
-            Row(
-              children: [
-                const Icon(Icons.volume_up_outlined),
-                const SizedBox(width: 12),
-                const Expanded(child: Text('Sound effects')),
-                Text('${(value.volume * 100).round()}%'),
-              ],
-            ),
-            Slider(
-              value: value.volume.clamp(0, 1),
-              divisions: 20,
-              label: '${(value.volume * 100).round()}%',
-              onChanged: saving
-                  ? null
-                  : (volume) => _change(value.copyWith(volume: volume)),
-            ),
-            SwitchListTile.adaptive(
-              contentPadding: EdgeInsets.zero,
-              title: const Text('Show grid'),
-              secondary: const Icon(Icons.grid_4x4),
-              value: value.grid,
-              onChanged: saving
-                  ? null
-                  : (grid) => _change(value.copyWith(grid: grid)),
-            ),
-            SwitchListTile.adaptive(
-              contentPadding: EdgeInsets.zero,
-              title: const Text('Auto-start waves'),
-              secondary: const Icon(Icons.skip_next_outlined),
-              value: value.autoStart,
-              onChanged: saving
-                  ? null
-                  : (auto) => _change(value.copyWith(autoStart: auto)),
-            ),
-            if (error != null)
-              Text(
-                error!,
-                style: TextStyle(color: Theme.of(context).colorScheme.error),
+  Widget build(BuildContext context) {
+    return Dialog(
+      child: ConstrainedBox(
+        constraints: const BoxConstraints(maxWidth: 420),
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.all(24),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const Text(
+                'Settings',
+                style: TextStyle(fontSize: 24, fontWeight: FontWeight.w700),
               ),
-            const SizedBox(height: 20),
-            Align(
-              alignment: Alignment.centerRight,
-              child: FilledButton(
-                onPressed: saving ? null : _done,
-                child: Text(saving ? 'Saving...' : 'Done'),
+              const SizedBox(height: 24),
+              Row(
+                children: [
+                  const Icon(Icons.volume_up_outlined),
+                  const SizedBox(width: 12),
+                  const Expanded(child: Text('Sound effects')),
+                  Text('${(value.volume * 100).round()}%'),
+                ],
               ),
-            ),
-          ],
+              Slider(
+                value: value.volume.clamp(0, 1),
+                divisions: 20,
+                label: '${(value.volume * 100).round()}%',
+                onChanged: saving
+                    ? null
+                    : (volume) => _change(value.copyWith(volume: volume)),
+              ),
+              SwitchListTile.adaptive(
+                contentPadding: EdgeInsets.zero,
+                title: const Text('Show grid'),
+                secondary: const Icon(Icons.grid_4x4),
+                value: value.grid,
+                onChanged: saving
+                    ? null
+                    : (grid) => _change(value.copyWith(grid: grid)),
+              ),
+              SwitchListTile.adaptive(
+                contentPadding: EdgeInsets.zero,
+                title: const Text('Auto-start waves'),
+                secondary: const Icon(Icons.skip_next_outlined),
+                value: value.autoStart,
+                onChanged: saving
+                    ? null
+                    : (auto) => _change(value.copyWith(autoStart: auto)),
+              ),
+              if (error != null)
+                Text(
+                  error!,
+                  style: TextStyle(color: Theme.of(context).colorScheme.error),
+                ),
+              const SizedBox(height: 20),
+              Align(
+                alignment: Alignment.centerRight,
+                child: FilledButton(
+                  onPressed: saving ? null : _done,
+                  child: Text(saving ? 'Saving...' : 'Done'),
+                ),
+              ),
+            ],
+          ),
         ),
       ),
-    ),
-  );
+    );
+  }
 }
 
 enum _GameAction { resume, settings, restart, menu, levels, next }
@@ -952,57 +957,135 @@ class _GameScreenState extends State<_GameScreen> with WidgetsBindingObserver {
   }
 
   List<Widget> _statRows(TowerSpec spec, int current, int? next) {
-    final values = <(String, String Function(int))>[
-      if (spec.kind == TowerKind.farm)
-        ('Income / 8s', (level) => '\$${spec.incomeAt(level)}')
-      else ...[
-        ('Damage', (level) => _number(spec.damageAt(level))),
-        ('Interval', (level) => '${_number(spec.intervalAt(level))}s'),
-        ('Range', (level) => _number(spec.rangeAt(level))),
-        if (spec.kind == TowerKind.bomb)
-          (
-            'Splash radius',
-            (level) => _number([.9, 1.0, 1.1, 1.25, 1.5][level - 1]),
-          ),
-        if (spec.kind == TowerKind.frost) ...[
-          ('Slow', (level) => '${30 + (level - 1) * 5}%'),
-          ('Slow duration', (level) => '${_number(2 + (level - 1) * .25)}s'),
-        ],
-      ],
-    ];
-    return [
-      for (final (label, value) in values)
-        Padding(
-          padding: const EdgeInsets.symmetric(vertical: 3),
-          child: Row(
-            children: [
-              Expanded(
-                child: Text(
-                  label,
-                  style: const TextStyle(color: Color(0xFF66756D)),
-                ),
-              ),
-              Text(
-                value(current),
-                style: const TextStyle(fontWeight: FontWeight.w600),
-              ),
-              if (next != null) ...[
-                const Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 6),
-                  child: Icon(Icons.arrow_forward, size: 12),
-                ),
-                Text(
-                  value(next),
-                  style: const TextStyle(
-                    color: _green,
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
-              ],
-            ],
-          ),
+    final rows = <Widget>[];
+    if (spec.kind == TowerKind.farm) {
+      rows.add(
+        _statRow(
+          'Income / 8s',
+          '\$${spec.incomeAt(current)}',
+          next == null ? null : '\$${spec.incomeAt(next)}',
         ),
-    ];
+      );
+    } else {
+      rows.add(
+        _statRow(
+          'Damage',
+          _number(spec.damageAt(current)),
+          next == null ? null : _number(spec.damageAt(next)),
+        ),
+      );
+      rows.add(
+        _statRow(
+          'Interval',
+          '${_number(spec.intervalAt(current))}s',
+          next == null ? null : '${_number(spec.intervalAt(next))}s',
+        ),
+      );
+      rows.add(
+        _statRow(
+          'Range',
+          _number(spec.rangeAt(current)),
+          next == null ? null : _number(spec.rangeAt(next)),
+        ),
+      );
+      if (spec.kind == TowerKind.bomb) {
+        rows.add(
+          _statRow(
+            'Splash radius',
+            _number([.9, 1.0, 1.1, 1.25, 1.5][current - 1]),
+            next == null ? null : _number([.9, 1.0, 1.1, 1.25, 1.5][next - 1]),
+          ),
+        );
+      }
+      if (spec.kind == TowerKind.frost) {
+        rows.add(
+          _statRow(
+            'Slow',
+            '${30 + (current - 1) * 5}%',
+            next == null ? null : '${30 + (next - 1) * 5}%',
+          ),
+        );
+        rows.add(
+          _statRow(
+            'Slow duration',
+            '${_number(2 + (current - 1) * .25)}s',
+            next == null ? null : '${_number(2 + (next - 1) * .25)}s',
+          ),
+        );
+      }
+      if (spec.kind == TowerKind.support) {
+        rows.add(
+          _statRow(
+            'Aura radius',
+            _number(spec.rangeAt(current)),
+            next == null ? null : _number(spec.rangeAt(next)),
+          ),
+        );
+        rows.add(
+          _statRow(
+            'Attack bonus',
+            '${10 + (current - 1) * 5}%',
+            next == null ? null : '${10 + (next - 1) * 5}%',
+          ),
+        );
+      }
+      if (spec.kind == TowerKind.laser) {
+        rows.add(
+          _statRow(
+            'Piercing beam',
+            _number(spec.damageAt(current)),
+            next == null ? null : _number(spec.damageAt(next)),
+          ),
+        );
+      }
+      if (spec.kind == TowerKind.poison) {
+        rows.add(
+          _statRow(
+            'Toxin burst',
+            _number(spec.damageAt(current) * .5),
+            next == null ? null : _number(spec.damageAt(next) * .5),
+          ),
+        );
+        rows.add(
+          _statRow(
+            'Toxin duration',
+            '${_number(3 + current * .25)}s',
+            next == null ? null : '${_number(3 + next * .25)}s',
+          ),
+        );
+      }
+    }
+    return rows;
+  }
+
+  Widget _statRow(String label, String current, String? next) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 3),
+      child: Row(
+        children: [
+          Expanded(
+            child: Text(
+              label,
+              style: const TextStyle(color: Color(0xFF66756D)),
+            ),
+          ),
+          Text(current, style: const TextStyle(fontWeight: FontWeight.w600)),
+          if (next != null) ...[
+            const Padding(
+              padding: EdgeInsets.symmetric(horizontal: 6),
+              child: Icon(Icons.arrow_forward, size: 12),
+            ),
+            Text(
+              next,
+              style: const TextStyle(
+                color: _green,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+          ],
+        ],
+      ),
+    );
   }
 
   Widget _status() {
@@ -1066,56 +1149,58 @@ class _ActionDialog extends StatelessWidget {
   final IconData? emblem;
   final List<(_GameAction, IconData, String)> actions;
   @override
-  Widget build(BuildContext context) => PopScope(
-    canPop: false,
-    child: Dialog(
-      child: ConstrainedBox(
-        constraints: const BoxConstraints(maxWidth: 390),
-        child: SingleChildScrollView(
-          padding: const EdgeInsets.all(24),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              if (emblem != null)
-                Padding(
-                  padding: const EdgeInsets.only(bottom: 14),
-                  child: Icon(emblem, size: 48, color: _green),
+  Widget build(BuildContext context) {
+    return PopScope(
+      canPop: false,
+      child: Dialog(
+        child: ConstrainedBox(
+          constraints: const BoxConstraints(maxWidth: 390),
+          child: SingleChildScrollView(
+            padding: const EdgeInsets.all(24),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                if (emblem != null)
+                  Padding(
+                    padding: const EdgeInsets.only(bottom: 14),
+                    child: Icon(emblem, size: 48, color: _green),
+                  ),
+                Text(
+                  title,
+                  textAlign: TextAlign.center,
+                  style: const TextStyle(
+                    fontSize: 26,
+                    fontWeight: FontWeight.w700,
+                  ),
                 ),
-              Text(
-                title,
-                textAlign: TextAlign.center,
-                style: const TextStyle(
-                  fontSize: 26,
-                  fontWeight: FontWeight.w700,
-                ),
-              ),
-              const SizedBox(height: 10),
-              Text(subtitle, textAlign: TextAlign.center),
-              const SizedBox(height: 22),
-              for (var index = 0; index < actions.length; index++)
-                Padding(
-                  padding: const EdgeInsets.only(bottom: 8),
-                  child: index == 0
-                      ? FilledButton.icon(
-                          onPressed: () =>
-                              Navigator.pop(context, actions[index].$1),
-                          icon: Icon(actions[index].$2),
-                          label: Text(actions[index].$3),
-                        )
-                      : OutlinedButton.icon(
-                          onPressed: () =>
-                              Navigator.pop(context, actions[index].$1),
-                          icon: Icon(actions[index].$2),
-                          label: Text(actions[index].$3),
-                        ),
-                ),
-            ],
+                const SizedBox(height: 10),
+                Text(subtitle, textAlign: TextAlign.center),
+                const SizedBox(height: 22),
+                for (var index = 0; index < actions.length; index++)
+                  Padding(
+                    padding: const EdgeInsets.only(bottom: 8),
+                    child: index == 0
+                        ? FilledButton.icon(
+                            onPressed: () =>
+                                Navigator.pop(context, actions[index].$1),
+                            icon: Icon(actions[index].$2),
+                            label: Text(actions[index].$3),
+                          )
+                        : OutlinedButton.icon(
+                            onPressed: () =>
+                                Navigator.pop(context, actions[index].$1),
+                            icon: Icon(actions[index].$2),
+                            label: Text(actions[index].$3),
+                          ),
+                  ),
+              ],
+            ),
           ),
         ),
       ),
-    ),
-  );
+    );
+  }
 }
 
 class _Counter extends StatelessWidget {
@@ -1235,6 +1320,9 @@ class _Portrait extends StatelessWidget {
                   TowerKind.frost => Icons.ac_unit,
                   TowerKind.sniper => Icons.my_location,
                   TowerKind.farm => Icons.eco,
+                  TowerKind.laser => Icons.wb_sunny_outlined,
+                  TowerKind.support => Icons.sports,
+                  TowerKind.poison => Icons.science_outlined,
                 },
                 color: Colors.white,
                 size: size * .25,

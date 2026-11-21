@@ -662,4 +662,23 @@ void main() {
       );
     });
   }
+
+  test('catalog provides nine towers and five generated maps', () {
+    expect(towerSpecs.length, 9);
+    expect(levels.length, greaterThanOrEqualTo(5));
+    for (final spec in towerSpecs) {
+      expect(spec.upgradeCost(1), greaterThan(spec.cost ~/ 2));
+      expect(spec.damageAt(5), greaterThan(spec.damageAt(1)));
+      expect(spec.rangeAt(5), greaterThanOrEqualTo(spec.rangeAt(1)));
+    }
+  });
+
+  test('every catalog level has a valid bounded route', () {
+    for (final level in levels) {
+      expect(level.columns, lessThanOrEqualTo(30), reason: level.name);
+      expect(level.rows, lessThanOrEqualTo(20), reason: level.name);
+      expect(level.road.length, greaterThan(1), reason: level.name);
+      expect(level.road.toSet().length, level.road.length, reason: level.name);
+    }
+  });
 }

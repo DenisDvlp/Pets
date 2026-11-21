@@ -1,7 +1,17 @@
 import 'dart:math' as math;
 import 'dart:ui';
 
-enum TowerKind { dart, rapid, bomb, frost, sniper, farm }
+enum TowerKind {
+  dart,
+  rapid,
+  bomb,
+  frost,
+  sniper,
+  farm,
+  laser,
+  support,
+  poison,
+}
 
 enum TargetMode { first, strongest, nearest }
 
@@ -97,6 +107,36 @@ const towerSpecs = <TowerSpec>[
     8,
     0,
     Color(0xFF94BA46),
+  ),
+  TowerSpec(
+    TowerKind.laser,
+    'Laser Monk',
+    'Continuous piercing beam',
+    320,
+    2.5,
+    .9,
+    4,
+    Color(0xFF9A67E8),
+  ),
+  TowerSpec(
+    TowerKind.support,
+    'Drum Captain',
+    'Nearby monkeys attack faster',
+    300,
+    0,
+    8,
+    3.5,
+    Color(0xFFCF7F3C),
+  ),
+  TowerSpec(
+    TowerKind.poison,
+    'Toxin Slinger',
+    'Damage over time • strong against armor',
+    240,
+    1.5,
+    1.1,
+    3,
+    Color(0xFF6DBB5A),
   ),
 ];
 
@@ -237,6 +277,82 @@ final levels = <LevelDefinition>[
     ],
     river: true,
   ),
+  LevelDefinition(
+    'Mountain Pass',
+    'A steep route through the mountains',
+    30,
+    20,
+    25,
+    [
+      (column: 0, row: 10),
+      (column: 5, row: 10),
+      (column: 5, row: 0),
+      (column: 25, row: 0),
+      (column: 25, row: 10),
+      (column: 29, row: 10),
+    ],
+  ),
+  LevelDefinition(
+    'Desert Oasis',
+    'A dry route around a hidden oasis',
+    28,
+    18,
+    18,
+    [
+      (column: 0, row: 9),
+      (column: 7, row: 9),
+      (column: 7, row: 3),
+      (column: 20, row: 3),
+      (column: 20, row: 14),
+      (column: 27, row: 14),
+    ],
+  ),
+  LevelDefinition(
+    'Crystal Crossroads',
+    'Four open lanes around a crystal clearing',
+    25,
+    17,
+    20,
+    [
+      (column: 0, row: 8),
+      (column: 6, row: 8),
+      (column: 6, row: 3),
+      (column: 14, row: 3),
+      (column: 14, row: 13),
+      (column: 24, row: 13),
+    ],
+  ),
+  LevelDefinition(
+    'Volcano Loop',
+    'A compact route around a volcanic ridge',
+    22,
+    18,
+    22,
+    [
+      (column: 0, row: 9),
+      (column: 5, row: 9),
+      (column: 5, row: 3),
+      (column: 16, row: 3),
+      (column: 16, row: 14),
+      (column: 21, row: 14),
+    ],
+  ),
+  LevelDefinition(
+    'Twin Rivers',
+    'Two waterways split a long final course',
+    28,
+    20,
+    24,
+    [
+      (column: 0, row: 5),
+      (column: 8, row: 5),
+      (column: 8, row: 16),
+      (column: 19, row: 16),
+      (column: 19, row: 8),
+      (column: 27, row: 8),
+    ],
+    river: true,
+  ),
 ];
 
 class Monkey {
@@ -268,6 +384,8 @@ class Balloon {
   double sinceDamage = 0;
   double slow = 0;
   double slowTime = 0;
+  double poison = 0;
+  double poisonTime = 0;
   bool resolved = false;
   EnemySpec get spec => enemySpecs[tier];
 }
@@ -553,6 +671,17 @@ class GameSession {
   }
 
   void _updateTower(Monkey monkey, double dt) {
+    if (monkey.spec.kind == TowerKind.support) {
+      effects.add(
+        GameEffect(
+          monkey.position,
+          const Color(0xFFFFB36B),
+          radius: monkey.range,
+          life: .12,
+        ),
+      );
+      return;
+    }
     if (monkey.spec.kind == TowerKind.farm) {
       monkey.farmTime += dt;
       while (monkey.farmTime >= 8) {
@@ -572,6 +701,14 @@ class GameSession {
       return;
     }
     monkey.cooldown = math.max(0, monkey.cooldown - dt);
+    var attackSpeed = 1.0;
+    for (final support in towers) {
+      if (support.spec.kind == TowerKind.support &&
+          (support.position - monkey.position).distance <= support.range) {
+        attackSpeed += .1 + (support.level - 1) * .05;
+      }
+    }
+    monkey.cooldown = math.max(0, monkey.cooldown - dt * attackSpeed);
     final candidates = enemies
         .where(
           (enemy) =>
@@ -623,6 +760,28 @@ class GameSession {
           life: .15,
         ),
       );
+    } else if (monkey.spec.kind == TowerKind.laser) {
+      hit(target, damage, pierceArmor: true);
+      effects.add(
+        GameEffect(
+          monkey.position,
+          const Color(0xFFB996FF),
+          lineEnd: targetPosition,
+          life: .18,
+        ),
+      );
+    } else if (monkey.spec.kind == TowerKind.poison) {
+      target.poison = damage * 1.5;
+      target.poisonTime = 3 + monkey.level * .25;
+      hit(target, damage * .5, pierceArmor: true);
+      effects.add(
+        GameEffect(
+          targetPosition,
+          const Color(0xFF79C95C),
+          radius: .2,
+          life: .2,
+        ),
+      );
     } else if (monkey.spec.kind == TowerKind.frost) {
       effects.add(
         GameEffect(
@@ -637,7 +796,10 @@ class GameSession {
             (.3 + (monkey.level - 1) * .05) * (enemy.tier == 4 ? .5 : 1);
         if (slow >= enemy.slow) {
           enemy.slow = slow;
-          enemy.slowTime = 2 + (monkey.level - 1) * .25;
+          enemy.slowTime = math.max(
+            enemy.slowTime,
+            2 + (monkey.level - 1) * .25,
+          );
         }
       }
     } else {

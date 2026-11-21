@@ -472,6 +472,29 @@ void drawMonkey(
         Paint()..color = const Color(0xFFDAF9FF),
       );
     }
+    if (spec.kind == TowerKind.laser) {
+      canvas.drawCircle(
+        const Offset(11, 0),
+        2,
+        Paint()..color = const Color(0xFFD9C2FF),
+      );
+    }
+    if (spec.kind == TowerKind.support) {
+      canvas.drawRRect(
+        RRect.fromRectAndRadius(
+          const Rect.fromLTWH(4, -5, 9, 10),
+          const Radius.circular(2),
+        ),
+        Paint()..color = const Color(0xFFDCA06A),
+      );
+    }
+    if (spec.kind == TowerKind.poison) {
+      canvas.drawCircle(
+        const Offset(10, 0),
+        2.5,
+        Paint()..color = const Color(0xFF86D76A),
+      );
+    }
   }
   canvas.restore();
   for (var index = 0; index < level; index++) {
